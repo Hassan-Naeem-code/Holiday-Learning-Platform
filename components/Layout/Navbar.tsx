@@ -2,9 +2,10 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Home, Trophy, BookOpen, Gamepad2, User } from 'lucide-react'
+import { Home, Trophy, BookOpen, User } from 'lucide-react'
 import { useUserStore } from '@/stores/userStore'
 import { useEffect } from 'react'
+import SoundToggle from '@/components/Common/SoundToggle'
 
 export default function Navbar() {
   const { user, loadFromStorage } = useUserStore()
@@ -57,6 +58,7 @@ export default function Navbar() {
 
         {/* User Stats */}
         <div className="flex items-center space-x-4">
+          <SoundToggle />
           <div className="glass-card px-4 py-2 flex items-center space-x-3">
             <div className="flex items-center space-x-1">
               <span className="text-2xl">⭐</span>

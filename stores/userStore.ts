@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { storage, STORAGE_KEYS } from '@/utils/storage'
+import { storageIntegrity, antiCheat } from '@/utils/security'
 
 export interface Achievement {
   id: string
@@ -44,6 +45,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   addXP: (amount: number) => {
     set((state) => {
+      // Validate XP amount
+      if (!storageIntegrity.validateXP(state.user.totalXP + amount)) {
+        console.error('Invalid XP amount detected')
+        return state
+      }
+
       const newTotalXP = state.user.totalXP + amount
       const newLevel = calculateLevel(newTotalXP)
       const updatedUser = {
@@ -52,7 +59,11 @@ export const useUserStore = create<UserStore>((set, get) => ({
         level: newLevel,
         lastActive: new Date(),
       }
+
+      // Store with checksum
       storage.set(STORAGE_KEYS.USER_DATA, updatedUser)
+      storage.set(`${STORAGE_KEYS.USER_DATA}_checksum`, storageIntegrity.generateChecksum(updatedUser))
+
       return { user: updatedUser }
     })
   },
@@ -62,12 +73,24 @@ export const useUserStore = create<UserStore>((set, get) => ({
       if (state.user.achievements.includes(achievementId)) {
         return state // Already unlocked
       }
+
+      const newAchievements = [...state.user.achievements, achievementId]
+
+      // Validate achievements
+      if (!storageIntegrity.validateAchievements(newAchievements)) {
+        console.error('Invalid achievement detected')
+        return state
+      }
+
       const updatedUser = {
         ...state.user,
-        achievements: [...state.user.achievements, achievementId],
+        achievements: newAchievements,
         lastActive: new Date(),
       }
+
       storage.set(STORAGE_KEYS.USER_DATA, updatedUser)
+      storage.set(`${STORAGE_KEYS.USER_DATA}_checksum`, storageIntegrity.generateChecksum(updatedUser))
+
       return { user: updatedUser }
     })
   },
@@ -105,6 +128,20 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   loadFromStorage: () => {
     const savedUser = storage.get<UserData>(STORAGE_KEYS.USER_DATA, DEFAULT_USER)
+    const storedChecksum = storage.get<string>(`${STORAGE_KEYS.USER_DATA}_checksum`, '')
+
+    // Verify integrity
+    if (storedChecksum && !storageIntegrity.verify(savedUser, storedChecksum)) {
+      console.warn('User data integrity check failed - using defaults')
+      set({ user: DEFAULT_USER })
+      return
+    }
+
+    // Detect tampering
+    if (antiCheat.detectTampering()) {
+      console.warn('Potential tampering detected')
+    }
+
     set({ user: savedUser })
   },
 }))

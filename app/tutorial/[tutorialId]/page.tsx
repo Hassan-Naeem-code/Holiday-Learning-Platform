@@ -3,7 +3,7 @@
 import { use } from 'react'
 import TutorialPlayer from '@/components/Tutorials/TutorialPlayer'
 import { softwareDevTutorial } from '@/tutorials/softwareDev'
-import { webDevTutorial } from '@/tutorials/webDev'
+import { webDevTutorial } from '@/tutorials/webDevComplete'
 import { notFound } from 'next/navigation'
 
 const TUTORIALS: { [key: string]: any } = {

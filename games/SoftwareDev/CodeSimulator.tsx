@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DndContext, DragEndEvent } from '@dnd-kit/core'
 import { motion, AnimatePresence } from 'framer-motion'
 import SandboxContainer from '@/components/Sandbox/SandboxContainer'
 import DraggableItem from '@/components/Games/DraggableItem'
 import DragDropZone from '@/components/Games/DragDropZone'
+import { useTutorialStore } from '@/stores/tutorialStore'
+import { useUserStore } from '@/stores/userStore'
+import { achievementManager } from '@/utils/achievementManager'
 
 interface ProgramBlock {
   id: string
@@ -28,6 +31,39 @@ export default function CodeSimulator() {
   const [output, setOutput] = useState<string[]>([])
   const [isRunning, setIsRunning] = useState(false)
   const [executingIndex, setExecutingIndex] = useState(-1)
+  const [timeSpent, setTimeSpent] = useState(0)
+  const startTimeRef = useRef<number>(Date.now())
+
+  const { updateTopicProgress } = useTutorialStore()
+  const { addXP } = useUserStore()
+
+  // Track time spent
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000)
+      setTimeSpent(elapsed)
+
+      // Award XP every 5 minutes
+      if (elapsed % 300 === 0 && elapsed > 0) {
+        addXP(20)
+      }
+
+      // Check for "Experimenter" achievement (30 minutes)
+      if (elapsed >= 1800) {
+        achievementManager.checkAll()
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [addXP])
+
+  // Update progress when program is built
+  useEffect(() => {
+    if (program.length > 0) {
+      const progressPercent = Math.min(100, program.length * 20)
+      updateTopicProgress('software-dev', 'sandbox', progressPercent)
+    }
+  }, [program.length, updateTopicProgress])
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -102,6 +138,13 @@ export default function CodeSimulator() {
         onReset={resetProgram}
         isRunning={isRunning}
       >
+        {/* Time Tracker */}
+        <div className="glass-card p-4 mb-6 text-center">
+          <div className="text-white/70 text-sm mb-1">Time Spent</div>
+          <div className="text-2xl font-bold text-christmas-gold">
+            {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Available Blocks */}
           <div className="glass-card p-6">

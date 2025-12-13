@@ -9,6 +9,10 @@ import DraggableItem from '@/components/Games/DraggableItem'
 import DragDropZone from '@/components/Games/DragDropZone'
 import { useGameStore } from '@/stores/gameStore'
 import { useUserStore } from '@/stores/userStore'
+import { useTutorialStore } from '@/stores/tutorialStore'
+import { achievementManager } from '@/utils/achievementManager'
+import { soundManager } from '@/utils/soundManager'
+import { rateLimiter } from '@/utils/security'
 import confetti from 'canvas-confetti'
 
 interface CodeBlock {
@@ -47,8 +51,11 @@ export default function CodeBlockGame() {
   const [hints, setHints] = useState(3)
   const [feedback, setFeedback] = useState<string>('')
   const [gameWon, setGameWon] = useState(false)
+  const [combo, setCombo] = useState(0)
+  const [bestCombo, setBestCombo] = useState(0)
 
   const { addXP } = useUserStore()
+  const { updateTopicProgress } = useTutorialStore()
 
   const handleDragStart = (event: any) => {
     setActiveId(event.active.id)
@@ -74,7 +81,26 @@ export default function CodeBlockGame() {
       newSolution[index] = blockId
       setSolution(newSolution)
 
-      setFeedback('Block placed! 👍')
+      // Check if placement is correct for combo
+      const correct = LEVEL_SOLUTIONS[difficulty]
+      const isCorrectPlacement = newSolution.filter((b, i) => b && b === correct[i]).length === newSolution.filter(Boolean).length
+
+      if (isCorrectPlacement) {
+        const newCombo = combo + 1
+        setCombo(newCombo)
+        if (newCombo > bestCombo) setBestCombo(newCombo)
+
+        const comboBonus = newCombo * 10
+        setScore(score + comboBonus)
+
+        soundManager.playCombo(newCombo)
+        setFeedback(`🔥 Combo x${newCombo}! +${comboBonus} bonus points!`)
+      } else {
+        setCombo(0)
+        soundManager.playSuccess()
+        setFeedback('Block placed! 👍')
+      }
+
       setTimeout(() => setFeedback(''), 2000)
     }
   }
@@ -93,6 +119,13 @@ export default function CodeBlockGame() {
   }
 
   const checkSolution = () => {
+    // Rate limiting - max 10 submissions per minute
+    if (!rateLimiter.check('game-submission', 10, 60000)) {
+      setFeedback('⏳ Too many attempts! Please wait a moment.')
+      setTimeout(() => setFeedback(''), 3000)
+      return
+    }
+
     const correct = LEVEL_SOLUTIONS[difficulty]
     const isCorrect = solution.length === correct.length &&
                      solution.every((block, idx) => block === correct[idx])
@@ -102,15 +135,27 @@ export default function CodeBlockGame() {
       const points = difficulty === 'easy' ? 100 : difficulty === 'medium' ? 200 : 300
       setScore(score + points)
       addXP(points)
+
+      // Update progress
+      const progressPercent = difficulty === 'easy' ? 33 : difficulty === 'medium' ? 66 : 100
+      updateTopicProgress('software-dev', 'game', progressPercent)
+
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 }
       })
       setFeedback('🎉 Perfect! Algorithm complete!')
+      soundManager.playWin()
+
+      // Check achievements
+      setTimeout(() => {
+        achievementManager.checkAll()
+      }, 1000)
     } else {
       setLives(lives - 1)
       setFeedback('❌ Not quite right. Try again!')
+      soundManager.playError()
       setTimeout(() => setFeedback(''), 2000)
     }
   }
@@ -118,6 +163,7 @@ export default function CodeBlockGame() {
   const useHint = () => {
     if (hints > 0) {
       setHints(hints - 1)
+      soundManager.playHint()
       const correct = LEVEL_SOLUTIONS[difficulty]
       const nextIndex = solution.length
       if (nextIndex < correct.length) {
@@ -134,6 +180,8 @@ export default function CodeBlockGame() {
     setHints(3)
     setScore(0)
     setGameWon(false)
+    setCombo(0)
+    setBestCombo(0)
     setAvailableBlocks(CODE_BLOCKS)
   }
 
@@ -261,14 +309,32 @@ export default function CodeBlockGame() {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <GameContainer title="Code Block Constructor" icon="💻" difficulty={difficulty}>
-        <GameHUD
-          score={score}
-          lives={lives}
-          maxLives={3}
-          hints={hints}
-          maxHints={3}
-          onUseHint={useHint}
-        />
+        <div className="space-y-4">
+          <GameHUD
+            score={score}
+            lives={lives}
+            maxLives={3}
+            hints={hints}
+            maxHints={3}
+            onUseHint={useHint}
+          />
+
+          {combo > 1 && (
+            <motion.div
+              className="glass-card p-4 text-center"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+            >
+              <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                🔥 COMBO x{combo}!
+              </div>
+              <div className="text-white/70 text-sm mt-1">
+                Best: {bestCombo}
+              </div>
+            </motion.div>
+          )}
+        </div>
 
         {/* Feedback */}
         <AnimatePresence>

@@ -3,6 +3,7 @@ import './globals.css'
 import FallingSnow from '@/components/Layout/FallingSnow'
 import AnimatedSanta from '@/components/Layout/AnimatedSanta'
 import Navbar from '@/components/Layout/Navbar'
+import AchievementProvider from '@/components/Common/AchievementProvider'
 
 export const metadata: Metadata = {
   title: 'Holiday Learning Platform - Learn Tech This Christmas!',
@@ -17,13 +18,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <FallingSnow />
-        <AnimatedSanta />
-        <Navbar />
-        <main className="relative z-10">
-          {children}
-        </main>
+      <body suppressHydrationWarning>
+        <AchievementProvider>
+          <FallingSnow />
+          <AnimatedSanta />
+          <Navbar />
+          <main className="relative z-10">
+            {children}
+          </main>
+        </AchievementProvider>
       </body>
     </html>
   )

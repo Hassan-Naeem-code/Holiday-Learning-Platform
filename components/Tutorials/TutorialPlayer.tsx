@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, BookmarkPlus, BookmarkCheck, Home } from 'lucide-react'
 import Link from 'next/link'
+import { useTutorialStore } from '@/stores/tutorialStore'
+import { useUserStore } from '@/stores/userStore'
+import { achievementManager } from '@/utils/achievementManager'
 
 export interface TutorialSection {
   id: number
@@ -30,6 +33,29 @@ export default function TutorialPlayer({
   const [currentSection, setCurrentSection] = useState(0)
   const [bookmarked, setBookmarked] = useState(false)
   const [direction, setDirection] = useState(0)
+
+  const { updateTutorialProgress, updateTopicProgress } = useTutorialStore()
+  const { addXP } = useUserStore()
+
+  // Update progress when section changes
+  useEffect(() => {
+    updateTutorialProgress(tutorialId, currentSection + 1, sections.length)
+
+    // If completed all sections
+    if (currentSection === sections.length - 1) {
+      // Extract topic ID from tutorial ID (e.g., 'software-dev-tutorial' -> 'software-dev')
+      const topicId = tutorialId.replace('-tutorial', '')
+      updateTopicProgress(topicId, 'tutorial', 100)
+
+      // Award XP
+      addXP(50)
+
+      // Check for achievements
+      setTimeout(() => {
+        achievementManager.checkAll()
+      }, 1000)
+    }
+  }, [currentSection, tutorialId, sections.length, updateTutorialProgress, updateTopicProgress, addXP])
 
   const handleNext = () => {
     if (currentSection < sections.length - 1) {

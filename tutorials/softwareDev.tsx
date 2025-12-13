@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion'
 import AnimatedDiagram from '@/components/Tutorials/AnimatedDiagram'
 import InteractiveSlider from '@/components/Tutorials/InteractiveSlider'
+import QuizComponent, { QuizQuestion } from '@/components/Tutorials/QuizComponent'
 import { TutorialSection } from '@/components/Tutorials/TutorialPlayer'
+import { useUserStore } from '@/stores/userStore'
+import { useTutorialStore } from '@/stores/tutorialStore'
+import { achievementManager } from '@/utils/achievementManager'
 
 export const softwareDevTutorial = {
   title: 'How Programming Works',
@@ -360,6 +364,103 @@ export const softwareDevTutorial = {
     },
     {
       id: 5,
+      title: 'Quiz: Test Your Knowledge',
+      estimatedTime: '5 min',
+      content: (() => {
+        const quizQuestions: QuizQuestion[] = [
+          {
+            question: 'What is a variable in programming?',
+            options: [
+              'A storage container for data',
+              'A type of loop',
+              'A mathematical formula',
+              'A programming language'
+            ],
+            correctAnswer: 0,
+            explanation: 'Variables are containers that store information, like labeled boxes for data.'
+          },
+          {
+            question: 'What is the main purpose of a function?',
+            options: [
+              'To display colors',
+              'To create reusable blocks of code',
+              'To slow down the program',
+              'To delete variables'
+            ],
+            correctAnswer: 1,
+            explanation: 'Functions let you write code once and reuse it many times, making programs more organized.'
+          },
+          {
+            question: 'What does a loop do?',
+            options: [
+              'Stops the program',
+              'Repeats code multiple times',
+              'Deletes old code',
+              'Creates new variables'
+            ],
+            correctAnswer: 1,
+            explanation: 'Loops repeat code multiple times without having to write it over and over.'
+          },
+          {
+            question: 'Which is an example of a Boolean value?',
+            options: [
+              '"Hello World"',
+              '42',
+              'true',
+              '[1, 2, 3]'
+            ],
+            correctAnswer: 2,
+            explanation: 'Boolean values are either true or false, used for yes/no decisions.'
+          },
+          {
+            question: 'What happens when a program executes?',
+            options: [
+              'Nothing at all',
+              'It runs instructions line by line',
+              'It deletes itself',
+              'It creates new code'
+            ],
+            correctAnswer: 1,
+            explanation: 'Programs execute by running instructions one at a time, in order, from top to bottom.'
+          }
+        ]
+
+        const handleQuizComplete = (score: number) => {
+          const { addXP } = useUserStore.getState()
+          const { completeTutorial } = useTutorialStore.getState()
+
+          // Award XP based on score
+          const xpReward = score === 100 ? 100 : score >= 80 ? 50 : 25
+          addXP(xpReward)
+
+          // Mark tutorial as complete with quiz score
+          completeTutorial('software-dev-tutorial', score)
+
+          // Check for "Thinker" achievement (100% quiz score)
+          if (score === 100) {
+            setTimeout(() => achievementManager.checkAll(), 1000)
+          }
+        }
+
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <div className="text-5xl mb-3">🧠</div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Ready to Test Your Knowledge?
+              </h3>
+              <p className="text-white/80">
+                Answer 5 questions to see how much you&apos;ve learned!
+              </p>
+            </div>
+
+            <QuizComponent questions={quizQuestions} onComplete={handleQuizComplete} />
+          </div>
+        )
+      })(),
+    },
+    {
+      id: 6,
       title: 'Key Takeaways & Next Steps',
       estimatedTime: '2 min',
       content: (
