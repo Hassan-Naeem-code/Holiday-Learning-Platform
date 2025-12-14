@@ -6,6 +6,7 @@ import Navbar from '@/components/Layout/Navbar'
 import AchievementProvider from '@/components/Common/AchievementProvider'
 import MusicPlayer from '@/components/Music/MusicPlayer'
 import SantaWithCart from '@/components/Layout/SantaWithCart'
+import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient'
 
 export const metadata: Metadata = {
   title: 'Holiday Learning Platform - Learn Tech This Christmas!',
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning>
+        <ConsoleProtectionClient />
         <AchievementProvider>
           <FallingSnow />
           <AnimatedSanta />
