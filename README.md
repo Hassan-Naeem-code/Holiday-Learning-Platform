@@ -176,44 +176,6 @@ Edit `utils/topicConfig.ts` to add new tech domains.
 
 ---
 
-## 🌐 **Deployment**
-
-### Deploy to Vercel (Recommended) ⭐
-
-**Yes! Vercel offers FREE hosting with automatic CI/CD for Next.js projects.**
-
-**Steps:**
-
-1. Push code to GitHub
-2. Visit [vercel.com](https://vercel.com)
-3. Click "Import Project" and select your repository
-4. Vercel auto-detects Next.js — no config needed
-5. Click Deploy — done! 🚀
-
-**Free Features:**
-- ✅ Free SSL/HTTPS
-- ✅ Automatic deployments on push
-- ✅ Built-in CI/CD pipeline
-- ✅ Edge functions & serverless support
-- ✅ 100GB bandwidth/month free tier
-
-**Environment Variables:**
-```bash
-# .env.local
-NEXT_PUBLIC_SITE_URL=https://yourdomain.com
-```
-
-### Other Deployment Options
-
-| Platform | Free? | Ease | Notes |
-|----------|-------|------|-------|
-| **Vercel** | ✅ | ⭐⭐⭐⭐⭐ | **Recommended** |
-| **Netlify** | ✅ | ⭐⭐⭐⭐ | Good alternative |
-| **Railway** | ✅ | ⭐⭐⭐ | More control |
-| **Docker** | ✅ | ⭐⭐⭐ | Self-hosted |
-
----
-
 ## 🔧 **Configuration**
 
 ### Key Files
