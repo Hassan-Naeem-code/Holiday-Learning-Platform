@@ -1,6 +1,6 @@
 {
-  "name": "Holiday Learning Platform",
-  "short_name": "Holiday Learn",
+  "name": "CodeLikeBasics",
+  "short_name": "CodeLikeBasics",
   "description": "Interactive learning platform with tutorials, games, and sandboxes. Learn tech this Christmas!",
   "start_url": "/",
   "display": "standalone",

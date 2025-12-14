@@ -12,10 +12,10 @@ const heroImage = '/icons/icon-512x512.png'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Holiday Learning Platform - Learn Tech This Christmas!',
-  description: 'Interactive learning platform with tutorials, games, and sandboxes. Learn software development, web dev, AI/ML, and more through engaging holiday-themed content!',
+  title: 'CodeLikeBasics - Learn to Code from the Basics!',
+  description: 'Interactive learning platform for beginners. Learn software development, web dev, AI/ML, and more through engaging tutorials, games, and sandboxes!',
   keywords: ['learning', 'education', 'programming', 'games', 'interactive', 'christmas', 'technology'],
-  applicationName: 'Holiday Learn',
+  applicationName: 'CodeLikeBasics',
   manifest: '/manifest.json',
   alternates: {
     canonical: siteUrl,
@@ -23,9 +23,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: siteUrl,
-    title: 'Holiday Learning Platform - Learn Tech This Christmas!',
-    description: 'Interactive learning platform with tutorials, games, and sandboxes.',
-    siteName: 'Holiday Learn',
+    title: 'CodeLikeBasics - Learn to Code from the Basics!',
+    description: 'Interactive learning platform for beginners with tutorials, games, and sandboxes.',
+    siteName: 'CodeLikeBasics',
     images: [
       {
         url: heroImage,
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Holiday Learning Platform - Learn Tech This Christmas!',
-    description: 'Interactive learning platform with tutorials, games, and sandboxes.',
+    title: 'CodeLikeBasics - Learn to Code from the Basics!',
+    description: 'Interactive learning platform for beginners with tutorials, games, and sandboxes.',
     images: [heroImage],
   },
   robots: {
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Holiday Learn',
+    title: 'CodeLikeBasics',
   },
   icons: {
     apple: '/icons/icon-192x192.png',
@@ -74,10 +74,10 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Holiday Learning Platform',
+    name: 'CodeLikeBasics',
     url: siteUrl,
     description:
-      'Interactive learning platform with tutorials, games, and sandboxes. Learn software development, web dev, AI/ML, and more through engaging holiday-themed content!',
+      'Interactive learning platform for beginners. Learn software development, web dev, AI/ML, and more through engaging tutorials, games, and sandboxes!',
     inLanguage: 'en',
     potentialAction: {
       '@type': 'SearchAction',
