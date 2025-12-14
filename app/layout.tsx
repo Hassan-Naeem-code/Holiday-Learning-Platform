@@ -7,11 +7,28 @@ import AchievementProvider from '@/components/Common/AchievementProvider'
 import MusicPlayer from '@/components/Music/MusicPlayer'
 import SantaWithCart from '@/components/Layout/SantaWithCart'
 import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient'
+import ServiceWorkerRegistration from '@/components/Common/ServiceWorkerRegistration'
 
 export const metadata: Metadata = {
   title: 'Holiday Learning Platform - Learn Tech This Christmas!',
   description: 'Interactive learning platform with tutorials, games, and sandboxes. Learn software development, web dev, AI/ML, and more through engaging holiday-themed content!',
   keywords: 'learning, education, programming, games, interactive, christmas, technology',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Holiday Learn',
+  },
+  icons: {
+    apple: '/icons/icon-192x192.png',
+  },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#667eea',
 }
 
 export default function RootLayout({
@@ -22,6 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning>
+        <ServiceWorkerRegistration />
         <ConsoleProtectionClient />
         <AchievementProvider>
           <FallingSnow />
