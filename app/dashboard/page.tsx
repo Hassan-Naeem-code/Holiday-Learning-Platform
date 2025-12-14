@@ -89,36 +89,36 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
+          className="mb-8 md:mb-12"
         >
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 max-w-4xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 md:p-6 border border-white/20 max-w-4xl mx-auto">
             <motion.h1
-              className="text-5xl font-bold text-white mb-2 text-center"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 text-center"
               animate={{ scale: [1, 1.02, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               Welcome back, {userProfile.name}! 👋
             </motion.h1>
-            <p className="text-white/80 text-xl text-center mb-6">
+            <p className="text-white/80 text-base sm:text-lg md:text-xl text-center mb-4 md:mb-6">
               Ready to continue your learning journey?
             </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              <div className="bg-white/10 rounded-xl p-4 text-center">
-                <TrendingUp className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                <p className="text-3xl font-bold text-white">{userProfile.level}</p>
-                <p className="text-white/70 text-sm">Level</p>
+            {/* Stats - Responsive Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mt-4 md:mt-6">
+              <div className="bg-white/10 rounded-xl p-3 md:p-4 text-center">
+                <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-blue-400 mx-auto mb-2" />
+                <p className="text-2xl md:text-3xl font-bold text-white">{userProfile.level}</p>
+                <p className="text-white/70 text-xs md:text-sm">Level</p>
               </div>
-              <div className="bg-white/10 rounded-xl p-4 text-center">
-                <Sparkles className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <p className="text-3xl font-bold text-white">{userProfile.totalXP}</p>
-                <p className="text-white/70 text-sm">Total XP</p>
+              <div className="bg-white/10 rounded-xl p-3 md:p-4 text-center">
+                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-yellow-400 mx-auto mb-2" />
+                <p className="text-2xl md:text-3xl font-bold text-white">{userProfile.totalXP}</p>
+                <p className="text-white/70 text-xs md:text-sm">Total XP</p>
               </div>
-              <div className="bg-white/10 rounded-xl p-4 text-center">
-                <Flame className="w-6 h-6 text-orange-400 mx-auto mb-2" />
-                <p className="text-3xl font-bold text-white">{userProfile.streak}</p>
-                <p className="text-white/70 text-sm">Day Streak</p>
+              <div className="bg-white/10 rounded-xl p-3 md:p-4 text-center">
+                <Flame className="w-5 h-5 md:w-6 md:h-6 text-orange-400 mx-auto mb-2" />
+                <p className="text-2xl md:text-3xl font-bold text-white">{userProfile.streak}</p>
+                <p className="text-white/70 text-xs md:text-sm">Day Streak</p>
               </div>
             </div>
           </div>
@@ -128,20 +128,20 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12 px-2"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="w-8 h-8 text-yellow-300" />
-            <h2 className="text-5xl font-bold text-white">Technology Modules</h2>
-            <Sparkles className="w-8 h-8 text-yellow-300" />
+          <div className="flex items-center justify-center gap-2 md:gap-3 mb-3 md:mb-4 flex-wrap">
+            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-yellow-300" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">Technology Modules</h2>
+            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-yellow-300" />
           </div>
-          <p className="text-2xl text-white/80">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/80">
             Choose a module to start learning!
           </p>
         </motion.div>
 
         {/* Modules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {TECHNOLOGY_MODULES.map((module, index) => (
             <ModuleCard
               key={module.id}
@@ -157,13 +157,13 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="max-w-4xl mx-auto mt-16 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-lg rounded-2xl p-8 border border-white/20"
+          className="max-w-4xl mx-auto mt-8 md:mt-12 lg:mt-16 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-lg rounded-2xl p-4 md:p-6 lg:p-8 border border-white/20"
         >
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-white mb-4">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4">
               🎯 How to Earn Progress
             </h3>
-            <p className="text-white/90 text-lg">
+            <p className="text-white/90 text-sm sm:text-base md:text-lg">
               Complete tutorials, play games, and practice in sandboxes to earn XP!
               Watch your glass fill up, and when it&apos;s full, click it to see Santa celebrate with you! 🎅
             </p>

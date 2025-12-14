@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Sparkles, ArrowRight, PartyPopper } from 'lucide-react'
 
@@ -47,17 +48,24 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
         >
           <motion.div
             animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, 5, -5, 0],
+              scale: [1, 1.05, 1],
+              rotate: [0, 3, -3, 0],
             }}
             transition={{
-              duration: 2,
+              duration: 3,
               repeat: Infinity,
               repeatDelay: 1,
             }}
-            className="inline-block mb-6"
+            className="inline-block mb-8"
           >
-            <Sparkles className="w-20 h-20 text-yellow-300" />
+            <Image
+              src="/logo.png"
+              alt="CodeLikeBasics Logo"
+              width={128}
+              height={128}
+              className="object-contain mx-auto"
+              priority
+            />
           </motion.div>
 
           <motion.h1
@@ -66,7 +74,7 @@ export default function WelcomeScreen({ onSelectUserType }: WelcomeScreenProps) 
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            Welcome to Learning Paradise!
+            Welcome to CodeLikeBasics!
           </motion.h1>
 
           <motion.p

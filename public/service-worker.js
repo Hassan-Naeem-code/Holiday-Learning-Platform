@@ -1,4 +1,4 @@
-const CACHE_NAME = 'holiday-learning-v1'
+const CACHE_NAME = 'codelikebasics-v1'
 const urlsToCache = [
   '/',
   '/dashboard',
@@ -9,9 +9,15 @@ const urlsToCache = [
 
 // Install service worker
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing service worker...')
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache)
+      console.log('[SW] Caching app shell')
+      return cache.addAll(urlsToCache).catch((error) => {
+        console.warn('[SW] Some assets failed to cache:', error)
+        // Continue even if some assets fail
+        return Promise.resolve()
+      })
     })
   )
   self.skipWaiting()
@@ -19,11 +25,13 @@ self.addEventListener('install', (event) => {
 
 // Activate service worker
 self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating service worker...')
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('[SW] Deleting old cache:', cacheName)
             return caches.delete(cacheName)
           }
         })
@@ -33,45 +41,43 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
-// Fetch with cache-first strategy
+// Fetch with network-first strategy for better PWA experience
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Return cached version or fetch new
-      return (
-        response ||
-        fetch(event.request).then((fetchResponse) => {
-          // Don't cache POST requests or non-GET methods
-          if (
-            event.request.method !== 'GET' ||
-            !fetchResponse ||
-            fetchResponse.status !== 200 ||
-            fetchResponse.type !== 'basic'
-          ) {
-            return fetchResponse
-          }
-
-          // Clone the response
-          const responseToCache = fetchResponse.clone()
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache)
-          })
-
-          return fetchResponse
-        })
-      )
-    })
-  )
-})
-
-// Handle offline functionality
-self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/')
-      })
-    )
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return
   }
+
+  // Skip cross-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return
+  }
+
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful responses
+        if (response && response.status === 200) {
+          const responseClone = response.clone()
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone)
+          })
+        }
+        return response
+      })
+      .catch(() => {
+        // Return from cache if network fails
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            console.log('[SW] Serving from cache:', event.request.url)
+            return cachedResponse
+          }
+          // Return a fallback page for navigation requests
+          if (event.request.destination === 'document') {
+            return caches.match('/')
+          }
+          return null
+        })
+      })
+  )
 })

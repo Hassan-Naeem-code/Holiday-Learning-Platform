@@ -1,11 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowLeft, Play, RotateCcw, Save, Download, Code2, Terminal } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, Play, RotateCcw, Save, Download, Code2, Terminal, BookOpen, ChevronLeft, ChevronRight, Check, Lightbulb } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Language } from '@/utils/techModules'
 import { useXP, XP_REWARDS } from '@/hooks/useXP'
+import { generateSandboxExercises } from '@/utils/sandboxExercises'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { SandboxExercise } from '@/utils/sandboxExercises'
 
 interface UniversalSandboxProps {
   language: Language
@@ -70,14 +74,93 @@ export default App;`,
 
 export default function UniversalSandbox({ language, moduleId, languageId }: UniversalSandboxProps) {
   const router = useRouter()
+
+  // Exercise system
+  const exercises = generateSandboxExercises(languageId, language.name).exercises
+  const [exerciseMode, setExerciseMode] = useState(true)
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
+  const [completedExercises, setCompletedExercises] = useState<number[]>([])
+  const [showHint, setShowHint] = useState(false)
+  const [showSolution, setShowSolution] = useState(false)
+
+  const currentExercise = exercises[currentExerciseIndex]
+
   const [code, setCode] = useState(
-    STARTER_CODE[languageId] || `// ${language.name} Sandbox\n// Write your ${language.name} code here\n\nconsole.log("Hello from ${language.name}!");`
+    exerciseMode && currentExercise
+      ? currentExercise.starterCode
+      : STARTER_CODE[languageId] || `// ${language.name} Sandbox\n// Write your ${language.name} code here\n\nconsole.log("Hello from ${language.name}!");`
   )
   const [output, setOutput] = useState('')
   const [isRunning, setIsRunning] = useState(false)
 
   const userCode = typeof window !== 'undefined' ? localStorage.getItem('userCode') : null
   const { awardXP } = useXP(userCode)
+
+  // Update code when exercise changes
+  useEffect(() => {
+    if (exerciseMode && currentExercise) {
+      setCode(currentExercise.starterCode)
+      setOutput('')
+      setShowHint(false)
+      setShowSolution(false)
+    }
+  }, [currentExerciseIndex, exerciseMode, currentExercise])
+
+  // Check if exercise is completed
+  const checkExercise = () => {
+    if (!exerciseMode || !currentExercise) return
+
+    // Simple validation: check if code contains key parts of solution
+    const codeNormalized = code.trim().replace(/\s+/g, ' ')
+    const solutionNormalized = currentExercise.solution.trim().replace(/\s+/g, ' ')
+
+    // Basic check: if code is very similar to solution
+    const similarity = calculateSimilarity(codeNormalized, solutionNormalized)
+
+    if (similarity > 0.7 || codeNormalized.includes(solutionNormalized)) {
+      if (!completedExercises.includes(currentExerciseIndex)) {
+        setCompletedExercises([...completedExercises, currentExerciseIndex])
+        awardXP(XP_REWARDS.SANDBOX_EXECUTE * 2, false) // Double XP for completing exercise
+        setOutput(`✅ Excellent! Exercise completed!\n\nExpected: ${currentExercise.expectedOutput}\n\nYou earned ${XP_REWARDS.SANDBOX_EXECUTE * 2} XP!`)
+      } else {
+        setOutput(`✅ Correct! (Already completed)\n\nExpected: ${currentExercise.expectedOutput}`)
+      }
+    } else {
+      setOutput(`❌ Not quite right. Try again!\n\nHint: ${showHint ? currentExercise.hint : 'Click "Show Hint" for help'}`)
+    }
+  }
+
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    const longer = str1.length > str2.length ? str1 : str2
+    const shorter = str1.length > str2.length ? str2 : str1
+    if (longer.length === 0) return 1.0
+    const editDistance = getEditDistance(longer, shorter)
+    return (longer.length - editDistance) / longer.length
+  }
+
+  const getEditDistance = (str1: string, str2: string): number => {
+    const matrix: number[][] = []
+    for (let i = 0; i <= str2.length; i++) {
+      matrix[i] = [i]
+    }
+    for (let j = 0; j <= str1.length; j++) {
+      matrix[0][j] = j
+    }
+    for (let i = 1; i <= str2.length; i++) {
+      for (let j = 1; j <= str1.length; j++) {
+        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1]
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          )
+        }
+      }
+    }
+    return matrix[str2.length][str1.length]
+  }
 
   const handleRunCode = async () => {
     setIsRunning(true)
@@ -87,18 +170,41 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
 
     // Simulate code execution
     setTimeout(() => {
-      const simulatedOutput = `// Code executed successfully!\n// Language: ${language.name}\n// Lines of code: ${(code || '').split('\n').length}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is a simulated execution environment.\n// In a production app, this would connect to a real code execution service.`
-
-      setOutput(simulatedOutput)
+      if (exerciseMode) {
+        // In exercise mode, check the solution
+        checkExercise()
+      } else {
+        // Free sandbox mode
+        const simulatedOutput = `// Code executed successfully!\n// Language: ${language.name}\n// Lines of code: ${(code || '').split('\n').length}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is a simulated execution environment.\n// In a production app, this would connect to a real code execution service.`
+        setOutput(simulatedOutput)
+      }
       setIsRunning(false)
     }, 1000)
   }
 
+  const handleNextExercise = () => {
+    if (currentExerciseIndex < exercises.length - 1) {
+      setCurrentExerciseIndex(currentExerciseIndex + 1)
+    }
+  }
+
+  const handlePreviousExercise = () => {
+    if (currentExerciseIndex > 0) {
+      setCurrentExerciseIndex(currentExerciseIndex - 1)
+    }
+  }
+
   const handleReset = () => {
-    setCode(
-      STARTER_CODE[languageId] || `// ${language.name} Sandbox\n// Write your ${language.name} code here\n\nconsole.log("Hello from ${language.name}!");`
-    )
+    if (exerciseMode && currentExercise) {
+      setCode(currentExercise.starterCode)
+    } else {
+      setCode(
+        STARTER_CODE[languageId] || `// ${language.name} Sandbox\n// Write your ${language.name} code here\n\nconsole.log("Hello from ${language.name}!");`
+      )
+    }
     setOutput('')
+    setShowHint(false)
+    setShowSolution(false)
   }
 
   const handleSave = () => {
@@ -141,8 +247,125 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
           </div>
         </div>
 
+        {/* Mode Toggle */}
+        <div className="mb-6 flex items-center gap-4">
+          <button
+            onClick={() => setExerciseMode(!exerciseMode)}
+            className={`px-6 py-3 rounded-xl font-bold transition-all ${
+              exerciseMode
+                ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            <BookOpen className="w-5 h-5 inline mr-2" />
+            {exerciseMode ? 'Practice Mode' : 'Free Sandbox'}
+          </button>
+          {exerciseMode && (
+            <div className="text-white/80 text-sm">
+              {completedExercises.length} / {exercises.length} exercises completed
+            </div>
+          )}
+        </div>
+
+        {/* Exercise Panel */}
+        {exerciseMode && currentExercise && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-purple-400/30"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-2xl font-bold text-white">{currentExercise.title}</h2>
+                  {completedExercises.includes(currentExerciseIndex) && (
+                    <div className="bg-green-500 text-white px-3 py-1 rounded-full flex items-center gap-1 text-sm">
+                      <Check className="w-4 h-4" />
+                      Completed
+                    </div>
+                  )}
+                </div>
+                <p className="text-white/90 mb-3">{currentExercise.description}</p>
+                <div className="bg-white/10 rounded-xl p-4 mb-4">
+                  <p className="text-white font-semibold mb-2">📝 Instructions:</p>
+                  <p className="text-white/90">{currentExercise.instructions}</p>
+                </div>
+
+                {/* Hint & Solution Buttons */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowHint(!showHint)}
+                    className="flex items-center gap-2 bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-xl hover:bg-yellow-500/30 transition-all"
+                  >
+                    <Lightbulb className="w-4 h-4" />
+                    {showHint ? 'Hide Hint' : 'Show Hint'}
+                  </button>
+                  <button
+                    onClick={() => setShowSolution(!showSolution)}
+                    className="flex items-center gap-2 bg-orange-500/20 text-orange-300 px-4 py-2 rounded-xl hover:bg-orange-500/30 transition-all"
+                  >
+                    {showSolution ? 'Hide Solution' : 'View Solution'}
+                  </button>
+                </div>
+
+                {/* Hint Display */}
+                <AnimatePresence>
+                  {showHint && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-4"
+                    >
+                      <p className="text-yellow-200">💡 Hint: {currentExercise.hint}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Solution Display */}
+                <AnimatePresence>
+                  {showSolution && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-4 bg-orange-500/20 border border-orange-400/30 rounded-xl p-4"
+                    >
+                      <p className="text-orange-200 mb-2">✨ Solution:</p>
+                      <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto">
+                        <code>{currentExercise.solution}</code>
+                      </pre>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex flex-col gap-2 ml-4">
+                <button
+                  onClick={handlePreviousExercise}
+                  disabled={currentExerciseIndex === 0}
+                  className="p-2 bg-white/10 rounded-lg hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5 text-white" />
+                </button>
+                <div className="text-white text-center text-sm">
+                  {currentExerciseIndex + 1}/{exercises.length}
+                </div>
+                <button
+                  onClick={handleNextExercise}
+                  disabled={currentExerciseIndex === exercises.length - 1}
+                  className="p-2 bg-white/10 rounded-lg hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-5 h-5 text-white" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Toolbar */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 mb-6 flex items-center justify-between">
+        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 mb-6 flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={handleRunCode}
@@ -150,7 +373,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
               className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50"
             >
               <Play className="w-5 h-5" />
-              {isRunning ? 'Running...' : 'Run Code'}
+              {isRunning ? 'Running...' : exerciseMode ? 'Check Solution' : 'Run Code'}
             </button>
 
             <button

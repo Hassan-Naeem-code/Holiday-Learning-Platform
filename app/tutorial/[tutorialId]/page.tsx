@@ -2,7 +2,7 @@
 
 import { use } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { generateProgressiveTutorial } from '@/utils/progressiveTutorialContent'
+import { generateComprehensiveTutorial } from '@/utils/comprehensiveTutorialContent'
 import { getLanguageByModuleAndId } from '@/utils/techModules'
 import InteractiveTutorial from '@/components/Tutorials/InteractiveTutorial'
 
@@ -82,12 +82,25 @@ export default function TutorialPage({
     )
   }
 
-  // Generate progressive tutorial with selected difficulty
-  const tutorial = generateProgressiveTutorial(languageId, language.name, difficulty)
+  // Generate comprehensive tutorial teaching the entire language
+  const tutorial = generateComprehensiveTutorial(
+    languageId,
+    language.name,
+    language.icon,
+    language.description
+  )
+
+  // Add missing properties for the new Tutorial interface
+  const enhancedTutorial = {
+    ...tutorial,
+    languageId,
+    languageName: language.name,
+    difficulty
+  }
 
   return (
     <InteractiveTutorial
-      tutorial={tutorial}
+      tutorial={enhancedTutorial}
       language={language}
       moduleId={moduleId}
       languageId={languageId}

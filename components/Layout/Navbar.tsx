@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Home, Trophy, BookOpen } from 'lucide-react'
 import { useUserStore } from '@/stores/userStore'
@@ -29,16 +30,23 @@ export default function Navbar() {
     >
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2 group">
+        <Link href="/" className="flex items-center space-x-3 group">
           <motion.div
-            className="text-3xl"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
+            className="relative w-10 h-10"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ duration: 0.3 }}
           >
-            🎓
+            <Image
+              src="/logo.png"
+              alt="CodeLikeBasics Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </motion.div>
           <span className="text-xl font-bold text-white group-hover:text-christmas-gold transition-colors">
-            Holiday Learning
+            CodeLikeBasics
           </span>
         </Link>
 
@@ -58,7 +66,7 @@ export default function Navbar() {
 
         {/* User Stats */}
         <div className="flex items-center space-x-4">
-          <SoundToggle />
+          {/* <SoundToggle /> */}
           <div className="glass-card px-4 py-2 flex items-center space-x-3">
             <div className="flex items-center space-x-1">
               <span className="text-2xl">⭐</span>

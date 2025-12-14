@@ -1,7 +1,7 @@
 'use client'
 
 import { use } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getLanguageByModuleAndId } from '@/utils/techModules'
 import UniversalGame from '@/components/Games/UniversalGame'
 
@@ -11,11 +11,13 @@ export default function GamePage({
   params: Promise<{ gameId: string }>
 }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { gameId } = use(params)
 
+  // Get difficulty from URL parameter
+  const difficulty = (searchParams.get('difficulty') as 'easy' | 'medium' | 'hard') || 'easy'
+
   // Parse moduleId-languageId format
-  // We need to find where module ends and language begins
-  // Try matching known module IDs from the start
   const knownModules = [
     'web-development',
     'mobile-development',
@@ -36,7 +38,7 @@ export default function GamePage({
   for (const knownModule of knownModules) {
     if (gameId.startsWith(knownModule + '-')) {
       moduleId = knownModule
-      languageId = gameId.substring(knownModule.length + 1) // Everything after "module-"
+      languageId = gameId.substring(knownModule.length + 1)
       break
     }
   }
@@ -79,5 +81,12 @@ export default function GamePage({
     )
   }
 
-  return <UniversalGame language={language} moduleId={moduleId} languageId={languageId} />
+  return (
+    <UniversalGame
+      language={language}
+      moduleId={moduleId}
+      languageId={languageId}
+      difficulty={difficulty}
+    />
+  )
 }

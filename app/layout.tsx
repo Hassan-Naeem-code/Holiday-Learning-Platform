@@ -4,12 +4,13 @@ import './globals.css'
 import AchievementProvider from '@/components/Common/AchievementProvider'
 import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient'
 import ServiceWorkerRegistration from '@/components/Common/ServiceWorkerRegistration'
+import InstallPrompt from '@/components/Common/InstallPrompt'
 import ClientShell from '@/components/Layout/ClientShell'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-const heroImage = '/icons/icon-512x512.png'
+const heroImage = '/logo.png'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -30,9 +31,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: heroImage,
-        width: 512,
-        height: 512,
-        alt: 'Holiday Learning Platform',
+        width: 1200,
+        height: 1200,
+        alt: 'CodeLikeBasics - Learn to Code from the Basics',
       },
     ],
   },
@@ -50,9 +51,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'default',
     title: 'CodeLikeBasics',
-  },
-  icons: {
-    apple: '/icons/icon-192x192.png',
   },
   formatDetection: {
     telephone: false,
@@ -95,6 +93,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <ServiceWorkerRegistration />
+        <InstallPrompt />
         <ConsoleProtectionClient />
         <AchievementProvider>
           <ClientShell>
