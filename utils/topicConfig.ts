@@ -31,7 +31,7 @@ export const TOPICS: Topic[] = [
     gradient: 'from-green-500 to-emerald-700',
     tutorialId: 'web-dev-tutorial',
     gameId: 'html-builder-game',
-    sandboxId: 'web-builder',
+    sandboxId: 'web-builder-sandbox',
   },
   {
     id: 'mobile-app',
@@ -41,8 +41,8 @@ export const TOPICS: Topic[] = [
     color: '#8B5CF6',
     gradient: 'from-purple-500 to-purple-700',
     tutorialId: 'mobile-app-tutorial',
-    gameId: 'app-flow-game',
-    sandboxId: 'app-designer',
+    gameId: 'user-flow-game',
+    sandboxId: 'app-designer-sandbox',
   },
   {
     id: 'ai-ml',
@@ -53,7 +53,7 @@ export const TOPICS: Topic[] = [
     gradient: 'from-pink-500 to-rose-700',
     tutorialId: 'ai-ml-tutorial',
     gameId: 'neural-network-game',
-    sandboxId: 'ai-playground',
+    sandboxId: 'ai-playground-sandbox',
   },
   {
     id: 'data-science',
@@ -64,7 +64,7 @@ export const TOPICS: Topic[] = [
     gradient: 'from-orange-500 to-amber-700',
     tutorialId: 'data-science-tutorial',
     gameId: 'data-pipeline-game',
-    sandboxId: 'data-lab',
+    sandboxId: 'data-lab-sandbox',
   },
   {
     id: 'graphics-design',
@@ -74,8 +74,8 @@ export const TOPICS: Topic[] = [
     color: '#06B6D4',
     gradient: 'from-cyan-500 to-blue-600',
     tutorialId: 'graphics-design-tutorial',
-    gameId: 'design-element-game',
-    sandboxId: 'design-studio',
+    gameId: 'design-matcher-game',
+    sandboxId: 'design-studio-sandbox',
   },
   {
     id: 'content-creation',
@@ -86,7 +86,7 @@ export const TOPICS: Topic[] = [
     gradient: 'from-red-500 to-rose-700',
     tutorialId: 'content-creation-tutorial',
     gameId: 'content-mixer-game',
-    sandboxId: 'content-planner',
+    sandboxId: 'content-planner-sandbox',
   },
 ]
 
