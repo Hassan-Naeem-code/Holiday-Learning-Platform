@@ -6,7 +6,7 @@ import WelcomeScreen from '@/components/Onboarding/WelcomeScreen'
 import NewUserForm from '@/components/Onboarding/NewUserForm'
 import ReturningUserForm from '@/components/Onboarding/ReturningUserForm'
 import DrinkPreferenceScreen from '@/components/Onboarding/DrinkPreferenceScreen'
-import { getSession, migrateOldSession } from '@/utils/sessionManager'
+import { getSession, migrateOldSession, createSession } from '@/utils/sessionManager'
 
 type OnboardingStep = 'welcome' | 'new-user' | 'returning-user' | 'drink-preference'
 
@@ -50,7 +50,6 @@ export default function Home() {
 
   const handleReturningUserSuccess = (code: string) => {
     // Create secure session and redirect to dashboard
-    const { createSession } = require('@/utils/sessionManager')
     if (createSession(code)) {
       router.push('/dashboard')
     } else {
@@ -62,7 +61,6 @@ export default function Home() {
     void preference
     // Create secure session and redirect to dashboard
     if (userCode) {
-      const { createSession } = require('@/utils/sessionManager')
       if (createSession(userCode)) {
         router.push('/dashboard')
       } else {

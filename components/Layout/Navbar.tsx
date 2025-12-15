@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import { Home, Trophy, BookOpen } from 'lucide-react'
 import { useUserStore } from '@/stores/userStore'
 import { useEffect } from 'react'
-import SoundToggle from '@/components/Common/SoundToggle'
 
 export default function Navbar() {
   const { user, loadFromStorage } = useUserStore()

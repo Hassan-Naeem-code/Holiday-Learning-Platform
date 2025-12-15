@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Download, X, Award, Star, Edit2 } from 'lucide-react'
 import html2canvas from 'html2canvas'
+import { getSession } from '@/utils/sessionManager'
 
 interface CertificateProps {
   userName: string
@@ -32,7 +33,6 @@ export default function Certificate({
 
   // Generate a secure certificate ID using multiple factors
   const generateCertificateId = (): string => {
-    const { getSession } = require('@/utils/sessionManager')
     const userCode = getSession() || 'GUEST'
 
     // Create a hash from multiple inputs

@@ -9,6 +9,7 @@ import ModuleCard from '@/components/Dashboard/ModuleCard'
 import { getUserProfile } from '@/lib/firebaseService'
 import type { UserProfile } from '@/lib/firebaseService'
 import { useUserStore } from '@/stores/userStore'
+import { validateSession, clearSession } from '@/utils/sessionManager'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -18,7 +19,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     // Get user code from secure session
-    const { validateSession, clearSession } = require('@/utils/sessionManager')
     const userCode = validateSession(() => router.push('/'))
 
     if (!userCode) {

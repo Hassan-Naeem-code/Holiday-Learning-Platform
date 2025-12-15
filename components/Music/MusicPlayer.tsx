@@ -112,6 +112,7 @@ export default function MusicPlayer() {
         audioRef.current = null
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrackIndex])
 
   // Handle play/pause
