@@ -10,9 +10,11 @@ import {
   getLanguageProgress,
   initializeLanguageProgress,
   updateGameProgress,
-  addUserXP
+  addUserXP,
+  getUserProfile
 } from '@/lib/firebaseService'
 import confetti from 'canvas-confetti'
+import Certificate from '@/components/Common/Certificate'
 
 interface UniversalGameProps {
   language: Language
@@ -33,7 +35,9 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   const [isCorrect, setIsCorrect] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [userCode, setUserCode] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string>('')
   const [allCompleted, setAllCompleted] = useState(false)
+  const [showCertificate, setShowCertificate] = useState(false)
 
   const languageKey = `${moduleId}-${languageId}`
 
@@ -55,6 +59,12 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
       }
 
       try {
+        // Get user profile for name
+        const profile = await getUserProfile(code)
+        if (profile) {
+          setUserName(profile.name)
+        }
+
         const progress = await getLanguageProgress(code, languageKey)
 
         if (progress && progress.difficulty === difficulty) {
@@ -145,6 +155,11 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             spread: 100,
             origin: { y: 0.6 },
           })
+
+          // Show certificate after 2 seconds
+          setTimeout(() => {
+            setShowCertificate(true)
+          }, 2000)
         }
 
         // Save progress
@@ -431,6 +446,19 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             </div>
           </motion.div>
         )}
+
+        {/* Certificate Modal */}
+        <AnimatePresence>
+          {showCertificate && userName && (
+            <Certificate
+              userName={userName}
+              languageName={language.name}
+              difficulty={difficulty}
+              type="game"
+              onClose={() => setShowCertificate(false)}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

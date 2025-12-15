@@ -47,31 +47,55 @@ export default function MusicPlayer() {
   // Initialize audio element
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      audioRef.current = new Audio(PLAYLIST[currentTrackIndex].src)
-      audioRef.current.loop = false
+      // Clean up previous audio if exists
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.src = ''
+        audioRef.current.removeEventListener('ended', handleNextTrack)
+        audioRef.current.load() // Reset the audio element
+      }
+
+      // Create new audio element with current track
+      const audio = new Audio()
+      audio.src = PLAYLIST[currentTrackIndex].src
+      audio.loop = false
+      audio.volume = volume
+      audioRef.current = audio
 
       // When track ends, play next
-      audioRef.current.addEventListener('ended', handleNextTrack)
+      const onEnded = () => handleNextTrack()
+      audio.addEventListener('ended', onEnded)
 
       // When track can play
-      audioRef.current.addEventListener('canplay', () => {
+      const onCanPlay = () => {
         setIsLoaded(true)
-      })
+        // If was playing, continue playing new track
+        if (isPlaying) {
+          audio.play().catch((error) => {
+            console.warn('Playback prevented:', error)
+          })
+        }
+      }
+      audio.addEventListener('canplay', onCanPlay)
 
       // Error handling
-      audioRef.current.addEventListener('error', () => {
+      const onError = () => {
         console.warn('Audio file not found:', PLAYLIST[currentTrackIndex].src)
         console.warn('Please add MP3 files to /public/music/ folder')
         setIsLoaded(false)
-      })
+      }
+      audio.addEventListener('error', onError)
 
       setIsLoaded(false)
+      audio.load() // Start loading the new track
 
       return () => {
-        if (audioRef.current) {
-          audioRef.current.pause()
-          audioRef.current.removeEventListener('ended', handleNextTrack)
-          audioRef.current = null
+        if (audio) {
+          audio.pause()
+          audio.src = ''
+          audio.removeEventListener('ended', onEnded)
+          audio.removeEventListener('canplay', onCanPlay)
+          audio.removeEventListener('error', onError)
         }
       }
     }

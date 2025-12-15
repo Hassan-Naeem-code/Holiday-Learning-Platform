@@ -10,9 +10,11 @@ import {
   getLanguageProgress,
   initializeLanguageProgress,
   updateTutorialProgress,
-  addUserXP
+  addUserXP,
+  getUserProfile
 } from '@/lib/firebaseService'
 import confetti from 'canvas-confetti'
+import Certificate from '@/components/Common/Certificate'
 
 interface InteractiveTutorialProps {
   tutorial: Tutorial
@@ -37,6 +39,8 @@ export default function InteractiveTutorial({
   const [showCelebration, setShowCelebration] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [userCode, setUserCode] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string>('')
+  const [showCertificate, setShowCertificate] = useState(false)
 
   const languageKey = `${moduleId}-${languageId}`
   const sections = tutorial.sections ?? []
@@ -59,6 +63,12 @@ export default function InteractiveTutorial({
       }
 
       try {
+        // Get user profile for name
+        const profile = await getUserProfile(code)
+        if (profile) {
+          setUserName(profile.name)
+        }
+
         // Get saved progress for this language
         const progress = await getLanguageProgress(code, languageKey)
 
@@ -166,6 +176,8 @@ export default function InteractiveTutorial({
 
         setTimeout(() => {
           setShowCelebration(false)
+          // Show certificate after celebration
+          setShowCertificate(true)
         }, 4000)
       }
 
@@ -492,6 +504,19 @@ export default function InteractiveTutorial({
             </div>
           </motion.div>
         )}
+
+        {/* Certificate Modal */}
+        <AnimatePresence>
+          {showCertificate && userName && (
+            <Certificate
+              userName={userName}
+              languageName={language.name}
+              difficulty={difficulty}
+              type="tutorial"
+              onClose={() => setShowCertificate(false)}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
