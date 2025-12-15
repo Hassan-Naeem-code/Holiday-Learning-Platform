@@ -29,6 +29,8 @@ export default function MusicPlayer() {
   const [volume, setVolume] = useState(0.5)
   const [showControls, setShowControls] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Load music preference from localStorage
@@ -69,6 +71,7 @@ export default function MusicPlayer() {
       // When track can play
       const onCanPlay = () => {
         setIsLoaded(true)
+        setDuration(audio.duration)
         // If was playing, continue playing new track
         if (isPlaying) {
           audio.play().catch((error) => {
@@ -77,6 +80,12 @@ export default function MusicPlayer() {
         }
       }
       audio.addEventListener('canplay', onCanPlay)
+
+      // Time update
+      const onTimeUpdate = () => {
+        setCurrentTime(audio.currentTime)
+      }
+      audio.addEventListener('timeupdate', onTimeUpdate)
 
       // Error handling
       const onError = () => {
@@ -95,6 +104,7 @@ export default function MusicPlayer() {
           audio.src = ''
           audio.removeEventListener('ended', onEnded)
           audio.removeEventListener('canplay', onCanPlay)
+          audio.removeEventListener('timeupdate', onTimeUpdate)
           audio.removeEventListener('error', onError)
         }
       }
@@ -145,6 +155,13 @@ export default function MusicPlayer() {
     } else {
       setVolume(0.5)
     }
+  }
+
+  const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return '0:00'
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
   return (
@@ -201,19 +218,32 @@ export default function MusicPlayer() {
               initial={{ opacity: 0, y: 20, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.8 }}
-              className="absolute bottom-20 right-0 bg-gradient-to-br from-red-600 via-green-700 to-red-600 backdrop-blur-xl rounded-2xl p-4 shadow-2xl border border-white/20 min-w-[280px]"
+              className="absolute bottom-20 right-0 bg-gradient-to-br from-red-600 via-green-700 to-red-600 backdrop-blur-xl rounded-2xl p-4 shadow-2xl border border-white/20 min-w-[300px]"
             >
-              {/* Song Info */}
-              <div className="mb-4 text-center">
-                <p className="text-white font-bold text-sm mb-1">
+              {/* Now Playing Badge */}
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="w-2 h-2 bg-green-400 rounded-full"
+                />
+                <span className="text-white/60 text-xs uppercase tracking-wider font-semibold">
+                  Now Playing
+                </span>
+              </div>
+
+              {/* Song Info with better alignment */}
+              <div className="mb-4 text-center bg-black/20 rounded-xl p-3 border border-white/10">
+                <p className="text-white font-bold text-base mb-1 leading-tight">
                   {PLAYLIST[currentTrackIndex].title}
                 </p>
-                <p className="text-white/70 text-xs">
+                <p className="text-white/80 text-sm mb-2">
                   {PLAYLIST[currentTrackIndex].artist}
                 </p>
-                <p className="text-white/50 text-xs mt-1">
-                  Track {currentTrackIndex + 1} of {PLAYLIST.length}
-                </p>
+                <div className="flex items-center justify-between text-white/50 text-xs">
+                  <span>Track {currentTrackIndex + 1}/{PLAYLIST.length}</span>
+                  <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                </div>
               </div>
 
               {/* Playback Controls */}
