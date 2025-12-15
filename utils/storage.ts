@@ -29,7 +29,32 @@ export const storage = {
     try {
       window.localStorage.setItem(key, JSON.stringify(value))
     } catch (error) {
-      console.error(`Error writing to localStorage:`, error)
+      // Handle QuotaExceededError
+      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+        console.error('localStorage quota exceeded. Attempting recovery...')
+
+        try {
+          // Try to clear some space by removing cached data
+          Object.keys(window.localStorage).forEach(k => {
+            if (k.startsWith('cached_') || k.startsWith('temp_')) {
+              window.localStorage.removeItem(k)
+            }
+          })
+
+          // Retry the save
+          window.localStorage.setItem(key, JSON.stringify(value))
+          console.log('Successfully saved after clearing cache')
+        } catch (retryError) {
+          console.error('Failed to save even after clearing cache:', retryError)
+
+          // Last resort: Show user message
+          if (typeof window !== 'undefined') {
+            alert('Storage is full. Some progress may not be saved. Please clear your browser data.')
+          }
+        }
+      } else {
+        console.error(`Error writing to localStorage:`, error)
+      }
     }
   },
 

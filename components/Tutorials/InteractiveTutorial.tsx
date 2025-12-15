@@ -240,6 +240,27 @@ export default function InteractiveTutorial({
     )
   }
 
+  // Handle empty tutorial (edge case)
+  if (totalSections === 0 || !section) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h1 className="text-white text-3xl font-bold mb-4">Tutorial Not Available</h1>
+          <p className="text-white/80 mb-6">
+            This tutorial is not yet available or has no content. Please try another tutorial or check back later.
+          </p>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold rounded-lg hover:shadow-xl transition-all"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 pb-20">
       {/* Celebration Modal */}

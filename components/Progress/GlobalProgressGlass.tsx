@@ -6,6 +6,13 @@ import SantaDrinkingAnimation from './SantaDrinkingAnimation'
 import { getUserProfile, emptyGlass } from '@/lib/firebaseService'
 import type { UserProfile } from '@/lib/firebaseService'
 
+// Global event emitter for profile refresh
+export const triggerProfileRefresh = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('refreshProfile'))
+  }
+}
+
 export default function GlobalProgressGlass() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [showSantaAnimation, setShowSantaAnimation] = useState(false)
@@ -21,11 +28,24 @@ export default function GlobalProgressGlass() {
       }
     }
 
+    // Load profile immediately on mount
     loadUserProfile()
 
-    // Refresh profile every 5 seconds to keep glass updated
-    const interval = setInterval(loadUserProfile, 5000)
-    return () => clearInterval(interval)
+    // Event-driven profile refresh
+    const handleProfileRefresh = () => {
+      loadUserProfile()
+    }
+
+    window.addEventListener('refreshProfile', handleProfileRefresh)
+
+    // Reduced polling as fallback (every 30 seconds instead of 5)
+    // Only to catch updates from other tabs/windows
+    const interval = setInterval(loadUserProfile, 30000) // 30 seconds
+
+    return () => {
+      window.removeEventListener('refreshProfile', handleProfileRefresh)
+      clearInterval(interval)
+    }
   }, [])
 
   const handleGlassFull = async () => {

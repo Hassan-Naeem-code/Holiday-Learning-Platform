@@ -10,6 +10,13 @@ interface Achievement {
   icon: string
 }
 
+// Global event emitter for achievement checks
+export const triggerAchievementCheck = () => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('checkAchievements'))
+  }
+}
+
 export default function AchievementProvider({ children }: { children: React.ReactNode }) {
   const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null)
 
@@ -19,15 +26,26 @@ export default function AchievementProvider({ children }: { children: React.Reac
       setCurrentAchievement(achievement)
     })
 
-    // Check achievements periodically (every 2 seconds)
-    const interval = setInterval(() => {
-      achievementManager.checkAll()
-    }, 2000)
-
-    // Check immediately on mount
+    // Check achievements immediately on mount
     achievementManager.checkAll()
 
-    return () => clearInterval(interval)
+    // Event-driven achievement checking
+    const handleAchievementCheck = () => {
+      achievementManager.checkAll()
+    }
+
+    window.addEventListener('checkAchievements', handleAchievementCheck)
+
+    // Reduced polling as fallback (every 60 seconds instead of 2)
+    // This catches any achievements that might be missed by events
+    const interval = setInterval(() => {
+      achievementManager.checkAll()
+    }, 60000) // 60 seconds
+
+    return () => {
+      window.removeEventListener('checkAchievements', handleAchievementCheck)
+      clearInterval(interval)
+    }
   }, [])
 
   return (

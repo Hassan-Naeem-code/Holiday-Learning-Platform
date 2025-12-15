@@ -106,7 +106,10 @@ export default function MusicPlayer() {
           audio.removeEventListener('canplay', onCanPlay)
           audio.removeEventListener('timeupdate', onTimeUpdate)
           audio.removeEventListener('error', onError)
+          audio.load() // Reset audio element
         }
+        // Clear ref to prevent memory leak
+        audioRef.current = null
       }
     }
   }, [currentTrackIndex])
@@ -165,7 +168,7 @@ export default function MusicPlayer() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 left-6 md:left-auto md:right-6 z-50">
       {/* Floating Music Button */}
       <motion.div
         className="relative"

@@ -8,37 +8,52 @@ import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 import ModuleCard from '@/components/Dashboard/ModuleCard'
 import { getUserProfile } from '@/lib/firebaseService'
 import type { UserProfile } from '@/lib/firebaseService'
+import { useUserStore } from '@/stores/userStore'
 
 export default function DashboardPage() {
   const router = useRouter()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const syncFromFirebase = useUserStore((state) => state.syncFromFirebase)
 
   useEffect(() => {
-    // Get user code from localStorage or session
-    const userCode = localStorage.getItem('userCode')
+    // Get user code from secure session
+    const { validateSession, clearSession } = require('@/utils/sessionManager')
+    const userCode = validateSession(() => router.push('/'))
 
     if (!userCode) {
-      // Redirect to onboarding if no code found
-      router.push('/')
       return
     }
 
     // Fetch user profile
     const loadProfile = async () => {
-      const profile = await getUserProfile(userCode)
-      if (profile) {
-        setUserProfile(profile)
-      } else {
-        // Code not found, redirect to onboarding
-        localStorage.removeItem('userCode')
-        router.push('/')
+      try {
+        const profile = await getUserProfile(userCode)
+        if (profile) {
+          setUserProfile(profile)
+
+          // Sync achievements and other data from Firebase to Zustand store
+          syncFromFirebase({
+            level: profile.level,
+            totalXP: profile.totalXP,
+            streak: profile.streak,
+            achievements: profile.achievements,
+          })
+        } else {
+          // Code not found in database, clear session and redirect
+          clearSession()
+          router.push('/')
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error)
+        // On error, allow retry but show loading state
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     loadProfile()
-  }, [router])
+  }, [router, syncFromFirebase])
 
   if (loading) {
     return (

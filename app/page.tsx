@@ -6,6 +6,7 @@ import WelcomeScreen from '@/components/Onboarding/WelcomeScreen'
 import NewUserForm from '@/components/Onboarding/NewUserForm'
 import ReturningUserForm from '@/components/Onboarding/ReturningUserForm'
 import DrinkPreferenceScreen from '@/components/Onboarding/DrinkPreferenceScreen'
+import { getSession, migrateOldSession } from '@/utils/sessionManager'
 
 type OnboardingStep = 'welcome' | 'new-user' | 'returning-user' | 'drink-preference'
 
@@ -18,8 +19,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user already has a code in localStorage
-    const existingCode = localStorage.getItem('userCode')
+    // Try to migrate old session format if exists
+    migrateOldSession()
+
+    // Check if user already has a valid session
+    const existingCode = getSession()
 
     if (existingCode) {
       // User already onboarded, redirect to dashboard
@@ -45,18 +49,25 @@ export default function Home() {
   }
 
   const handleReturningUserSuccess = (code: string) => {
-    // Save code and redirect to dashboard
-    localStorage.setItem('userCode', code)
-    router.push('/dashboard')
+    // Create secure session and redirect to dashboard
+    const { createSession } = require('@/utils/sessionManager')
+    if (createSession(code)) {
+      router.push('/dashboard')
+    } else {
+      console.error('Failed to create session')
+    }
   }
 
   const handleDrinkPreferenceComplete = (preference: 'beer' | 'coffee' | 'coke') => {
     void preference
-    // Save code and redirect to dashboard
+    // Create secure session and redirect to dashboard
     if (userCode) {
-      localStorage.setItem('userCode', userCode)
-      // Optionally persist drink preference here in future
-      router.push('/dashboard')
+      const { createSession } = require('@/utils/sessionManager')
+      if (createSession(userCode)) {
+        router.push('/dashboard')
+      } else {
+        console.error('Failed to create session')
+      }
     }
   }
 

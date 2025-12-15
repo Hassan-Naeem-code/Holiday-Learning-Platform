@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: codelikebasics-config
-data:
-  site-url: "https://codelikebasics.com"
-  node-env: "production"

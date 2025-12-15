@@ -24,7 +24,9 @@ export default function DrinkPreferenceScreen({
   const [loading, setLoading] = useState(false)
   const [hoveredDrink, setHoveredDrink] = useState<string | null>(null)
 
-  const isAdult = age >= 21
+  // Validate age and determine if adult (with fallback)
+  const validAge = typeof age === 'number' && !isNaN(age) && age >= 5 && age <= 120 ? age : 18
+  const isAdult = validAge >= 21
 
   const handleAlcoholicChoice = (choice: boolean) => {
     setIsAlcoholic(choice)

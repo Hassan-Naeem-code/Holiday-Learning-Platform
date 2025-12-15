@@ -15,6 +15,8 @@ import {
 } from '@/lib/firebaseService'
 import confetti from 'canvas-confetti'
 import Certificate from '@/components/Common/Certificate'
+import { triggerAchievementCheck } from '@/components/Common/AchievementProvider'
+import { triggerProfileRefresh } from '@/components/Progress/GlobalProgressGlass'
 
 interface UniversalGameProps {
   language: Language
@@ -71,7 +73,16 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           // Resume from saved progress
           setCurrentLevel(progress.gameProgress.currentLevel)
           setCompletedLevels(progress.gameProgress.completedLevels)
-          setScore(progress.gameProgress.completedLevels.length * 100)
+
+          // Restore game state if saved, otherwise use defaults
+          setLives(progress.gameProgress.lives ?? 3)
+          setHints(progress.gameProgress.hints ?? 2)
+          setScore(progress.gameProgress.score ?? (progress.gameProgress.completedLevels.length * 100))
+
+          // Ensure UI state is clean for resume (no stuck answer selection)
+          setSelectedAnswer(null)
+          setShowExplanation(false)
+          setIsCorrect(false)
         } else {
           // Initialize new progress
           const totalQuestions = getTotalQuestionsForDifficulty(difficulty)
@@ -94,7 +105,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   }, [languageKey, difficulty])
 
   // Save progress to Firebase
-  const saveProgress = async (newLevel: number, newCompleted: number[], completed: boolean) => {
+  const saveProgress = async (newLevel: number, newCompleted: number[], completed: boolean, currentLives?: number, currentHints?: number, currentScore?: number) => {
     if (!userCode) return
 
     try {
@@ -103,7 +114,12 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         languageKey,
         newLevel,
         newCompleted,
-        completed
+        completed,
+        {
+          lives: currentLives ?? lives,
+          hints: currentHints ?? hints,
+          score: currentScore ?? score,
+        }
       )
     } catch (error) {
       console.error('Error saving game progress:', error)
@@ -131,6 +147,10 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         // Award XP
         if (userCode) {
           await addUserXP(userCode, 20) // 20 XP per level
+
+          // Trigger profile refresh and achievement check
+          triggerProfileRefresh()
+          triggerAchievementCheck()
         }
 
         confetti({
@@ -148,6 +168,10 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           // Bonus XP for completing all levels
           if (userCode) {
             await addUserXP(userCode, 300) // 300 XP bonus
+
+            // Trigger profile refresh and achievement check
+            triggerProfileRefresh()
+            triggerAchievementCheck()
           }
 
           confetti({
@@ -162,22 +186,31 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           }, 2000)
         }
 
-        // Save progress
+        // Save progress with updated score
         const nextLevel = currentLevel < totalLevels - 1 ? currentLevel + 1 : currentLevel
-        await saveProgress(nextLevel, newCompleted, isFullyCompleted)
+        await saveProgress(nextLevel, newCompleted, isFullyCompleted, lives, hints, score + 100)
       }
     } else {
       // Wrong answer
-      setLives(lives - 1)
+      const newLives = lives - 1
+      setLives(newLives)
 
-      if (lives - 1 === 0) {
+      // Save progress with reduced lives
+      await saveProgress(currentLevel, completedLevels, false, newLives, hints, score)
+
+      if (newLives === 0) {
         // Game over - restart level
         setTimeout(() => {
-          setLives(3)
-          setHints(2)
+          const resetLives = 3
+          const resetHints = 2
+          setLives(resetLives)
+          setHints(resetHints)
           setSelectedAnswer(null)
           setShowExplanation(false)
           setIsCorrect(false)
+
+          // Save reset state
+          saveProgress(currentLevel, completedLevels, false, resetLives, resetHints, score)
         }, 2000)
       }
     }
@@ -186,21 +219,29 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   const handleNext = () => {
     if (currentLevel < totalLevels - 1) {
       const nextLevel = currentLevel + 1
+      const resetLives = 3
+      const resetHints = 2
+
       setCurrentLevel(nextLevel)
       setSelectedAnswer(null)
       setShowExplanation(false)
       setIsCorrect(false)
-      setLives(3)
-      setHints(2)
+      setLives(resetLives)
+      setHints(resetHints)
 
-      // Save progress
-      saveProgress(nextLevel, completedLevels, false)
+      // Save progress with reset lives/hints for new level
+      saveProgress(nextLevel, completedLevels, false, resetLives, resetHints, score)
     }
   }
 
-  const handleUseHint = () => {
+  const handleUseHint = async () => {
     if (hints > 0 && selectedAnswer === null) {
-      setHints(hints - 1)
+      const newHints = hints - 1
+      setHints(newHints)
+
+      // Save progress with reduced hints
+      await saveProgress(currentLevel, completedLevels, false, lives, newHints, score)
+
       const correctIndex = question.correctAnswer
       const wrongIndex = correctIndex === 0 ? 1 : 0
       alert(`Hint: Option ${String.fromCharCode(65 + wrongIndex)} is NOT the correct answer!`)

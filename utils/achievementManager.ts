@@ -3,6 +3,8 @@
 import { useUserStore } from '@/stores/userStore'
 import { useTutorialStore } from '@/stores/tutorialStore'
 import { useGameStore } from '@/stores/gameStore'
+import { unlockAchievement as unlockAchievementFirebase } from '@/lib/firebaseService'
+import { getSession } from './sessionManager'
 
 export interface AchievementTrigger {
   id: string
@@ -17,11 +19,23 @@ class AchievementManager {
     this.notificationCallback = callback
   }
 
-  checkAndUnlock(achievementId: string, title: string, icon: string) {
+  async checkAndUnlock(achievementId: string, title: string, icon: string) {
     const { user, unlockAchievement } = useUserStore.getState()
 
     if (!user.achievements.includes(achievementId)) {
+      // Update Zustand store (optimistic update)
       unlockAchievement(achievementId)
+
+      // Persist to Firebase
+      const userCode = getSession()
+      if (userCode) {
+        try {
+          await unlockAchievementFirebase(userCode, achievementId)
+        } catch (error) {
+          console.error('Failed to persist achievement to Firebase:', error)
+          // Achievement is still unlocked locally, will be synced later
+        }
+      }
 
       // Show notification
       if (this.notificationCallback) {

@@ -21,6 +21,10 @@ export interface LanguageProgress {
     completedLevels: number[]
     totalLevels: number
     completed: boolean
+    // Game state for resume functionality
+    lives?: number
+    hints?: number
+    score?: number
   }
   lastAccessed: Timestamp
 }
@@ -49,44 +53,51 @@ export async function createUserProfile(
   name: string,
   age: number
 ): Promise<string> {
-  let code = generateUniqueCode()
-  let attempts = 0
-  const maxAttempts = 10
+  try {
+    let code = generateUniqueCode()
+    let attempts = 0
+    const maxAttempts = 10
 
-  // Ensure the code is unique
-  while (attempts < maxAttempts) {
-    const userRef = doc(db, USERS_COLLECTION, code)
-    const userDoc = await getDoc(userRef)
+    // Ensure the code is unique
+    while (attempts < maxAttempts) {
+      const userRef = doc(db, USERS_COLLECTION, code)
+      const userDoc = await getDoc(userRef)
 
-    if (!userDoc.exists()) {
-      // Code is unique, create the user
-      const newUser: UserProfile = {
-        code,
-        name,
-        age,
-        level: 1,
-        totalXP: 0,
-        streak: 0,
-        achievements: [],
-        glassProgress: 0,
-        createdAt: Timestamp.now(),
-        lastActive: Timestamp.now(),
+      if (!userDoc.exists()) {
+        // Code is unique, create the user
+        const newUser: UserProfile = {
+          code,
+          name,
+          age,
+          level: 1,
+          totalXP: 0,
+          streak: 0,
+          achievements: [],
+          glassProgress: 0,
+          createdAt: Timestamp.now(),
+          lastActive: Timestamp.now(),
+        }
+
+        await setDoc(userRef, newUser)
+        return code
       }
 
-      await setDoc(userRef, newUser)
-      return code
+      // Code exists, generate a new one
+      code = generateUniqueCode()
+      attempts++
     }
 
-    // Code exists, generate a new one
-    code = generateUniqueCode()
-    attempts++
+    throw new Error('Failed to generate a unique code. Please try again.')
+  } catch (error) {
+    console.error('Error creating user profile:', error)
+    throw new Error('Failed to create user profile. Please check your connection and try again.')
   }
-
-  throw new Error('Failed to generate a unique code. Please try again.')
 }
 
 /**
  * Fetches user profile by code
+ * @throws Error if database connection fails
+ * @returns UserProfile if found, null if user doesn't exist
  */
 export async function getUserProfile(code: string): Promise<UserProfile | null> {
   try {
@@ -96,10 +107,12 @@ export async function getUserProfile(code: string): Promise<UserProfile | null> 
     if (userDoc.exists()) {
       return userDoc.data() as UserProfile
     }
+    // User not found - this is not an error, return null
     return null
   } catch (error) {
     console.error('Error fetching user profile:', error)
-    return null
+    // This is a real error (network, permissions, etc.)
+    throw new Error('Failed to fetch user profile. Please check your connection.')
   }
 }
 
@@ -110,21 +123,36 @@ export async function updateDrinkPreference(
   code: string,
   preference: 'beer' | 'coffee' | 'coke'
 ): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  await updateDoc(userRef, {
-    drinkPreference: preference,
-    lastActive: Timestamp.now(),
-  })
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    await updateDoc(userRef, {
+      drinkPreference: preference,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating drink preference:', error)
+    throw new Error('Failed to save drink preference. Please try again.')
+  }
 }
 
 /**
  * Adds XP to user and updates glass progress
+ * @throws Error if update fails or user not found
  */
 export async function addUserXP(code: string, xpAmount: number): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  const userDoc = await getDoc(userRef)
+  try {
+    // Validate XP amount (max 100 per single update to prevent cheating)
+    if (xpAmount < 0 || xpAmount > 100) {
+      throw new Error('Invalid XP amount')
+    }
 
-  if (userDoc.exists()) {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
+
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
     const userData = userDoc.data() as UserProfile
     const newTotalXP = userData.totalXP + xpAmount
     const newLevel = Math.floor(newTotalXP / 1000) + 1
@@ -143,6 +171,9 @@ export async function addUserXP(code: string, xpAmount: number): Promise<void> {
       glassProgress: newGlassProgress,
       lastActive: Timestamp.now(),
     })
+  } catch (error) {
+    console.error('Error adding XP:', error)
+    throw new Error('Failed to update XP. Progress may not be saved.')
   }
 }
 
@@ -150,11 +181,16 @@ export async function addUserXP(code: string, xpAmount: number): Promise<void> {
  * Empties the glass (called when Santa drinks it)
  */
 export async function emptyGlass(code: string): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  await updateDoc(userRef, {
-    glassProgress: 0,
-    lastActive: Timestamp.now(),
-  })
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    await updateDoc(userRef, {
+      glassProgress: 0,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error emptying glass:', error)
+    throw new Error('Failed to empty glass. Please try again.')
+  }
 }
 
 /**
@@ -164,10 +200,14 @@ export async function unlockAchievement(
   code: string,
   achievementId: string
 ): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  const userDoc = await getDoc(userRef)
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
 
-  if (userDoc.exists()) {
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
     const userData = userDoc.data() as UserProfile
     if (!userData.achievements.includes(achievementId)) {
       await updateDoc(userRef, {
@@ -175,6 +215,9 @@ export async function unlockAchievement(
         lastActive: Timestamp.now(),
       })
     }
+  } catch (error) {
+    console.error('Error unlocking achievement:', error)
+    throw new Error('Failed to unlock achievement. Please try again.')
   }
 }
 
@@ -182,10 +225,15 @@ export async function unlockAchievement(
  * Updates user's last active timestamp
  */
 export async function updateLastActive(code: string): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  await updateDoc(userRef, {
-    lastActive: Timestamp.now(),
-  })
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    await updateDoc(userRef, {
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating last active:', error)
+    // Don't throw - this is non-critical, allow silent fail
+  }
 }
 
 /**
@@ -195,14 +243,19 @@ export async function getLanguageProgress(
   code: string,
   languageKey: string // format: "moduleId-languageId"
 ): Promise<LanguageProgress | null> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  const userDoc = await getDoc(userRef)
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
 
-  if (userDoc.exists()) {
-    const userData = userDoc.data() as UserProfile
-    return userData.languageProgress?.[languageKey] || null
+    if (userDoc.exists()) {
+      const userData = userDoc.data() as UserProfile
+      return userData.languageProgress?.[languageKey] || null
+    }
+    return null
+  } catch (error) {
+    console.error('Error getting language progress:', error)
+    throw new Error('Failed to load progress. Please check your connection.')
   }
-  return null
 }
 
 /**
@@ -215,10 +268,14 @@ export async function initializeLanguageProgress(
   totalTutorialSections: number,
   totalGameLevels: number
 ): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  const userDoc = await getDoc(userRef)
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
 
-  if (userDoc.exists()) {
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
     const userData = userDoc.data() as UserProfile
     const languageProgress = userData.languageProgress || {}
 
@@ -243,6 +300,9 @@ export async function initializeLanguageProgress(
       languageProgress,
       lastActive: Timestamp.now(),
     })
+  } catch (error) {
+    console.error('Error initializing language progress:', error)
+    throw new Error('Failed to initialize progress. Please try again.')
   }
 }
 
@@ -256,27 +316,36 @@ export async function updateTutorialProgress(
   completedSections: number[],
   completed: boolean
 ): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  const userDoc = await getDoc(userRef)
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
 
-  if (userDoc.exists()) {
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
     const userData = userDoc.data() as UserProfile
     const languageProgress = userData.languageProgress || {}
 
-    if (languageProgress[languageKey]) {
-      languageProgress[languageKey].tutorialProgress = {
-        ...languageProgress[languageKey].tutorialProgress,
-        currentSection,
-        completedSections,
-        completed,
-      }
-      languageProgress[languageKey].lastAccessed = Timestamp.now()
-
-      await updateDoc(userRef, {
-        languageProgress,
-        lastActive: Timestamp.now(),
-      })
+    if (!languageProgress[languageKey]) {
+      throw new Error('Language progress not initialized')
     }
+
+    languageProgress[languageKey].tutorialProgress = {
+      ...languageProgress[languageKey].tutorialProgress,
+      currentSection,
+      completedSections,
+      completed,
+    }
+    languageProgress[languageKey].lastAccessed = Timestamp.now()
+
+    await updateDoc(userRef, {
+      languageProgress,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating tutorial progress:', error)
+    throw new Error('Failed to save tutorial progress. Please try again.')
   }
 }
 
@@ -288,28 +357,46 @@ export async function updateGameProgress(
   languageKey: string,
   currentLevel: number,
   completedLevels: number[],
-  completed: boolean
+  completed: boolean,
+  gameState?: {
+    lives?: number
+    hints?: number
+    score?: number
+  }
 ): Promise<void> {
-  const userRef = doc(db, USERS_COLLECTION, code)
-  const userDoc = await getDoc(userRef)
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
 
-  if (userDoc.exists()) {
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
     const userData = userDoc.data() as UserProfile
     const languageProgress = userData.languageProgress || {}
 
-    if (languageProgress[languageKey]) {
-      languageProgress[languageKey].gameProgress = {
-        ...languageProgress[languageKey].gameProgress,
-        currentLevel,
-        completedLevels,
-        completed,
-      }
-      languageProgress[languageKey].lastAccessed = Timestamp.now()
-
-      await updateDoc(userRef, {
-        languageProgress,
-        lastActive: Timestamp.now(),
-      })
+    if (!languageProgress[languageKey]) {
+      throw new Error('Language progress not initialized')
     }
+
+    languageProgress[languageKey].gameProgress = {
+      ...languageProgress[languageKey].gameProgress,
+      currentLevel,
+      completedLevels,
+      completed,
+      // Save game state for resume functionality
+      lives: gameState?.lives,
+      hints: gameState?.hints,
+      score: gameState?.score,
+    }
+    languageProgress[languageKey].lastAccessed = Timestamp.now()
+
+    await updateDoc(userRef, {
+      languageProgress,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating game progress:', error)
+    throw new Error('Failed to save game progress. Please try again.')
   }
 }

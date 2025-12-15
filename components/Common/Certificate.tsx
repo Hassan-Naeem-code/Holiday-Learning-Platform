@@ -30,6 +30,28 @@ export default function Certificate({
   const [userName, setUserName] = useState(initialUserName)
   const [isEditingName, setIsEditingName] = useState(false)
 
+  // Generate a secure certificate ID using multiple factors
+  const generateCertificateId = (): string => {
+    const { getSession } = require('@/utils/sessionManager')
+    const userCode = getSession() || 'GUEST'
+
+    // Create a hash from multiple inputs
+    const data = `${userCode}${languageName}${difficulty}${type}${completionDate}`
+    let hash = 0
+    for (let i = 0; i < data.length; i++) {
+      const char = data.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash
+    }
+
+    // Combine components for unique ID
+    const timestamp = Date.now().toString(36)
+    const hashStr = Math.abs(hash).toString(36).toUpperCase()
+    return `CLB-${difficulty.toUpperCase()}-${hashStr}-${timestamp}`
+  }
+
+  const [certificateId] = useState(generateCertificateId())
+
   const getDifficultyLabel = () => {
     switch (difficulty) {
       case 'easy':
@@ -52,6 +74,14 @@ export default function Certificate({
     }
   }
 
+  // Sanitize filename to prevent path traversal and special characters
+  const sanitizeFilename = (filename: string): string => {
+    return filename
+      .replace(/[^a-zA-Z0-9-_\s]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .substring(0, 100) // Limit length
+  }
+
   const handleDownload = async () => {
     if (!certificateRef.current) return
 
@@ -62,8 +92,13 @@ export default function Certificate({
         logging: false,
       })
 
+      // Sanitize all filename components
+      const sanitizedName = sanitizeFilename(userName)
+      const sanitizedLanguage = sanitizeFilename(languageName)
+      const sanitizedDifficulty = difficulty // Already validated as enum
+
       const link = document.createElement('a')
-      link.download = `${userName}-${languageName}-${difficulty}-certificate.png`
+      link.download = `${sanitizedName}-${sanitizedLanguage}-${sanitizedDifficulty}-certificate.png`
       link.href = canvas.toDataURL('image/png')
       link.click()
     } catch (error) {
@@ -208,7 +243,7 @@ export default function Certificate({
                 {/* Serial Number */}
                 <div className="pt-3 sm:pt-4 md:pt-6">
                   <p className="text-[10px] sm:text-xs md:text-sm text-gray-400 break-all px-2">
-                    Certificate ID: CLB-{difficulty.toUpperCase()}-{languageName.replace(/\s+/g, '')}-{Date.now()}
+                    Certificate ID: {certificateId}
                   </p>
                 </div>
               </div>

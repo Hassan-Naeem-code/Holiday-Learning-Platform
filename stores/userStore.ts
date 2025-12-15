@@ -25,6 +25,7 @@ interface UserStore {
   updateStreak: () => void
   resetProgress: () => void
   loadFromStorage: () => void
+  syncFromFirebase: (firebaseData: Partial<UserData>) => void
 }
 
 const DEFAULT_USER: UserData = {
@@ -143,5 +144,23 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
 
     set({ user: savedUser })
+  },
+
+  syncFromFirebase: (firebaseData: Partial<UserData>) => {
+    set((state) => {
+      // Merge Firebase data with local state
+      // Firebase is the source of truth for critical data
+      const updatedUser = {
+        ...state.user,
+        ...firebaseData,
+        lastActive: new Date(),
+      }
+
+      // Update localStorage cache
+      storage.set(STORAGE_KEYS.USER_DATA, updatedUser)
+      storage.set(`${STORAGE_KEYS.USER_DATA}_checksum`, storageIntegrity.generateChecksum(updatedUser))
+
+      return { user: updatedUser }
+    })
   },
 }))
