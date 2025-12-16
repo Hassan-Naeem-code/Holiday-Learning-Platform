@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const PASS_THRESHOLD = 0.75
 import { ArrowLeft, Trophy, Heart, Lightbulb, Check } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Language } from '@/utils/techModules'
@@ -163,13 +165,14 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           origin: { y: 0.7 },
         })
 
-        // Check if all levels complete
-        const isFullyCompleted = newCompleted.length >= totalLevels
+        // Check if this is the LAST level AND user passed threshold (75%+)
+        const isLastLevel = currentLevel === totalLevels - 1
+        const hasPassedThreshold = newCompleted.length / totalLevels >= PASS_THRESHOLD
 
-        if (isFullyCompleted) {
+        if (isLastLevel && hasPassedThreshold) {
           setAllCompleted(true)
 
-          // Bonus XP for completing all levels
+          // Bonus XP for passing
           if (userCode) {
             await addUserXP(userCode, 300) // 300 XP bonus
             await fillGlass(userCode)
@@ -197,7 +200,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
 
         // Save progress with updated score
         const nextLevel = currentLevel < totalLevels - 1 ? currentLevel + 1 : currentLevel
-        await saveProgress(nextLevel, newCompleted, isFullyCompleted, lives, hints, score + 100)
+        await saveProgress(nextLevel, newCompleted, isLastLevel && hasPassedThreshold, lives, hints, score + 100)
       }
     } else {
       // Wrong answer
@@ -400,6 +403,11 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           <p className="text-white/80 text-sm sm:text-base md:text-lg lg:text-xl px-4">
             Master the entire language through {totalLevels} progressive challenges!
           </p>
+          <div className="mt-3 md:mt-4 max-w-3xl mx-auto px-4">
+            <div className="bg-emerald-500/15 border border-emerald-400/40 rounded-xl p-3 md:p-4 text-white/90 text-xs sm:text-sm md:text-base">
+              🎯 Earn your certificate by scoring at least 75% across quiz levels. Correct answers advance automatically; aim for the threshold to unlock your badge.
+            </div>
+          </div>
         </motion.div>
 
         {/* Progress Bar */}

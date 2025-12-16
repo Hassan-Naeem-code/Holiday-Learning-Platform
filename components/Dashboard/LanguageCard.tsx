@@ -367,7 +367,9 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
                   ) : null}
                 </p>
                 <p className={`text-sm ${gameCompleted ? 'text-gray-500' : 'text-green-100'}`}>
-                  {gameCompleted ? 'Completed all difficulties' : 'Progressive quiz levels'}
+                  {gameCompleted
+                    ? 'Completed all difficulties'
+                    : 'Play quiz levels — score 75%+ to earn your certificate'}
                 </p>
               </div>
               {!gameCompleted && (
@@ -412,7 +414,9 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
                   )}
                 </p>
                 <p className={`text-sm ${sandboxCompleted ? 'text-gray-500' : 'text-purple-100'}`}>
-                  {sandboxCompleted ? 'Completed all difficulties' : 'Practice with live coding'}
+                  {sandboxCompleted
+                    ? 'Completed all difficulties'
+                    : 'Code exercises — hit 75%+ passing to unlock your certificate'}
                 </p>
               </div>
               {!sandboxCompleted && (

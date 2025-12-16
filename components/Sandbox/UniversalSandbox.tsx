@@ -22,6 +22,8 @@ interface UniversalSandboxProps {
   languageId: string
 }
 
+const PASS_THRESHOLD = 0.75
+
 const STARTER_CODE: { [key: string]: string } = {
   html: `<!DOCTYPE html>
 <html>
@@ -89,9 +91,13 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   const [exerciseMode, setExerciseMode] = useState(true)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [completedExercises, setCompletedExercises] = useState<number[]>([])
+  const [userSubmissions, setUserSubmissions] = useState<{ [key: number]: string }>({})
   const [showHint, setShowHint] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
+  const [allowSolution, setAllowSolution] = useState(false)
+  const [hasAttempted, setHasAttempted] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
   const [showCertificate, setShowCertificate] = useState(false)
   const [userName, setUserName] = useState<string>('')
@@ -171,77 +177,112 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
       setOutput('')
       setShowHint(false)
       setShowSolution(false)
+      setAllowSolution(false)
+      setHasAttempted(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExerciseIndex, exerciseMode])
 
-  // Check if exercise is completed
-  const checkExercise = async () => {
-    if (!exerciseMode || !currentExercise || !userCode) return
+  // Save user's code and move to next exercise
+  const handleNextSubmission = async () => {
+    if (!exerciseMode || !currentExercise) return
 
-    // Simple validation: check if code contains key parts of solution
-    const codeNormalized = code.trim().replace(/\s+/g, ' ')
-    const solutionNormalized = currentExercise.solution.trim().replace(/\s+/g, ' ')
+    // Save current code submission
+    setUserSubmissions(prev => ({
+      ...prev,
+      [currentExerciseIndex]: code
+    }))
 
-    // Basic check: if code is very similar to solution
-    const similarity = calculateSimilarity(codeNormalized, solutionNormalized)
-
-    if (similarity > 0.7 || codeNormalized.includes(solutionNormalized)) {
-      if (!completedExercises.includes(currentExerciseIndex)) {
-        const newCompleted = [...completedExercises, currentExerciseIndex]
-        const isNowComplete = newCompleted.length >= exercises.length
-        setCompletedExercises(newCompleted)
-
-        // Award XP
-        await awardXP(XP_REWARDS.SANDBOX_EXECUTE * 2, false)
-
-        // Save progress to Firebase first
-        try {
-          await updateSandboxProgress(userCode, languageKey, currentDifficulty, currentExerciseIndex, newCompleted, exercises.length)
-
-          if (isNowComplete) {
-            // Complete - show celebration!
-            await awardXP(XP_REWARDS.SANDBOX_COMPLETE, false)
-            await fillGlass(userCode)
-
-            // Show celebration modal
-            setShowCelebration(true)
-
-            // Big confetti
-            confetti({
-              particleCount: 200,
-              spread: 100,
-              origin: { y: 0.6 },
-            })
-
-            // Show certificate after 4 seconds
-            setTimeout(() => {
-              setShowCelebration(false)
-              setShowCertificate(true)
-            }, 4000)
-
-            setOutput(`🎉 ALL EXERCISES COMPLETED!\n\nYou finished all ${exercises.length} exercises!\n\n+${XP_REWARDS.SANDBOX_COMPLETE} Bonus XP!\n\nYour certificate is being generated...`)
-          } else {
-            // Not complete yet - show regular completion message
-            setOutput(`✅ Excellent! Exercise completed!\n\nExpected: ${currentExercise.expectedOutput}\n\nYou earned ${XP_REWARDS.SANDBOX_EXECUTE * 2} XP!\n\nMoving to next exercise...`)
-
-            // Auto-advance to next exercise after 2 seconds
-            setTimeout(() => {
-              setCurrentExerciseIndex(currentExerciseIndex + 1)
-            }, 2000)
-          }
-
-          // Trigger progress glass refresh
-          triggerProfileRefresh()
-        } catch (error) {
-          console.error('Error saving sandbox progress:', error)
-          setOutput(`✅ Exercise completed but failed to save progress. Please try again.`)
-        }
-      } else {
-        setOutput(`✅ Correct! (Already completed)\n\nExpected: ${currentExercise.expectedOutput}`)
-      }
+    // If this is the last exercise, validate all submissions
+    if (currentExerciseIndex === exercises.length - 1) {
+      await handleFinalSubmission()
     } else {
-      setOutput(`❌ Not quite right. Try again!\n\nHint: ${showHint ? currentExercise.hint : 'Click "Show Hint" for help'}`)
+      // Move to next exercise
+      setCurrentExerciseIndex(currentExerciseIndex + 1)
+      setOutput('')
+    }
+  }
+
+  // Validate all submissions at the end
+  const handleFinalSubmission = async () => {
+    if (!userCode) return
+
+    setIsSubmitting(true)
+    setOutput('Validating all your submissions...')
+
+    // Include current code
+    const allSubmissions = {
+      ...userSubmissions,
+      [currentExerciseIndex]: code
+    }
+
+    // Check each submission
+    const results: boolean[] = []
+    const correctExercises: number[] = []
+
+    for (let i = 0; i < exercises.length; i++) {
+      const exercise = exercises[i]
+      const userCode = allSubmissions[i] || ''
+
+      // Validate the code
+      const codeNormalized = userCode.trim().replace(/\s+/g, ' ')
+      const solutionNormalized = exercise.solution.trim().replace(/\s+/g, ' ')
+      const similarity = calculateSimilarity(codeNormalized, solutionNormalized)
+      const passed = similarity > 0.7 || codeNormalized.includes(solutionNormalized)
+
+      results.push(passed)
+      if (passed) {
+        correctExercises.push(i)
+      }
+    }
+
+    // Calculate final score
+    const correctCount = results.filter(r => r).length
+    const totalCount = exercises.length
+    const scorePercentage = (correctCount / totalCount) * 100
+    const hasPassedThreshold = scorePercentage >= 75
+
+    // Update completed exercises
+    setCompletedExercises(correctExercises)
+
+    // Save progress
+    try {
+      await updateSandboxProgress(userCode, languageKey, currentDifficulty, currentExerciseIndex, correctExercises, exercises.length)
+
+      // Award XP based on performance
+      const xpEarned = correctCount * XP_REWARDS.SANDBOX_EXECUTE
+      await awardXP(xpEarned, false)
+
+      if (hasPassedThreshold) {
+        // Passed! Award bonus and certificate
+        await awardXP(XP_REWARDS.SANDBOX_COMPLETE, false)
+        await fillGlass(userCode)
+
+        setShowCelebration(true)
+
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.6 },
+        })
+
+        setTimeout(() => {
+          setShowCelebration(false)
+          setShowCertificate(true)
+        }, 4000)
+
+        setOutput(`🎉 Congratulations! You scored ${Math.round(scorePercentage)}%!\n\n✅ Correct: ${correctCount}/${totalCount} exercises\n\n+${xpEarned + XP_REWARDS.SANDBOX_COMPLETE} XP earned!\n\nYour certificate is being generated...`)
+      } else {
+        // Failed to meet threshold
+        setOutput(`📊 Results:\n\n✅ Correct: ${correctCount}/${totalCount} (${Math.round(scorePercentage)}%)\n❌ Incorrect: ${totalCount - correctCount}\n\n+${xpEarned} XP earned\n\nYou need 75%+ to earn the certificate. Review the exercises and try again!`)
+      }
+
+      triggerProfileRefresh()
+    } catch (error) {
+      console.error('Error saving sandbox progress:', error)
+      setOutput('Failed to save your results. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -281,13 +322,12 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
     setIsRunning(true)
     setOutput('// Running code...\n')
 
-    await awardXP(XP_REWARDS.SANDBOX_EXECUTE, false)
-
     // Simulate code execution
     setTimeout(() => {
       if (exerciseMode) {
-        // In exercise mode, check the solution
-        checkExercise()
+        // In exercise mode, just show a test run (not validation)
+        const simulatedOutput = `// Test Run:\n// Language: ${language.name}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is just a test run. Click "Next" to submit your answer.`
+        setOutput(simulatedOutput)
       } else {
         // Free sandbox mode
         const simulatedOutput = `// Code executed successfully!\n// Language: ${language.name}\n// Lines of code: ${(code || '').split('\n').length}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is a simulated execution environment.\n// In a production app, this would connect to a real code execution service.`
@@ -512,53 +552,9 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
                   <p className="text-white/90 text-xs sm:text-sm md:text-base">{currentExercise.instructions}</p>
                 </div>
 
-                {/* Hint & Solution Buttons */}
-                <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-                  <button
-                    onClick={() => setShowHint(!showHint)}
-                    className="flex items-center gap-1 md:gap-2 bg-yellow-500/20 text-yellow-300 px-3 md:px-4 py-1.5 md:py-2 rounded-xl hover:bg-yellow-500/30 transition-all text-xs sm:text-sm"
-                  >
-                    <Lightbulb className="w-3 h-3 md:w-4 md:h-4" />
-                    {showHint ? 'Hide Hint' : 'Show Hint'}
-                  </button>
-                  <button
-                    onClick={() => setShowSolution(!showSolution)}
-                    className="flex items-center gap-1 md:gap-2 bg-orange-500/20 text-orange-300 px-3 md:px-4 py-1.5 md:py-2 rounded-xl hover:bg-orange-500/30 transition-all text-xs sm:text-sm"
-                  >
-                    {showSolution ? 'Hide Solution' : 'View Solution'}
-                  </button>
+                <div className="bg-emerald-500/15 border border-emerald-400/40 rounded-xl p-3 md:p-4 mb-3 md:mb-4 text-white/90 text-xs sm:text-sm md:text-base">
+                  🎯 Complete all exercises and submit. Your answers will be graded at the end. Score 75%+ to earn your certificate!
                 </div>
-
-                {/* Hint Display */}
-                <AnimatePresence>
-                  {showHint && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-3 md:mt-4 bg-yellow-500/20 border border-yellow-400/30 rounded-xl p-3 md:p-4"
-                    >
-                      <p className="text-yellow-200 text-xs sm:text-sm md:text-base">💡 Hint: {currentExercise.hint}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Solution Display */}
-                <AnimatePresence>
-                  {showSolution && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="mt-3 md:mt-4 bg-orange-500/20 border border-orange-400/30 rounded-xl p-3 md:p-4"
-                    >
-                      <p className="text-orange-200 mb-2 text-xs sm:text-sm md:text-base">✨ Solution:</p>
-                      <pre className="bg-gray-900 text-green-400 p-3 md:p-4 rounded-lg overflow-x-auto text-xs sm:text-sm whitespace-pre-wrap break-words max-w-full">
-                        <code className="block">{currentExercise.solution}</code>
-                      </pre>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
               {/* Navigation */}
@@ -592,11 +588,22 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
             <button
               onClick={handleRunCode}
               disabled={isRunning}
-              className="flex items-center gap-1 md:gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 sm:px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50 text-xs sm:text-sm md:text-base"
+              className="flex items-center gap-1 md:gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 sm:px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50 text-xs sm:text-sm md:text-base"
             >
               <Play className="w-4 h-4 md:w-5 md:h-5" />
-              {isRunning ? 'Running...' : exerciseMode ? 'Check Solution' : 'Run Code'}
+              {isRunning ? 'Running...' : 'Test Run'}
             </button>
+
+            {exerciseMode && (
+              <button
+                onClick={handleNextSubmission}
+                disabled={isSubmitting}
+                className="flex items-center gap-1 md:gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 sm:px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold hover:shadow-xl transition-all disabled:opacity-50 text-xs sm:text-sm md:text-base"
+              >
+                <Check className="w-4 h-4 md:w-5 md:h-5" />
+                {isSubmitting ? 'Submitting...' : currentExerciseIndex === exercises.length - 1 ? 'Finish & Submit' : 'Next'}
+              </button>
+            )}
 
             <button
               onClick={handleReset}
@@ -699,16 +706,231 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   )
 }
 
-function getSimulatedOutput(languageId: string, _code?: string): string {
-  void _code
-  // Simulate different outputs based on language
-  const outputs: { [key: string]: string } = {
-    javascript: '"Hello, World!"\n"Hello, Learner!"',
-    python: 'Hello, World!\nHello, Learner!',
-    html: 'Rendered HTML page (This would show in a preview window)',
-    css: 'Styles applied successfully!',
-    react: 'React component rendered successfully!',
+function getSimulatedOutput(languageId: string, code: string): string {
+  if (!code || code.trim().length === 0) {
+    return '// No code to execute'
   }
 
-  return outputs[languageId] || 'Code executed successfully!\n> Output would appear here in a real execution environment.'
+  try {
+    // HTML - render preview text
+    if (languageId === 'html') {
+      const hasH1 = /<h1[^>]*>(.*?)<\/h1>/gi.exec(code)
+      const hasP = /<p[^>]*>(.*?)<\/p>/gi.exec(code)
+      const hasDiv = /<div[^>]*>(.*?)<\/div>/gi.exec(code)
+      let output = '🌐 HTML Preview:\n\n'
+      if (hasH1) output += `Heading: ${hasH1[1]}\n`
+      if (hasP) output += `Paragraph: ${hasP[1]}\n`
+      if (hasDiv) output += `Div content: ${hasDiv[1]}\n`
+      return output || '🌐 HTML structure rendered'
+    }
+
+    // CSS - show styles applied
+    if (languageId === 'css') {
+      const rules = code.match(/[^{]+\{[^}]+\}/g) || []
+      return `🎨 CSS Styles Applied:\n\n${rules.length} style rules compiled successfully!\n\n` + 
+             rules.slice(0, 3).map(r => `✓ ${r.split('{')[0].trim()}`).join('\n')
+    }
+
+    // JavaScript - try to execute safely
+    if (languageId === 'javascript' || languageId === 'javascript-games') {
+      const logs: string[] = []
+      const mockConsole = {
+        log: (...args: unknown[]) => logs.push(args.map(String).join(' '))
+      }
+      
+      try {
+        // Create safe execution context
+        const safeCode = code.replace(/console\.log/g, 'mockConsole.log')
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval
+        const fn = new Function('mockConsole', safeCode)
+        fn(mockConsole)
+        return logs.length > 0 ? logs.join('\n') : '✓ Code executed successfully (no console output)'
+      } catch (err) {
+        return `Error: ${err instanceof Error ? err.message : String(err)}`
+      }
+    }
+
+    // Python - simulate execution
+    if (languageId === 'python' || languageId === 'python-ml' || languageId === 'python-backend') {
+      const prints = code.match(/print\((.*?)\)/g) || []
+      if (prints.length > 0) {
+        return prints.map(p => {
+          const content = p.match(/print\((.*?)\)/)?.[1] || ''
+          return content.replace(/['"]/g, '').replace(/f"/g, '')
+        }).join('\n')
+      }
+      return '✓ Python script executed successfully'
+    }
+
+    // React / React Native / Next.js - component output
+    if (languageId === 'react' || languageId === 'react-native' || languageId === 'nextjs') {
+      const hasComponent = /function\s+\w+|const\s+\w+\s*=.*?=>/.test(code)
+      const hasJSX = /<[A-Z]\w*|<div|<button|<h1/.test(code)
+      if (hasComponent && hasJSX) {
+        return '⚛️ React Component Rendered:\n\n✓ Component compiled successfully\n✓ JSX rendered to DOM'
+      }
+      return '⚛️ React code compiled'
+    }
+
+    // TypeScript
+    if (languageId === 'typescript') {
+      return '🔷 TypeScript Compiled:\n\n✓ Type checking passed\n✓ Transpiled to JavaScript successfully'
+    }
+
+    // Node.js
+    if (languageId === 'nodejs') {
+      const hasExpress = /express\(\)|app\.listen|app\.get/.test(code)
+      if (hasExpress) {
+        return '🚀 Node.js Server:\n\n✓ Express server configured\n✓ Server listening on port 3000'
+      }
+      return '✓ Node.js script executed'
+    }
+
+    // SQL
+    if (languageId === 'sql' || languageId === 'postgresql' || languageId === 'mongodb') {
+      const hasSelect = /SELECT/i.test(code)
+      const hasInsert = /INSERT/i.test(code)
+      const hasUpdate = /UPDATE/i.test(code)
+      const hasDelete = /DELETE/i.test(code)
+      let output = '🗄️ Database Query Executed:\n\n'
+      if (hasSelect) output += '✓ SELECT query returned 5 rows\n'
+      if (hasInsert) output += '✓ INSERT query: 1 row affected\n'
+      if (hasUpdate) output += '✓ UPDATE query: 3 rows affected\n'
+      if (hasDelete) output += '✓ DELETE query: 2 rows affected\n'
+      return output
+    }
+
+    // Java
+    if (languageId === 'java') {
+      const hasMain = /public\s+static\s+void\s+main/.test(code)
+      return hasMain ? 
+        '☕ Java Program:\n\n✓ Compiled successfully\n✓ Main method executed' :
+        '☕ Java code compiled'
+    }
+
+    // Kotlin
+    if (languageId === 'kotlin') {
+      return '🎯 Kotlin Program:\n\n✓ Compiled to JVM bytecode\n✓ Executed successfully'
+    }
+
+    // Swift
+    if (languageId === 'swift') {
+      const hasPrint = /print\(/.test(code)
+      return hasPrint ?
+        '🍎 Swift Output:\n\n' + (code.match(/print\((.*?)\)/)?.[1]?.replace(/["']/g, '') || 'Hello, Swift!') :
+        '🍎 Swift code compiled'
+    }
+
+    // Go
+    if (languageId === 'go') {
+      return '🐹 Go Program:\n\n✓ Build successful\n✓ Program executed'
+    }
+
+    // Rust
+    if (languageId === 'rust') {
+      return '🦀 Rust Program:\n\n✓ Compiled successfully (zero-cost abstractions)\n✓ Memory safety guaranteed'
+    }
+
+    // Flutter/Dart
+    if (languageId === 'flutter') {
+      return '🎨 Flutter App:\n\n✓ Widget tree built\n✓ Hot reload complete\n✓ App running on simulator'
+    }
+
+    // Unity C#
+    if (languageId === 'unity-csharp') {
+      return '🎮 Unity Script:\n\n✓ MonoBehaviour compiled\n✓ GameObject initialized\n✓ Scene loaded'
+    }
+
+    // Unreal Engine
+    if (languageId === 'unreal') {
+      return '🎮 Unreal Engine:\n\n✓ Blueprint compiled\n✓ Actor spawned\n✓ Level loaded'
+    }
+
+    // Godot
+    if (languageId === 'godot') {
+      return '🎮 Godot Script:\n\n✓ GDScript parsed\n✓ Node ready\n✓ Scene running'
+    }
+
+    // R
+    if (languageId === 'r') {
+      return '📊 R Output:\n\n✓ Data analysis complete\n✓ Statistical model fitted\n[1] Results calculated'
+    }
+
+    // TensorFlow
+    if (languageId === 'tensorflow') {
+      return '🧠 TensorFlow Model:\n\n✓ Model compiled\n✓ Training: Epoch 10/10 - accuracy: 0.95\n✓ Model saved'
+    }
+
+    // PyTorch
+    if (languageId === 'pytorch') {
+      return '🔥 PyTorch Model:\n\n✓ Neural network initialized\n✓ Training complete\n✓ Loss: 0.023'
+    }
+
+    // Pandas
+    if (languageId === 'pandas') {
+      return '🐼 Pandas DataFrame:\n\n✓ Data loaded\n✓ Transformation applied\n✓ Shape: (1000, 15)'
+    }
+
+    // Scikit-learn
+    if (languageId === 'scikit-learn') {
+      return '🤖 Scikit-learn Model:\n\n✓ Model trained\n✓ Accuracy: 92.5%\n✓ Predictions generated'
+    }
+
+    // Docker
+    if (languageId === 'docker') {
+      return '🐳 Docker:\n\n✓ Image built successfully\n✓ Container running\n✓ Port 8080 exposed'
+    }
+
+    // Kubernetes
+    if (languageId === 'kubernetes') {
+      return '☸️ Kubernetes:\n\n✓ Deployment created\n✓ Pods: 3/3 Running\n✓ Service exposed'
+    }
+
+    // AWS
+    if (languageId === 'aws') {
+      return '☁️ AWS Resources:\n\n✓ CloudFormation stack created\n✓ EC2 instances running\n✓ S3 bucket configured'
+    }
+
+    // Terraform
+    if (languageId === 'terraform') {
+      return '🏗️ Terraform:\n\n✓ Plan: 5 to add, 0 to change, 0 to destroy\n✓ Apply complete!\n✓ Resources: 5 added'
+    }
+
+    // GitHub Actions
+    if (languageId === 'github-actions') {
+      return '🔄 GitHub Actions:\n\n✓ Workflow triggered\n✓ All jobs passed\n✓ Deployment successful'
+    }
+
+    // Solidity
+    if (languageId === 'solidity') {
+      return '⛓️ Smart Contract:\n\n✓ Contract compiled\n✓ Deployed to network\n✓ Gas used: 245,789'
+    }
+
+    // Ethereum
+    if (languageId === 'ethereum') {
+      return '⛓️ Ethereum:\n\n✓ Transaction broadcasted\n✓ Block confirmed\n✓ Balance updated'
+    }
+
+    // Redis
+    if (languageId === 'redis') {
+      return '🔴 Redis:\n\n✓ Connected to server\n✓ Key set successfully\n✓ GET command: "value"'
+    }
+
+    // Security/Penetration Testing
+    if (languageId === 'penetration-testing' || languageId === 'network-security' || languageId === 'security-tools') {
+      return '🔒 Security Test:\n\n✓ Scan complete\n✓ Vulnerabilities found: 0\n✓ Network secure'
+    }
+
+    // Cryptography
+    if (languageId === 'cryptography') {
+      return '🔐 Cryptography:\n\n✓ Encryption successful\n✓ Hash generated: a7f3e...\n✓ Signature verified'
+    }
+
+    // Default for any other language
+    return `✓ ${languageId.toUpperCase()} code executed successfully\n\nOutput would appear here in a real execution environment.`
+
+  } catch (error) {
+    return `Error: ${error instanceof Error ? error.message : String(error)}`
+  }
 }
+
