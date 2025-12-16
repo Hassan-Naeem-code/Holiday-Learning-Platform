@@ -9,10 +9,10 @@ const urlsToCache = [
 
 // Install service worker
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing service worker...')
+  // console.log('[SW] Installing service worker...')
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Caching app shell')
+      // console.log('[SW] Caching app shell')
       return cache.addAll(urlsToCache).catch((error) => {
         console.warn('[SW] Some assets failed to cache:', error)
         // Continue even if some assets fail
@@ -25,13 +25,13 @@ self.addEventListener('install', (event) => {
 
 // Activate service worker
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating service worker...')
+  // console.log('[SW] Activating service worker...')
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('[SW] Deleting old cache:', cacheName)
+            // console.log('[SW] Deleting old cache:', cacheName)
             return caches.delete(cacheName)
           }
         })
@@ -69,7 +69,7 @@ self.addEventListener('fetch', (event) => {
         // Return from cache if network fails
         return caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
-            console.log('[SW] Serving from cache:', event.request.url)
+            // console.log('[SW] Serving from cache:', event.request.url)
             return cachedResponse
           }
           // Return a fallback page for navigation requests

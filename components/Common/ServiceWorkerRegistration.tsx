@@ -10,19 +10,16 @@ export default function ServiceWorkerRegistration() {
       const registerServiceWorker = async () => {
         try {
           const registration = await navigator.serviceWorker.register('/service-worker.js')
-          // eslint-disable-next-line no-console
-          console.log('✅ Service Worker registered:', registration.scope)
+          // console.log('✅ Service Worker registered:', registration.scope)
 
           // Listen for updates
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing
-            // eslint-disable-next-line no-console
-            console.log('🔄 New Service Worker version found')
+            // console.log('🔄 New Service Worker version found')
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // eslint-disable-next-line no-console
-                  console.log('📦 New Service Worker installed (ready to activate)')
+                  // console.log('📦 New Service Worker installed (ready to activate)')
                 }
               })
             }
