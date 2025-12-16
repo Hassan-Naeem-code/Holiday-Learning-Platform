@@ -232,40 +232,38 @@ codelikebasics/
 
 ## 📊 **Available Content**
 
-### 7 Main Topics (Classic Learning Path)
+### 9 Technology Modules (With 43+ Languages)
 
-| Topic | Tutorial | Quiz Game | Sandbox |
-|-------|----------|-----------|---------|
-| 💻 Software Development | ✅ 8 Lessons | ✅ Code Block Game | ✅ Code Simulator |
-| 🌐 Web Development | ✅ 8 Lessons | ✅ HTML Builder Game | ✅ Web Builder |
-| 📱 Mobile App Development | ✅ 8 Lessons | ✅ User Flow Game | ✅ App Designer |
-| 🤖 AI & Machine Learning | ✅ 8 Lessons | ✅ Neural Network Game | ✅ AI Playground |
-| 📊 Data Science | ✅ 8 Lessons | ✅ Data Pipeline Game | ✅ Data Lab |
-| 🎨 Graphics Design | ✅ 8 Lessons | ✅ Design Matcher Game | ✅ Design Studio |
-| 📝 Content Creation | ✅ 8 Lessons | ✅ Content Mixer Game | ✅ Content Planner |
-
-### 9 Technology Modules (43+ Languages)
+| Module | Languages Available |
+|--------|-------------------|
+| 🌐 **Web Development** | HTML, CSS, JavaScript, React, TypeScript, Next.js |
+| 📱 **Mobile Development** | React Native, Flutter, Swift, Kotlin |
+| 📊 **Data Science** | Python, R, SQL, Pandas |
+| 🤖 **AI & ML** | Python ML, TensorFlow, PyTorch, Scikit-learn |
+| 🎮 **Game Development** | Unity C#, Unreal, Godot, JavaScript Games |
+| 🔧 **Backend Development** | Node.js, Python, Java, Go, Rust |
+| ☁️ **DevOps & Cloud** | Docker, Kubernetes, AWS, Terraform, GitHub Actions |
+| 🛡️ **Cybersecurity** | Penetration Testing, Network Security, Cryptography, Security Tools |
+| ⛓️ **Blockchain & Database** | Solidity, Web3.js, Ethereum, PostgreSQL, MongoDB, Redis, Firebase |
 
 **Each language includes:**
 - 3 difficulty levels (Easy, Medium, Hard)
-- 8 exercises per level = 24 total exercises
-- Live code editor with syntax highlighting
-- Smart output simulation for each language
-- Progress tracking and Firebase sync
+- 8 coding exercises per difficulty level (24 total per language)
+- Live code editor with smart output simulation
+- Certificate awarded for 75%+ completion
+- XP rewards and progress tracking
 
-| Module | Languages |
-|--------|-----------|
-| 🌐 **Web Development** | HTML, CSS, JavaScript, React, TypeScript, Next.js (6) |
-| 📱 **Mobile Development** | React Native, Flutter, Swift, Kotlin (4) |
-| 📊 **Data Science** | Python, R, SQL, Pandas (4) |
-| 🤖 **AI & ML** | Python ML, TensorFlow, PyTorch, Scikit-learn (4) |
-| 🎮 **Game Development** | Unity C#, Unreal, Godot, JavaScript Games (4) |
-| 🔧 **Backend Development** | Node.js, Python, Java, Go, Rust (5) |
-| ☁️ **DevOps & Cloud** | Docker, Kubernetes, AWS, Terraform, GitHub Actions (5) |
-| 🛡️ **Cybersecurity** | Penetration Testing, Network Security, Cryptography, Security Tools (4) |
-| ⛓️ **Blockchain & Database** | Solidity, Web3.js, Ethereum, PostgreSQL, MongoDB, Redis, Firebase (7) |
+**Total: 43+ Programming Languages & Technologies**
 
-**Total:** 43+ Programming Languages & Technologies
+### 5 Classic Learning Topics (Tutorial + Game + Sandbox)
+
+| Topic | Tutorial | Quiz Game | Sandbox |
+|-------|----------|-----------|---------|
+| 💻 Software Development | ✅ 6 Lessons | ✅ Code Block Game | ✅ Code Simulator |
+| 🌐 Web Development | ✅ 6 Lessons | ✅ HTML Builder Game | ✅ Web Builder |
+| 📱 Mobile App Development | ✅ 6 Lessons | ✅ User Flow Game | ✅ App Designer |
+| 🤖 AI & Machine Learning | ✅ 6 Lessons | ✅ Neural Network Game | ✅ AI Playground |
+| 📊 Data Science | ✅ 6 Lessons | ✅ Data Pipeline Game | ✅ Data Lab |
 
 ---
 
