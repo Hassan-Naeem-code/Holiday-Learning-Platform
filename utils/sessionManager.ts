@@ -175,7 +175,7 @@ export function migrateOldSession(): boolean {
     // Check for old format
     const oldUserCode = localStorage.getItem('userCode')
     if (oldUserCode && isValidUserCode(oldUserCode)) {
-      console.log('Migrating old session to new format')
+      // console.log('Migrating old session to new format')
       createSession(oldUserCode)
       localStorage.removeItem('userCode') // Remove old key
       return true

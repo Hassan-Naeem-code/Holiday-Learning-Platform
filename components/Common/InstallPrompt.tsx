@@ -19,16 +19,14 @@ export default function InstallPrompt() {
       setDeferredPrompt(e as BeforeInstallPromptEvent)
       // Show the install button
       setShowPrompt(true)
-      // eslint-disable-next-line no-console
-      console.log('PWA install prompt event fired')
+      // console.log('PWA install prompt event fired')
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
 
     // Check if app is already installed
     window.addEventListener('appinstalled', () => {
-      // eslint-disable-next-line no-console
-      console.log('PWA was installed')
+      // console.log('PWA was installed')
       setShowPrompt(false)
       setDeferredPrompt(null)
     })
@@ -41,8 +39,7 @@ export default function InstallPrompt() {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
-      // eslint-disable-next-line no-console
-      console.log('Install prompt not available')
+      // console.log('Install prompt not available')
       return
     }
 
@@ -51,8 +48,7 @@ export default function InstallPrompt() {
       await deferredPrompt.prompt()
       // Wait for the user to respond to the prompt
       const { outcome } = await deferredPrompt.userChoice
-      // eslint-disable-next-line no-console
-      console.log(`User response to the install prompt: ${outcome}`)
+      // console.log(`User response to the install prompt: ${outcome}`)
 
       // We've used the prompt, and can't use it again
       setDeferredPrompt(null)
