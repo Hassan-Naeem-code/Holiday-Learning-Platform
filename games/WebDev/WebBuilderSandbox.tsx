@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import DOMPurify from 'isomorphic-dompurify'
 import GameContainer from '@/components/Games/GameContainer'
 import { useUserStore } from '@/stores/userStore'
 import { achievementManager } from '@/utils/achievementManager'
@@ -86,7 +87,13 @@ export default function WebBuilderSandbox() {
       ${htmlContent}
     `
 
-    setOutput(fullHTML)
+    // Sanitize HTML to prevent XSS attacks
+    const sanitizedHTML = DOMPurify.sanitize(fullHTML, {
+      ALLOWED_TAGS: ['div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'ul', 'ol', 'li', 'br', 'strong', 'em', 'b', 'i', 'img', 'style', 'button', 'input', 'label', 'form', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'class', 'id', 'style', 'type', 'value', 'placeholder', 'name'],
+    })
+
+    setOutput(sanitizedHTML)
   }
 
   const reset = () => {
