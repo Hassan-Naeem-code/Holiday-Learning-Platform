@@ -128,9 +128,9 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="inline-block mb-4"
                 >
-                  <User className="w-16 h-16 text-green-600" />
+                  <User className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-green-600" />
                 </motion.div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
                   Create Your Profile
                 </h2>
                 <p className="text-gray-600">
@@ -250,7 +250,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                   <p className="text-white/80 text-sm mb-2">Your Code</p>
                   <motion.p
                     id="generated-code"
-                    className="text-5xl font-bold text-white tracking-wider mb-4"
+                    className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-wider mb-4"
                     animate={{ scale: [1, 1.05, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >

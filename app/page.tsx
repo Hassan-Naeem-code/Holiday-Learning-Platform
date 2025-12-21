@@ -105,9 +105,9 @@ export default function Home() {
 
           {/* Animated dots */}
           <div className="flex gap-2">
-            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce"></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce [animation-delay:150ms]"></div>
+            <div className="w-3 h-3 bg-white rounded-full animate-bounce [animation-delay:300ms]"></div>
           </div>
         </div>
       </div>

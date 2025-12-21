@@ -6,6 +6,7 @@ import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient
 import ServiceWorkerRegistration from '@/components/Common/ServiceWorkerRegistration'
 import InstallPrompt from '@/components/Common/InstallPrompt'
 import ClientShell from '@/components/Layout/ClientShell'
+import QueryProvider from '@/components/Providers/QueryProvider'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
@@ -95,11 +96,13 @@ export default function RootLayout({
         <ServiceWorkerRegistration />
         <InstallPrompt />
         <ConsoleProtectionClient />
-        <AchievementProvider>
-          <ClientShell>
-            {children}
-          </ClientShell>
-        </AchievementProvider>
+        <QueryProvider>
+          <AchievementProvider>
+            <ClientShell>
+              {children}
+            </ClientShell>
+          </AchievementProvider>
+        </QueryProvider>
         <SpeedInsights />
       </body>
     </html>
