@@ -1238,20 +1238,52 @@ function backendSpecs(languageName: string): SectionSpec[] {
 
 // Java Backend (Spring Boot)
 function javaBackendSpecs(languageName: string): SectionSpec[] {
-  return [
-    { title: `${languageName} Backend HOME`, description: 'Java with Spring Boot builds enterprise APIs with strong typing, DI, and rich ecosystem.', syntax: '@RestController, @Service', usage: 'Build REST APIs', code: '@RestController\npublic class HealthController {\n  @GetMapping("/health")\n  public Map<String, Boolean> health() {\n    return Map.of("ok", true);\n  }\n}' },
-    { title: 'Project Setup', description: 'Spring Initializr with Web, JPA, and validation.', syntax: 'Spring Initializr, Maven/Gradle', usage: 'Bootstrap app', code: '// Use start.spring.io' },
-    { title: 'Controllers and Routes', description: 'Use @RestController with @GetMapping, @PostMapping.', syntax: '@GetMapping, @PostMapping', usage: 'Define endpoints', code: '@PostMapping("/users")\npublic User create(@RequestBody User user) { return service.save(user); }' },
-    { title: 'Dependency Injection', description: 'Autowire services and repositories with Spring.', syntax: '@Autowired, @Service', usage: 'Loose coupling', code: '@Autowired\nprivate UserService userService;' },
-    { title: 'Data Access (JPA)', description: 'Use Spring Data JPA for database operations.', syntax: 'JpaRepository, @Entity', usage: 'Persist data', code: 'public interface UserRepo extends JpaRepository<User, Long> {}' },
-    { title: 'Validation', description: 'Bean Validation with @Valid and constraints.', syntax: '@Valid, @NotNull', usage: 'Input safety', code: '@PostMapping("/users")\npublic User create(@Valid @RequestBody User user) {}' },
-    { title: 'Exception Handling', description: '@ControllerAdvice for global error handling.', syntax: '@ControllerAdvice, @ExceptionHandler', usage: 'Centralized errors', code: '@ExceptionHandler(Exception.class)\npublic ResponseEntity<String> handle(Exception e) {}' },
-    { title: 'Authentication', description: 'Spring Security for JWT or session auth.', syntax: 'Spring Security, JWT', usage: 'Secure APIs', code: '// Configure HttpSecurity' },
-    { title: 'Testing', description: 'JUnit 5 and MockMvc for testing.', syntax: '@SpringBootTest, MockMvc', usage: 'Test endpoints', code: '@Test\npublic void testHealth() { mockMvc.perform(get("/health")).andExpect(status().isOk()); }' },
-    { title: 'Configuration', description: 'application.properties or YAML for settings.', syntax: 'application.yml, @Value', usage: 'Configure app', code: '@Value("${app.name}")\nprivate String appName;' },
-    { title: 'Caching', description: '@Cacheable for method-level caching.', syntax: '@Cacheable, @EnableCaching', usage: 'Speed up reads', code: '@Cacheable("users")\npublic User findById(Long id) {}' },
-    { title: 'Mini Project', description: 'REST API with CRUD, validation, and database.', syntax: 'Spring Boot + JPA', usage: 'Apply Java backend', code: '// Task API' },
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
+    { title: `${languageName} Backend HOME`, description: `${languageName} with Spring Boot is the leading platform for building enterprise-grade backend applications. Spring Boot provides auto-configuration, embedded servers, production-ready features, and a rich ecosystem for building REST APIs, microservices, and web applications.`, syntax: 'Spring Boot, Maven/Gradle, @Annotations', usage: 'Enterprise backend development', code: '@SpringBootApplication\npublic class Application {\n  public static void main(String[] args) {\n    SpringApplication.run(Application.class, args);\n  }\n}\n\n@RestController\npublic class HealthController {\n  @GetMapping("/health")\n  public Map<String, Boolean> health() {\n    return Map.of("ok", true);\n  }\n}' },
+    { title: `${languageName} Introduction`, description: `${languageName} is a mature, object-oriented programming language with strong typing and excellent tooling. Spring Framework provides comprehensive infrastructure support. Spring Boot simplifies configuration with convention-over-configuration approach.`, syntax: 'Java 17+, Spring Boot 3.x', usage: 'Modern Java development', code: '// Java 17 features\nvar name = "Spring";\nrecord User(Long id, String name) {}\n\n// Spring Boot\n@RestController\nclass UserController {\n  @GetMapping("/users/{id}")\n  User getUser(@PathVariable Long id) {\n    return new User(id, "Alice");\n  }\n}' },
+    { title: `${languageName} Project Setup`, description: `Create Spring Boot projects with Spring Initializr (start.spring.io). Choose dependencies: Spring Web, Spring Data JPA, Validation, Security. Build tools: Maven or Gradle. Project structure: src/main/java, src/main/resources.`, syntax: 'Spring Initializr, pom.xml/build.gradle', usage: 'Initialize projects', code: '// pom.xml\n<dependencies>\n  <dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-web</artifactId>\n  </dependency>\n  <dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-data-jpa</artifactId>\n  </dependency>\n</dependencies>' },
+    { title: `${languageName} Application Structure`, description: `Organize code by feature or layer. Common packages: controller (REST endpoints), service (business logic), repository (data access), model/entity (domain objects), config (configuration). Main class annotated with @SpringBootApplication.`, syntax: 'Package structure', usage: 'Code organization', code: 'com.example.app\n├── Application.java\n├── controller\n│   └── UserController.java\n├── service\n│   └── UserService.java\n├── repository\n│   └── UserRepository.java\n├── model\n│   └── User.java\n└── config\n    └── SecurityConfig.java' },
+    { title: `${languageName} Configuration`, description: `Configure application with application.properties or application.yml. Set port, database, logging levels. Use profiles for different environments (dev, prod). Access properties with @Value or @ConfigurationProperties.`, syntax: 'application.yml, @Value', usage: 'Application settings', code: '# application.yml\nserver:\n  port: 8080\nspring:\n  datasource:\n    url: jdbc:postgresql://localhost:5432/mydb\n    username: user\n    password: pass\n  jpa:\n    hibernate:\n      ddl-auto: update\n\n// Use in code\n@Value("${server.port}")\nprivate int port;' },
+
+    // BASICS (15 lessons)
+    { title: `${languageName} Controllers`, description: `Controllers handle HTTP requests. Use @RestController for REST APIs, @Controller for views. Method annotations: @GetMapping, @PostMapping, @PutMapping, @DeleteMapping. @PathVariable for URL params, @RequestParam for query params.`, syntax: '@RestController, @GetMapping', usage: 'Handle HTTP requests', code: '@RestController\n@RequestMapping("/api/users")\npublic class UserController {\n  \n  @GetMapping\n  public List<User> getAll() {\n    return userService.findAll();\n  }\n  \n  @GetMapping("/{id}")\n  public User getById(@PathVariable Long id) {\n    return userService.findById(id);\n  }\n  \n  @PostMapping\n  public User create(@RequestBody User user) {\n    return userService.save(user);\n  }\n}' },
+    { title: `${languageName} Request/Response`, description: `Handle request body with @RequestBody. Return objects automatically serialized to JSON. Use ResponseEntity for custom status codes and headers. @RequestParam for query parameters.`, syntax: '@RequestBody, ResponseEntity', usage: 'Process requests', code: '@PostMapping("/users")\npublic ResponseEntity<User> create(@RequestBody User user) {\n  User saved = userService.save(user);\n  return ResponseEntity.status(HttpStatus.CREATED).body(saved);\n}\n\n@GetMapping("/search")\npublic List<User> search(@RequestParam String name) {\n  return userService.findByName(name);\n}' },
+    { title: `${languageName} Services`, description: `Services contain business logic. Annotate with @Service for component scanning. Inject dependencies via constructor. Keep controllers thin, services fat. Services are transactional by default.`, syntax: '@Service, constructor injection', usage: 'Business logic layer', code: '@Service\npublic class UserService {\n  private final UserRepository userRepository;\n  \n  public UserService(UserRepository userRepository) {\n    this.userRepository = userRepository;\n  }\n  \n  public User findById(Long id) {\n    return userRepository.findById(id)\n      .orElseThrow(() -> new ResourceNotFoundException("User not found"));\n  }\n  \n  @Transactional\n  public User save(User user) {\n    return userRepository.save(user);\n  }\n}' },
+    { title: `${languageName} Dependency Injection`, description: `Spring manages beans (objects) in container. Use @Autowired, @Component, @Service, @Repository annotations. Constructor injection preferred over field injection. Use @Qualifier for multiple beans of same type.`, syntax: '@Autowired, constructor injection', usage: 'Loose coupling', code: '@Service\npublic class UserService {\n  private final UserRepository userRepository;\n  private final EmailService emailService;\n  \n  // Constructor injection (recommended)\n  public UserService(UserRepository userRepository, EmailService emailService) {\n    this.userRepository = userRepository;\n    this.emailService = emailService;\n  }\n}' },
+    { title: `${languageName} Entities and JPA`, description: `Entities are Java classes mapped to database tables. Use @Entity, @Id, @GeneratedValue, @Column. JPA (Java Persistence API) handles ORM. Relationships: @OneToMany, @ManyToOne, @ManyToMany.`, syntax: '@Entity, @Id, @Column', usage: 'Database mapping', code: '@Entity\n@Table(name = "users")\npublic class User {\n  @Id\n  @GeneratedValue(strategy = GenerationType.IDENTITY)\n  private Long id;\n  \n  @Column(nullable = false, unique = true)\n  private String email;\n  \n  @Column(nullable = false)\n  private String name;\n  \n  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)\n  private List<Order> orders;\n  \n  // getters, setters, constructors\n}' },
+    { title: `${languageName} Repositories`, description: `Repositories handle database operations. Extend JpaRepository for CRUD methods. Custom queries with @Query or method names. Spring Data JPA auto-implements methods based on naming conventions.`, syntax: 'JpaRepository, @Query', usage: 'Data access layer', code: 'public interface UserRepository extends JpaRepository<User, Long> {\n  // Auto-generated from method name\n  List<User> findByEmail(String email);\n  List<User> findByNameContaining(String name);\n  \n  // Custom query\n  @Query("SELECT u FROM User u WHERE u.email = ?1")\n  Optional<User> findByEmailCustom(String email);\n  \n  @Query("SELECT u FROM User u WHERE u.createdAt > :date")\n  List<User> findRecentUsers(@Param("date") LocalDateTime date);\n}' },
+    { title: `${languageName} Validation`, description: `Bean Validation with javax.validation. Annotations: @NotNull, @NotEmpty, @Email, @Size, @Min, @Max. Use @Valid in controller. Custom validators with @Constraint. MethodValidation for service methods.`, syntax: '@Valid, @NotNull, @Email', usage: 'Input validation', code: 'public class User {\n  @NotNull(message = "Email is required")\n  @Email(message = "Invalid email format")\n  private String email;\n  \n  @NotEmpty(message = "Name is required")\n  @Size(min = 2, max = 50, message = "Name must be 2-50 characters")\n  private String name;\n  \n  @Min(value = 18, message = "Must be at least 18")\n  private Integer age;\n}\n\n@PostMapping("/users")\npublic User create(@Valid @RequestBody User user) {\n  return userService.save(user);\n}' },
+    { title: `${languageName} Exception Handling`, description: `Handle exceptions globally with @ControllerAdvice and @ExceptionHandler. Return custom error responses. @ResponseStatus for HTTP status codes. Create custom exceptions extending RuntimeException.`, syntax: '@ControllerAdvice, @ExceptionHandler', usage: 'Error handling', code: '@ControllerAdvice\npublic class GlobalExceptionHandler {\n  \n  @ExceptionHandler(ResourceNotFoundException.class)\n  @ResponseStatus(HttpStatus.NOT_FOUND)\n  public ErrorResponse handleNotFound(ResourceNotFoundException ex) {\n    return new ErrorResponse(404, ex.getMessage());\n  }\n  \n  @ExceptionHandler(Exception.class)\n  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)\n  public ErrorResponse handleGeneric(Exception ex) {\n    return new ErrorResponse(500, "Internal server error");\n  }\n}\n\npublic class ResourceNotFoundException extends RuntimeException {\n  public ResourceNotFoundException(String message) {\n    super(message);\n  }\n}' },
+    { title: `${languageName} DTOs and Mapping`, description: `Data Transfer Objects (DTOs) separate API models from entities. Use record classes for immutable DTOs. Map between DTOs and entities with ModelMapper or MapStruct. Prevents exposing internal structure.`, syntax: 'record, ModelMapper', usage: 'API layer separation', code: '// DTO\npublic record UserDTO(Long id, String name, String email) {}\n\n// Mapping\npublic class UserMapper {\n  public static UserDTO toDTO(User user) {\n    return new UserDTO(user.getId(), user.getName(), user.getEmail());\n  }\n  \n  public static User toEntity(UserDTO dto) {\n    User user = new User();\n    user.setName(dto.name());\n    user.setEmail(dto.email());\n    return user;\n  }\n}' },
+    { title: `${languageName} Database Queries`, description: `JPQL (Java Persistence Query Language) for complex queries. Native SQL with @Query(nativeQuery = true). Criteria API for dynamic queries. Use @Transactional for write operations. Pagination and sorting support.`, syntax: 'JPQL, @Query, Pageable', usage: 'Advanced queries', code: '@Query("SELECT u FROM User u JOIN u.orders o WHERE o.total > :amount")\nList<User> findUsersWithOrdersAbove(@Param("amount") Double amount);\n\n@Query(value = "SELECT * FROM users WHERE created_at > ?1", nativeQuery = true)\nList<User> findRecentUsersNative(LocalDateTime date);\n\n// Pagination\nPage<User> findAll(Pageable pageable);\n\n// In controller\npublic Page<User> getUsers(int page, int size) {\n  return userService.findAll(PageRequest.of(page, size, Sort.by("name")));\n}' },
+    { title: `${languageName} Transactions`, description: `@Transactional ensures atomic operations. Rollback on RuntimeException by default. Control propagation and isolation levels. Use at service layer. Read-only transactions for queries.`, syntax: '@Transactional, rollback', usage: 'Data consistency', code: '@Service\npublic class OrderService {\n  \n  @Transactional\n  public Order createOrder(Order order) {\n    order = orderRepository.save(order);\n    inventoryService.updateStock(order.getItems());\n    emailService.sendConfirmation(order.getUser().getEmail());\n    return order;\n  }\n  \n  @Transactional(readOnly = true)\n  public List<Order> findAll() {\n    return orderRepository.findAll();\n  }\n}' },
+    { title: `${languageName} Testing with JUnit`, description: `Test with JUnit 5 and Spring Boot Test. @SpringBootTest loads full context. @WebMvcTest for controller tests. MockMvc for HTTP testing. @MockBean for mocking dependencies. AssertJ for fluent assertions.`, syntax: '@SpringBootTest, MockMvc, @MockBean', usage: 'Unit and integration tests', code: '@SpringBootTest\nclass UserServiceTest {\n  @Autowired\n  private UserService userService;\n  \n  @MockBean\n  private UserRepository userRepository;\n  \n  @Test\n  void testFindById() {\n    User user = new User(1L, "Alice");\n    when(userRepository.findById(1L)).thenReturn(Optional.of(user));\n    \n    User found = userService.findById(1L);\n    assertThat(found.getName()).isEqualTo("Alice");\n  }\n}' },
+    { title: `${languageName} REST Testing`, description: `Test REST endpoints with MockMvc or RestTemplate. @WebMvcTest for lightweight tests. Verify status codes, response bodies, headers. Integration tests with TestRestTemplate.`, syntax: 'MockMvc, @WebMvcTest', usage: 'API testing', code: '@WebMvcTest(UserController.class)\nclass UserControllerTest {\n  @Autowired\n  private MockMvc mockMvc;\n  \n  @MockBean\n  private UserService userService;\n  \n  @Test\n  void testGetUser() throws Exception {\n    User user = new User(1L, "Alice");\n    when(userService.findById(1L)).thenReturn(user);\n    \n    mockMvc.perform(get("/api/users/1"))\n      .andExpect(status().isOk())\n      .andExpect(jsonPath("$.name").value("Alice"));\n  }\n}' },
+    { title: `${languageName} Security Basics`, description: `Spring Security for authentication and authorization. Configure with SecurityFilterChain. Basic auth, form login, or JWT. @PreAuthorize for method-level security. Password encoding with BCrypt.`, syntax: 'Spring Security, @PreAuthorize', usage: 'Secure applications', code: '@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n  \n  @Bean\n  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    http\n      .authorizeHttpRequests(auth -> auth\n        .requestMatchers("/api/public/**").permitAll()\n        .anyRequest().authenticated()\n      )\n      .httpBasic(Customizer.withDefaults());\n    return http.build();\n  }\n  \n  @Bean\n  public PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n  }\n}' },
+    { title: `${languageName} Logging`, description: `Logging with SLF4J and Logback. Log levels: TRACE, DEBUG, INFO, WARN, ERROR. Configure in logback-spring.xml or application.yml. Use @Slf4j (Lombok) for logger injection.`, syntax: 'SLF4J, @Slf4j, logger', usage: 'Application logging', code: 'import lombok.extern.slf4j.Slf4j;\n\n@Slf4j\n@Service\npublic class UserService {\n  \n  public User findById(Long id) {\n    log.info("Finding user with id: {}", id);\n    try {\n      User user = userRepository.findById(id)\n        .orElseThrow(() -> new ResourceNotFoundException("User not found"));\n      log.debug("Found user: {}", user);\n      return user;\n    } catch (Exception e) {\n      log.error("Error finding user: {}", id, e);\n      throw e;\n    }\n  }\n}' },
+
+    // INTERMEDIATE (10 lessons)
+    { title: `${languageName} JWT Authentication`, description: `JWT (JSON Web Tokens) for stateless authentication. Generate tokens on login, validate on requests. Custom filter for token validation. Store user details in SecurityContext.`, syntax: 'JWT, JwtTokenProvider, Filter', usage: 'Token-based auth', code: '@Component\npublic class JwtTokenProvider {\n  @Value("${jwt.secret}")\n  private String secret;\n  \n  public String generateToken(String username) {\n    return Jwts.builder()\n      .setSubject(username)\n      .setIssuedAt(new Date())\n      .setExpiration(new Date(System.currentTimeMillis() + 86400000))\n      .signWith(SignatureAlgorithm.HS512, secret)\n      .compact();\n  }\n  \n  public boolean validateToken(String token) {\n    try {\n      Jwts.parser().setSigningKey(secret).parseClaimsJws(token);\n      return true;\n    } catch (Exception e) {\n      return false;\n    }\n  }\n}' },
+    { title: `${languageName} Caching`, description: `Improve performance with caching. @EnableCaching and @Cacheable annotations. Cache providers: EhCache, Redis, Caffeine. @CacheEvict to invalidate cache. @CachePut to update cache.`, syntax: '@Cacheable, @CacheEvict, @CachePut', usage: 'Performance optimization', code: '@Configuration\n@EnableCaching\npublic class CacheConfig {}\n\n@Service\npublic class UserService {\n  \n  @Cacheable(value = "users", key = "#id")\n  public User findById(Long id) {\n    return userRepository.findById(id).orElseThrow();\n  }\n  \n  @CacheEvict(value = "users", key = "#user.id")\n  public User update(User user) {\n    return userRepository.save(user);\n  }\n}' },
+    { title: `${languageName} Async Processing`, description: `Asynchronous methods with @Async. Run tasks in background thread pool. Returns CompletableFuture. Configure with @EnableAsync. Useful for email sending, notifications, long-running tasks.`, syntax: '@Async, @EnableAsync, CompletableFuture', usage: 'Background processing', code: '@Configuration\n@EnableAsync\npublic class AsyncConfig {}\n\n@Service\npublic class EmailService {\n  \n  @Async\n  public CompletableFuture<Void> sendEmail(String to, String subject, String body) {\n    // Send email logic\n    return CompletableFuture.completedFuture(null);\n  }\n}\n\n// Usage\nCompletableFuture<Void> future = emailService.sendEmail("user@example.com", "Welcome", "Hello!");\n// Continues without waiting' },
+    { title: `${languageName} Scheduling`, description: `Schedule tasks with @Scheduled. Cron expressions for complex schedules. Fixed rate or delay. @EnableScheduling to activate. Useful for cleanup jobs, reports, data synchronization.`, syntax: '@Scheduled, @EnableScheduling, cron', usage: 'Periodic tasks', code: '@Configuration\n@EnableScheduling\npublic class SchedulingConfig {}\n\n@Component\npublic class ScheduledTasks {\n  \n  @Scheduled(fixedRate = 60000) // Every minute\n  public void reportStatus() {\n    log.info("Status check");\n  }\n  \n  @Scheduled(cron = "0 0 2 * * ?") // Daily at 2 AM\n  public void dailyCleanup() {\n    log.info("Running daily cleanup");\n  }\n}' },
+    { title: `${languageName} File Upload`, description: `Handle file uploads with MultipartFile. Configure max file size. Save to disk or cloud storage. Validation for file types and sizes. Return download URLs.`, syntax: 'MultipartFile, @PostMapping', usage: 'File handling', code: '@PostMapping("/upload")\npublic ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {\n  if (file.isEmpty()) {\n    return ResponseEntity.badRequest().body("File is empty");\n  }\n  \n  try {\n    String filename = file.getOriginalFilename();\n    Path path = Paths.get("uploads/" + filename);\n    Files.write(path, file.getBytes());\n    return ResponseEntity.ok("File uploaded: " + filename);\n  } catch (IOException e) {\n    return ResponseEntity.status(500).body("Upload failed");\n  }\n}' },
+    { title: `${languageName} API Documentation`, description: `Document APIs with SpringDoc OpenAPI (Swagger). Auto-generates interactive documentation. Annotations: @Tag, @Operation, @ApiResponse. Access at /swagger-ui.html.`, syntax: 'SpringDoc, @Operation, Swagger UI', usage: 'API documentation', code: '@RestController\n@Tag(name = "Users", description = "User management APIs")\npublic class UserController {\n  \n  @Operation(summary = "Get user by ID", description = "Returns a single user")\n  @ApiResponses(value = {\n    @ApiResponse(responseCode = "200", description = "Success"),\n    @ApiResponse(responseCode = "404", description = "User not found")\n  })\n  @GetMapping("/{id}")\n  public User getById(@PathVariable Long id) {\n    return userService.findById(id);\n  }\n}' },
+    { title: `${languageName} Database Migration`, description: `Manage database schema with Flyway or Liquibase. Version-controlled SQL migrations. Auto-run on startup. Rollback support. Better than Hibernate ddl-auto for production.`, syntax: 'Flyway, migration scripts', usage: 'Schema versioning', code: '// src/main/resources/db/migration/V1__create_users_table.sql\nCREATE TABLE users (\n  id BIGSERIAL PRIMARY KEY,\n  email VARCHAR(255) UNIQUE NOT NULL,\n  name VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\n// application.yml\nspring:\n  flyway:\n    enabled: true\n    locations: classpath:db/migration' },
+    { title: `${languageName} Profiles and Environments`, description: `Use Spring Profiles for environment-specific configuration. application-dev.yml, application-prod.yml. Activate with spring.profiles.active. Different databases, URLs, feature flags per environment.`, syntax: '@Profile, application-{profile}.yml', usage: 'Environment configuration', code: '// application-dev.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:testdb\n\n// application-prod.yml\nspring:\n  datasource:\n    url: jdbc:postgresql://prod-db:5432/app\n\n@Service\n@Profile("prod")\npublic class ProductionEmailService implements EmailService {}\n\n@Service\n@Profile("dev")\npublic class MockEmailService implements EmailService {}' },
+    { title: `${languageName} Actuator and Monitoring`, description: `Spring Boot Actuator provides production-ready features. Health checks, metrics, info endpoints. Integrate with Prometheus, Grafana. Custom health indicators and metrics.`, syntax: 'Actuator, /actuator/health, metrics', usage: 'Production monitoring', code: '// application.yml\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,info,metrics,prometheus\n  health:\n    show-details: always\n\n// Custom health indicator\n@Component\npublic class DatabaseHealthIndicator implements HealthIndicator {\n  @Override\n  public Health health() {\n    if (isDatabaseUp()) {\n      return Health.up().withDetail("database", "Available").build();\n    }\n    return Health.down().withDetail("database", "Unavailable").build();\n  }\n}' },
+    { title: `${languageName} RestTemplate and WebClient`, description: `Call external APIs with RestTemplate (sync) or WebClient (async/reactive). Handle responses, errors. Set timeouts, headers, authentication. WebClient is preferred for new projects.`, syntax: 'RestTemplate, WebClient', usage: 'HTTP client', code: '// RestTemplate (synchronous)\n@Bean\npublic RestTemplate restTemplate() {\n  return new RestTemplate();\n}\n\npublic User fetchUser(Long id) {\n  return restTemplate.getForObject("https://api.example.com/users/" + id, User.class);\n}\n\n// WebClient (reactive)\n@Bean\npublic WebClient webClient() {\n  return WebClient.builder().baseUrl("https://api.example.com").build();\n}\n\npublic Mono<User> fetchUserAsync(Long id) {\n  return webClient.get()\n    .uri("/users/{id}", id)\n    .retrieve()\n    .bodyToMono(User.class);\n}' },
+
+    // ADVANCED (5 lessons)
+    { title: `${languageName} Microservices`, description: `Build microservices with Spring Cloud. Service discovery (Eureka), API gateway (Spring Cloud Gateway), config server, circuit breakers (Resilience4j). Inter-service communication with Feign.`, syntax: 'Spring Cloud, Eureka, Gateway', usage: 'Distributed systems', code: '@EnableDiscoveryClient\n@SpringBootApplication\npublic class UserService {}\n\n@FeignClient(name = "order-service")\npublic interface OrderClient {\n  @GetMapping("/api/orders/user/{userId}")\n  List<Order> getOrdersByUser(@PathVariable Long userId);\n}' },
+    { title: `${languageName} Reactive Programming`, description: `Reactive programming with Spring WebFlux. Non-blocking I/O with Mono (0-1) and Flux (0-N). Reactive repositories. Better scalability for high-load applications. Functional endpoints.`, syntax: 'WebFlux, Mono, Flux', usage: 'Non-blocking apps', code: '@RestController\npublic class UserController {\n  \n  @GetMapping("/users")\n  public Flux<User> getAll() {\n    return userService.findAll();\n  }\n  \n  @GetMapping("/users/{id}")\n  public Mono<User> getById(@PathVariable Long id) {\n    return userService.findById(id);\n  }\n}\n\npublic interface UserRepository extends ReactiveCrudRepository<User, Long> {\n  Flux<User> findByName(String name);\n}' },
+    { title: `${languageName} Messaging with Kafka`, description: `Integrate Apache Kafka for event streaming. Producer sends messages, consumer receives. Topics and partitions. Spring Kafka with @KafkaListener. Useful for decoupling services, event sourcing.`, syntax: 'Spring Kafka, @KafkaListener', usage: 'Event-driven architecture', code: '@Service\npublic class UserEventProducer {\n  @Autowired\n  private KafkaTemplate<String, UserEvent> kafkaTemplate;\n  \n  public void sendUserCreated(User user) {\n    UserEvent event = new UserEvent("USER_CREATED", user);\n    kafkaTemplate.send("user-events", event);\n  }\n}\n\n@Component\npublic class UserEventConsumer {\n  @KafkaListener(topics = "user-events", groupId = "notification-service")\n  public void consume(UserEvent event) {\n    log.info("Received event: {}", event);\n    // Process event\n  }\n}' },
+    { title: `${languageName} Performance Tuning`, description: `Optimize performance: connection pooling (HikariCP), query optimization (N+1 problem), lazy loading, caching, async processing. Use database indexes. Profile with JProfiler or VisualVM. Monitor with Actuator metrics.`, syntax: 'HikariCP, @Async, indexing', usage: 'Application performance', code: '// Connection pool\nspring:\n  datasource:\n    hikari:\n      maximum-pool-size: 20\n      minimum-idle: 5\n      connection-timeout: 30000\n\n// Solve N+1 with @EntityGraph\n@EntityGraph(attributePaths = {"orders"})\nList<User> findAll();\n\n// Add index\n@Entity\n@Table(name = "users", indexes = {\n  @Index(name = "idx_email", columnList = "email")\n})\npublic class User {}' },
+    { title: `${languageName} Deployment`, description: `Package as JAR with embedded Tomcat. Deploy to cloud (AWS, Azure, GCP), containers (Docker), or Kubernetes. Environment configuration, health checks. CI/CD with Jenkins, GitHub Actions, GitLab CI.`, syntax: 'mvn package, docker, kubernetes', usage: 'Production deployment', code: '// Dockerfile\nFROM eclipse-temurin:17-jre\nWORKDIR /app\nCOPY target/myapp.jar app.jar\nEXPOSE 8080\nENTRYPOINT ["java", "-jar", "app.jar"]\n\n// Build and run\nmvn clean package\ndocker build -t myapp .\ndocker run -p 8080:8080 myapp\n\n// Kubernetes deployment\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: myapp\nspec:\n  replicas: 3\n  template:\n    spec:\n      containers:\n      - name: myapp\n        image: myapp:latest\n        ports:\n        - containerPort: 8080' },
   ]
+
+  return lessons
 }
 
 // Go Backend
@@ -1390,6 +1422,153 @@ function goBackendSpecs(languageName: string): SectionSpec[] {
       usage: 'Build web servers and REST APIs',
       code: 'package main\n\nimport (\n  "encoding/json"\n  "net/http"\n  "fmt"\n)\n\ntype Response struct {\n  Message string `json:"message"`\n  Status  string `json:"status"`\n}\n\nfunc homeHandler(w http.ResponseWriter, r *http.Request) {\n  fmt.Fprintf(w, "Welcome to Go Web Server!")\n}\n\nfunc apiHandler(w http.ResponseWriter, r *http.Request) {\n  w.Header().Set("Content-Type", "application/json")\n  response := Response{\n    Message: "API is running",\n    Status:  "success",\n  }\n  json.NewEncoder(w).Encode(response)\n}\n\nfunc main() {\n  http.HandleFunc("/", homeHandler)\n  http.HandleFunc("/api", apiHandler)\n  \n  fmt.Println("Server starting on :8080")\n  http.ListenAndServe(":8080", nil)\n}'
     },
+    {
+      title: 'HTTP Routing',
+      description: 'Use gorilla/mux for advanced routing with path variables, query parameters, and method-based routing.',
+      syntax: 'r := mux.NewRouter()\nr.HandleFunc("/users/{id}", handler).Methods("GET")',
+      usage: 'Advanced HTTP routing',
+      code: 'import "github.com/gorilla/mux"\n\nfunc getUserHandler(w http.ResponseWriter, r *http.Request) {\n  vars := mux.Vars(r)\n  userID := vars["id"]\n  fmt.Fprintf(w, "User ID: %s", userID)\n}\n\nfunc main() {\n  r := mux.NewRouter()\n  r.HandleFunc("/users", getUsers).Methods("GET")\n  r.HandleFunc("/users/{id}", getUserHandler).Methods("GET")\n  r.HandleFunc("/users", createUser).Methods("POST")\n  http.ListenAndServe(":8080", r)\n}'
+    },
+    {
+      title: 'Middleware',
+      description: 'Create middleware functions to handle cross-cutting concerns like logging, authentication, and CORS.',
+      syntax: 'func middleware(next http.Handler) http.Handler { }',
+      usage: 'Add reusable functionality to handlers',
+      code: 'func loggingMiddleware(next http.Handler) http.Handler {\n  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n    fmt.Printf("%s %s\\n", r.Method, r.URL.Path)\n    next.ServeHTTP(w, r)\n  })\n}\n\nfunc authMiddleware(next http.Handler) http.Handler {\n  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n    token := r.Header.Get("Authorization")\n    if token == "" {\n      http.Error(w, "Unauthorized", http.StatusUnauthorized)\n      return\n    }\n    next.ServeHTTP(w, r)\n  })\n}\n\nfunc main() {\n  r := mux.NewRouter()\n  r.Use(loggingMiddleware)\n  r.Handle("/protected", authMiddleware(http.HandlerFunc(protectedHandler)))\n  http.ListenAndServe(":8080", r)\n}'
+    },
+    {
+      title: 'JSON Handling',
+      description: 'Marshal and unmarshal JSON with encoding/json. Use struct tags to control JSON field names.',
+      syntax: 'json.Marshal(v)\njson.Unmarshal(data, &v)',
+      usage: 'Work with JSON data',
+      code: 'type User struct {\n  ID    int    `json:"id"`\n  Name  string `json:"name"`\n  Email string `json:"email,omitempty"`\n}\n\nfunc createUser(w http.ResponseWriter, r *http.Request) {\n  var user User\n  err := json.NewDecoder(r.Body).Decode(&user)\n  if err != nil {\n    http.Error(w, err.Error(), http.StatusBadRequest)\n    return\n  }\n  user.ID = 1\n  w.Header().Set("Content-Type", "application/json")\n  json.NewEncoder(w).Encode(user)\n}'
+    },
+    {
+      title: 'Database with database/sql',
+      description: 'Connect to databases using database/sql package with drivers like pq (PostgreSQL) or mysql.',
+      syntax: 'db, err := sql.Open("postgres", dsn)\ndb.Query(query, args...)',
+      usage: 'Database operations',
+      code: 'import (\n  "database/sql"\n  _ "github.com/lib/pq"\n)\n\nfunc main() {\n  db, err := sql.Open("postgres", "user=postgres dbname=mydb sslmode=disable")\n  if err != nil {\n    panic(err)\n  }\n  defer db.Close()\n  \n  rows, err := db.Query("SELECT id, name FROM users WHERE age > $1", 18)\n  if err != nil {\n    panic(err)\n  }\n  defer rows.Close()\n  \n  for rows.Next() {\n    var id int\n    var name string\n    rows.Scan(&id, &name)\n    fmt.Printf("%d: %s\\n", id, name)\n  }\n}'
+    },
+    {
+      title: 'GORM ORM',
+      description: 'Use GORM for object-relational mapping with auto-migration, associations, and query building.',
+      syntax: 'db.Create(&model)\ndb.First(&model, id)\ndb.Where("age > ?", 18).Find(&users)',
+      usage: 'Elegant database operations',
+      code: 'import "gorm.io/gorm"\n\ntype User struct {\n  gorm.Model\n  Name  string\n  Email string `gorm:"uniqueIndex"`\n  Age   int\n}\n\nfunc main() {\n  db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})\n  db.AutoMigrate(&User{})\n  \n  user := User{Name: "Alice", Email: "alice@example.com", Age: 25}\n  db.Create(&user)\n  \n  var users []User\n  db.Where("age > ?", 18).Find(&users)\n  \n  db.First(&user, 1)\n  user.Age = 26\n  db.Save(&user)\n}'
+    },
+    {
+      title: 'Environment Variables',
+      description: 'Use os.Getenv() to read environment variables. Use godotenv for .env file support.',
+      syntax: 'os.Getenv("VAR_NAME")\ngodotenv.Load()',
+      usage: 'Configuration management',
+      code: 'import (\n  "os"\n  "github.com/joho/godotenv"\n)\n\nfunc main() {\n  godotenv.Load()\n  \n  dbHost := os.Getenv("DB_HOST")\n  dbPort := os.Getenv("DB_PORT")\n  apiKey := os.Getenv("API_KEY")\n  \n  port := os.Getenv("PORT")\n  if port == "" {\n    port = "8080"\n  }\n  \n  fmt.Printf("Starting server on port %s\\n", port)\n}'
+    },
+    {
+      title: 'Logging',
+      description: 'Use log package for basic logging or logrus/zap for structured logging.',
+      syntax: 'log.Println()\nlog.Fatal()\nlogrus.WithFields()',
+      usage: 'Application logging',
+      code: 'import (\n  "log"\n  "github.com/sirupsen/logrus"\n)\n\nfunc main() {\n  log.Println("Server starting")\n  log.Printf("Port: %d", 8080)\n  \n  // Structured logging with logrus\n  logrus.WithFields(logrus.Fields{\n    "user": "alice",\n    "action": "login",\n  }).Info("User logged in")\n  \n  logrus.Error("Something went wrong")\n}'
+    },
+    {
+      title: 'Context',
+      description: 'Use context.Context for cancellation, timeouts, and request-scoped values.',
+      syntax: 'ctx, cancel := context.WithTimeout(parent, duration)\nctx.Done()',
+      usage: 'Request lifecycle management',
+      code: 'import "context"\n\nfunc doWork(ctx context.Context) error {\n  select {\n  case <-time.After(2 * time.Second):\n    fmt.Println("Work done")\n    return nil\n  case <-ctx.Done():\n    return ctx.Err()\n  }\n}\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n  ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)\n  defer cancel()\n  \n  if err := doWork(ctx); err != nil {\n    http.Error(w, err.Error(), http.StatusRequestTimeout)\n  }\n}'
+    },
+    {
+      title: 'Testing',
+      description: 'Write tests with testing package. Use table-driven tests for multiple test cases.',
+      syntax: 'func TestName(t *testing.T) { }\nt.Run(name, func(t *testing.T) { })',
+      usage: 'Unit and integration testing',
+      code: 'import "testing"\n\nfunc Add(a, b int) int {\n  return a + b\n}\n\nfunc TestAdd(t *testing.T) {\n  tests := []struct {\n    name string\n    a, b int\n    want int\n  }{\n    {"positive", 2, 3, 5},\n    {"negative", -1, -1, -2},\n    {"zero", 0, 5, 5},\n  }\n  \n  for _, tt := range tests {\n    t.Run(tt.name, func(t *testing.T) {\n      got := Add(tt.a, tt.b)\n      if got != tt.want {\n        t.Errorf("Add(%d, %d) = %d; want %d", tt.a, tt.b, got, tt.want)\n      }\n    })\n  }\n}'
+    },
+    {
+      title: 'Benchmarking',
+      description: 'Benchmark code performance with testing.B. Run with go test -bench=.',
+      syntax: 'func BenchmarkName(b *testing.B) { }',
+      usage: 'Performance testing',
+      code: 'func Fibonacci(n int) int {\n  if n < 2 {\n    return n\n  }\n  return Fibonacci(n-1) + Fibonacci(n-2)\n}\n\nfunc BenchmarkFibonacci(b *testing.B) {\n  for i := 0; i < b.N; i++ {\n    Fibonacci(10)\n  }\n}\n\n// Run: go test -bench=.\n// Output: BenchmarkFibonacci-8  1000000  1234 ns/op'
+    },
+    {
+      title: 'File Uploads',
+      description: 'Handle file uploads with multipart/form-data. Save uploaded files to disk or cloud storage.',
+      syntax: 'r.ParseMultipartForm(maxSize)\nfile, header, err := r.FormFile("field")',
+      usage: 'File upload handling',
+      code: 'func uploadHandler(w http.ResponseWriter, r *http.Request) {\n  r.ParseMultipartForm(10 << 20) // 10 MB max\n  \n  file, header, err := r.FormFile("file")\n  if err != nil {\n    http.Error(w, err.Error(), http.StatusBadRequest)\n    return\n  }\n  defer file.Close()\n  \n  dst, err := os.Create("./uploads/" + header.Filename)\n  if err != nil {\n    http.Error(w, err.Error(), http.StatusInternalServerError)\n    return\n  }\n  defer dst.Close()\n  \n  io.Copy(dst, file)\n  fmt.Fprintf(w, "File uploaded: %s", header.Filename)\n}'
+    },
+    {
+      title: 'JWT Authentication',
+      description: 'Implement JWT-based authentication with jwt-go library.',
+      syntax: 'token := jwt.NewWithClaims()\ntoken.SignedString(secret)',
+      usage: 'Secure authentication',
+      code: 'import "github.com/golang-jwt/jwt/v5"\n\nvar jwtSecret = []byte("secret-key")\n\ntype Claims struct {\n  UserID int `json:"user_id"`\n  jwt.RegisteredClaims\n}\n\nfunc generateToken(userID int) (string, error) {\n  claims := Claims{\n    UserID: userID,\n    RegisteredClaims: jwt.RegisteredClaims{\n      ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),\n    },\n  }\n  token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)\n  return token.SignedString(jwtSecret)\n}\n\nfunc validateToken(tokenString string) (*Claims, error) {\n  token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {\n    return jwtSecret, nil\n  })\n  if claims, ok := token.Claims.(*Claims); ok && token.Valid {\n    return claims, nil\n  }\n  return nil, err\n}'
+    },
+    {
+      title: 'CORS',
+      description: 'Handle Cross-Origin Resource Sharing with gorilla/handlers or custom middleware.',
+      syntax: 'handlers.CORS(options...)(router)',
+      usage: 'Enable cross-origin requests',
+      code: 'import "github.com/gorilla/handlers"\n\nfunc main() {\n  r := mux.NewRouter()\n  r.HandleFunc("/api/users", getUsers).Methods("GET")\n  \n  corsOptions := handlers.CORS(\n    handlers.AllowedOrigins([]string{"http://localhost:3000"}),\n    handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),\n    handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),\n  )\n  \n  http.ListenAndServe(":8080", corsOptions(r))\n}'
+    },
+    {
+      title: 'Rate Limiting',
+      description: 'Implement rate limiting to prevent abuse using time/rate or third-party libraries.',
+      syntax: 'limiter := rate.NewLimiter(rate.Limit(r), b)',
+      usage: 'API protection',
+      code: 'import "golang.org/x/time/rate"\n\nvar limiter = rate.NewLimiter(rate.Limit(10), 20) // 10 req/sec, burst 20\n\nfunc rateLimitMiddleware(next http.Handler) http.Handler {\n  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n    if !limiter.Allow() {\n      http.Error(w, "Rate limit exceeded", http.StatusTooManyRequests)\n      return\n    }\n    next.ServeHTTP(w, r)\n  })\n}'
+    },
+    {
+      title: 'Caching',
+      description: 'Implement caching with in-memory stores like go-cache or external stores like Redis.',
+      syntax: 'cache.Set(key, value, expiration)\nvalue, found := cache.Get(key)',
+      usage: 'Performance optimization',
+      code: 'import "github.com/patrickmn/go-cache"\n\nvar c = cache.New(5*time.Minute, 10*time.Minute)\n\nfunc getUser(id int) (*User, error) {\n  key := fmt.Sprintf("user:%d", id)\n  \n  if cached, found := c.Get(key); found {\n    return cached.(*User), nil\n  }\n  \n  user, err := fetchUserFromDB(id)\n  if err != nil {\n    return nil, err\n  }\n  \n  c.Set(key, user, cache.DefaultExpiration)\n  return user, nil\n}'
+    },
+    {
+      title: 'WebSockets',
+      description: 'Implement real-time bidirectional communication with gorilla/websocket.',
+      syntax: 'upgrader.Upgrade(w, r, nil)\nconn.WriteMessage(messageType, data)',
+      usage: 'Real-time features',
+      code: 'import "github.com/gorilla/websocket"\n\nvar upgrader = websocket.Upgrader{\n  CheckOrigin: func(r *http.Request) bool { return true },\n}\n\nfunc wsHandler(w http.ResponseWriter, r *http.Request) {\n  conn, err := upgrader.Upgrade(w, r, nil)\n  if err != nil {\n    return\n  }\n  defer conn.Close()\n  \n  for {\n    messageType, p, err := conn.ReadMessage()\n    if err != nil {\n      return\n    }\n    if err := conn.WriteMessage(messageType, p); err != nil {\n      return\n    }\n  }\n}'
+    },
+    {
+      title: 'gRPC',
+      description: 'Build high-performance RPC services with gRPC and Protocol Buffers.',
+      syntax: 'protoc --go_out=. *.proto',
+      usage: 'Microservices communication',
+      code: '// user.proto\nsyntax = "proto3";\npackage user;\n\nservice UserService {\n  rpc GetUser(UserRequest) returns (UserResponse);\n}\n\nmessage UserRequest {\n  int32 id = 1;\n}\n\nmessage UserResponse {\n  int32 id = 1;\n  string name = 2;\n}\n\n// server.go\ntype server struct {\n  pb.UnimplementedUserServiceServer\n}\n\nfunc (s *server) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResponse, error) {\n  return &pb.UserResponse{Id: req.Id, Name: "Alice"}, nil\n}'
+    },
+    {
+      title: 'Docker',
+      description: 'Containerize Go applications with Docker for consistent deployment.',
+      syntax: 'docker build -t app .\ndocker run -p 8080:8080 app',
+      usage: 'Container deployment',
+      code: '# Dockerfile\nFROM golang:1.21-alpine AS builder\nWORKDIR /app\nCOPY go.mod go.sum ./\nRUN go mod download\nCOPY . .\nRUN go build -o main .\n\nFROM alpine:latest\nRUN apk --no-cache add ca-certificates\nWORKDIR /root/\nCOPY --from=builder /app/main .\nEXPOSE 8080\nCMD ["./main"]\n\n# Build and run\n# docker build -t myapp .\n# docker run -p 8080:8080 myapp'
+    },
+    {
+      title: 'Deployment',
+      description: 'Deploy Go applications to cloud platforms, VPS, or Kubernetes.',
+      syntax: 'Production deployment strategies',
+      usage: 'Ship to production',
+      code: '# Build for Linux\nGOOS=linux GOARCH=amd64 go build -o app\n\n# Systemd service\n[Unit]\nDescription=Go App\nAfter=network.target\n\n[Service]\nType=simple\nUser=www-data\nWorkingDirectory=/var/www/app\nExecStart=/var/www/app/main\nRestart=on-failure\n\n[Install]\nWantedBy=multi-user.target\n\n# Kubernetes deployment\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: go-app\nspec:\n  replicas: 3\n  template:\n    spec:\n      containers:\n      - name: app\n        image: myapp:latest\n        ports:\n        - containerPort: 8080'
+    },
+    {
+      title: 'Best Practices',
+      description: 'Go coding best practices: error handling, naming conventions, code organization, and performance tips.',
+      syntax: 'Best practices and idioms',
+      usage: 'Write idiomatic Go code',
+      code: '// Best Practices:\n// 1. Handle errors explicitly\nif err != nil {\n  return fmt.Errorf("failed to do X: %w", err)\n}\n\n// 2. Use short variable names in small scopes\nfor i, v := range items {\n  // i and v are clear in context\n}\n\n// 3. Accept interfaces, return structs\nfunc ProcessData(r io.Reader) (*Result, error)\n\n// 4. Use defer for cleanup\nfile, err := os.Open("file.txt")\nif err != nil {\n  return err\n}\ndefer file.Close()\n\n// 5. Avoid naked returns in long functions\n// 6. Use context for cancellation\n// 7. Prefer composition over inheritance\n// 8. Keep interfaces small\n// 9. Run gofmt and golint'
+    },
+    {
+      title: 'Performance Optimization',
+      description: 'Optimize Go applications with profiling, benchmarking, and efficient algorithms.',
+      syntax: 'go test -cpuprofile=cpu.prof -bench=.',
+      usage: 'Optimize application performance',
+      code: 'import _ "net/http/pprof"\n\n// Enable pprof\ngo func() {\n  log.Println(http.ListenAndServe("localhost:6060", nil))\n}()\n\n// Optimization tips:\n// 1. Use pointers for large structs\n// 2. Pre-allocate slices with make([]T, 0, capacity)\n// 3. Use sync.Pool for frequently allocated objects\nvar pool = sync.Pool{\n  New: func() interface{} {\n    return &Buffer{}\n  },\n}\n\n// 4. Avoid unnecessary allocations\n// 5. Use string builders for concatenation\nvar sb strings.Builder\nsb.WriteString("hello")\nsb.WriteString(" world")\n\n// 6. Profile with pprof\n// go tool pprof http://localhost:6060/debug/pprof/profile'
+    },
   ]
 }
 
@@ -1522,205 +1701,833 @@ function rustBackendSpecs(languageName: string): SectionSpec[] {
       usage: 'Build web applications and APIs',
       code: 'use actix_web::{get, post, web, App, HttpServer, Responder, HttpResponse};\nuse serde::{Deserialize, Serialize};\n\n#[derive(Serialize, Deserialize)]\nstruct User {\n    id: u32,\n    name: String,\n}\n\n#[get("/")]\nasync fn hello() -> impl Responder {\n    HttpResponse::Ok().body("Hello, Rust!")\n}\n\n#[get("/users/{id}")]\nasync fn get_user(id: web::Path<u32>) -> impl Responder {\n    let user = User {\n        id: *id,\n        name: String::from("Alice"),\n    };\n    web::Json(user)\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| {\n        App::new()\n            .service(hello)\n            .service(get_user)\n    })\n    .bind("127.0.0.1:8080")?\n    .run()\n    .await\n}'
     },
+    {
+      title: 'Async/Await',
+      description: 'Rust supports asynchronous programming with async/await syntax. Use Tokio runtime for async execution.',
+      syntax: 'async fn name() -> T { }\n.await',
+      usage: 'Asynchronous programming',
+      code: 'use tokio::time::{sleep, Duration};\n\nasync fn fetch_data() -> String {\n    sleep(Duration::from_secs(1)).await;\n    String::from("Data loaded")\n}\n\n#[tokio::main]\nasync fn main() {\n    let result = fetch_data().await;\n    println!("{}", result);\n    \n    // Concurrent execution\n    let task1 = tokio::spawn(async { fetch_data().await });\n    let task2 = tokio::spawn(async { fetch_data().await });\n    \n    let (r1, r2) = tokio::join!(task1, task2);\n    println!("{:?}, {:?}", r1, r2);\n}'
+    },
+    {
+      title: 'Error Handling Advanced',
+      description: 'Use Result and Option for error handling. Create custom error types. Use ? operator for error propagation.',
+      syntax: 'Result<T, E>, Option<T>, ?',
+      usage: 'Robust error handling',
+      code: 'use std::fs::File;\nuse std::io::{self, Read};\n\nfn read_file(path: &str) -> Result<String, io::Error> {\n    let mut file = File::open(path)?;\n    let mut contents = String::new();\n    file.read_to_string(&mut contents)?;\n    Ok(contents)\n}\n\n// Custom error type\n#[derive(Debug)]\nenum AppError {\n    Io(io::Error),\n    Parse(String),\n}\n\nimpl From<io::Error> for AppError {\n    fn from(err: io::Error) -> AppError {\n        AppError::Io(err)\n    }\n}'
+    },
+    {
+      title: 'Traits',
+      description: 'Traits define shared behavior. Implement traits for types. Use trait bounds for generic functions.',
+      syntax: 'trait Name { fn method(&self); }\nimpl Name for Type { }',
+      usage: 'Shared behavior and polymorphism',
+      code: 'trait Summary {\n    fn summarize(&self) -> String;\n}\n\nstruct Article {\n    title: String,\n    content: String,\n}\n\nimpl Summary for Article {\n    fn summarize(&self) -> String {\n        format!("{}: {}", self.title, &self.content[..50])\n    }\n}\n\n// Trait bounds\nfn print_summary<T: Summary>(item: &T) {\n    println!("{}", item.summarize());\n}\n\nfn main() {\n    let article = Article {\n        title: String::from("Rust"),\n        content: String::from("Rust is awesome..."),\n    };\n    print_summary(&article);\n}'
+    },
+    {
+      title: 'Lifetimes Advanced',
+      description: 'Use lifetime annotations to express relationships between references. Generic lifetimes for structs and functions.',
+      syntax: "'a, 'static",
+      usage: 'Reference validity',
+      code: 'fn longest<\'a>(x: &\'a str, y: &\'a str) -> &\'a str {\n    if x.len() > y.len() { x } else { y }\n}\n\nstruct ImportantExcerpt<\'a> {\n    part: &\'a str,\n}\n\nimpl<\'a> ImportantExcerpt<\'a> {\n    fn level(&self) -> i32 {\n        3\n    }\n}\n\nfn main() {\n    let s1 = String::from("long string");\n    let s2 = "short";\n    let result = longest(&s1, s2);\n    println!("{}", result);\n}'
+    },
+    {
+      title: 'Smart Pointers',
+      description: 'Use Box<T> for heap allocation, Rc<T> for reference counting, RefCell<T> for interior mutability.',
+      syntax: 'Box<T>, Rc<T>, RefCell<T>',
+      usage: 'Advanced memory management',
+      code: 'use std::rc::Rc;\nuse std::cell::RefCell;\n\n// Box for heap allocation\nlet b = Box::new(5);\nprintln!("{}", b);\n\n// Rc for shared ownership\nlet a = Rc::new(String::from("hello"));\nlet b = Rc::clone(&a);\nprintln!("Count: {}", Rc::strong_count(&a));\n\n// RefCell for interior mutability\nlet x = RefCell::new(5);\n*x.borrow_mut() += 1;\nprintln!("{}", x.borrow());'
+    },
+    {
+      title: 'Concurrency with Threads',
+      description: 'Create threads with thread::spawn. Use channels for communication between threads.',
+      syntax: 'thread::spawn, mpsc::channel',
+      usage: 'Parallel execution',
+      code: 'use std::thread;\nuse std::sync::mpsc;\nuse std::time::Duration;\n\nfn main() {\n    let (tx, rx) = mpsc::channel();\n    \n    thread::spawn(move || {\n        let vals = vec!["hi", "from", "thread"];\n        for val in vals {\n            tx.send(val).unwrap();\n            thread::sleep(Duration::from_secs(1));\n        }\n    });\n    \n    for received in rx {\n        println!("Got: {}", received);\n    }\n}'
+    },
+    {
+      title: 'Mutex and Arc',
+      description: 'Use Mutex for mutual exclusion and Arc for atomic reference counting in concurrent contexts.',
+      syntax: 'Arc<Mutex<T>>',
+      usage: 'Thread-safe shared state',
+      code: 'use std::sync::{Arc, Mutex};\nuse std::thread;\n\nfn main() {\n    let counter = Arc::new(Mutex::new(0));\n    let mut handles = vec![];\n    \n    for _ in 0..10 {\n        let counter = Arc::clone(&counter);\n        let handle = thread::spawn(move || {\n            let mut num = counter.lock().unwrap();\n            *num += 1;\n        });\n        handles.push(handle);\n    }\n    \n    for handle in handles {\n        handle.join().unwrap();\n    }\n    \n    println!("Result: {}", *counter.lock().unwrap());\n}'
+    },
+    {
+      title: 'Testing',
+      description: 'Write unit tests with #[test], integration tests, and doc tests. Use assertions and test organization.',
+      syntax: '#[test], assert_eq!, cargo test',
+      usage: 'Code quality assurance',
+      code: '#[cfg(test)]\nmod tests {\n    use super::*;\n    \n    #[test]\n    fn test_add() {\n        assert_eq!(add(2, 2), 4);\n    }\n    \n    #[test]\n    fn test_divide() {\n        let result = divide(10.0, 2.0);\n        assert_eq!(result, 5.0);\n    }\n    \n    #[test]\n    #[should_panic(expected = "divide by zero")]\n    fn test_divide_by_zero() {\n        divide(10.0, 0.0);\n    }\n}\n\n// Run: cargo test'
+    },
+    {
+      title: 'Actix-web Advanced',
+      description: 'Build complete REST APIs with Actix-web: routing, middleware, state, JSON, error handling.',
+      syntax: 'web::Data, middleware',
+      usage: 'Production web APIs',
+      code: 'use actix_web::{web, App, HttpServer, middleware};\n\nstruct AppState {\n    app_name: String,\n}\n\nasync fn index(data: web::Data<AppState>) -> String {\n    format!("App: {}", data.app_name)\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    let app_state = web::Data::new(AppState {\n        app_name: String::from("MyApp"),\n    });\n    \n    HttpServer::new(move || {\n        App::new()\n            .app_data(app_state.clone())\n            .wrap(middleware::Logger::default())\n            .route("/", web::get().to(index))\n    })\n    .bind("127.0.0.1:8080")?\n    .run()\n    .await\n}'
+    },
+    {
+      title: 'Serde Serialization',
+      description: 'Serialize and deserialize data with Serde. Support JSON, YAML, TOML, and more.',
+      syntax: '#[derive(Serialize, Deserialize)], serde_json',
+      usage: 'Data serialization',
+      code: 'use serde::{Deserialize, Serialize};\nuse serde_json::Result;\n\n#[derive(Serialize, Deserialize, Debug)]\nstruct User {\n    id: u32,\n    name: String,\n    email: String,\n}\n\nfn main() -> Result<()> {\n    let user = User {\n        id: 1,\n        name: String::from("Alice"),\n        email: String::from("alice@example.com"),\n    };\n    \n    // Serialize to JSON\n    let json = serde_json::to_string(&user)?;\n    println!("{}", json);\n    \n    // Deserialize from JSON\n    let user2: User = serde_json::from_str(&json)?;\n    println!("{:?}", user2);\n    \n    Ok(())\n}'
+    },
+    {
+      title: 'Diesel ORM',
+      description: 'Use Diesel for type-safe database operations with PostgreSQL, MySQL, or SQLite.',
+      syntax: 'diesel::prelude::*',
+      usage: 'Database ORM',
+      code: '#[macro_use]\nextern crate diesel;\n\nuse diesel::prelude::*;\n\n#[derive(Queryable)]\nstruct User {\n    id: i32,\n    name: String,\n    email: String,\n}\n\ntable! {\n    users (id) {\n        id -> Int4,\n        name -> Varchar,\n        email -> Varchar,\n    }\n}\n\nfn get_users(conn: &PgConnection) -> Vec<User> {\n    use self::users::dsl::*;\n    users.load::<User>(conn).expect("Error loading users")\n}\n\n// Migrations: diesel migration run'
+    },
+    {
+      title: 'Environment Variables',
+      description: 'Read configuration from environment variables with std::env or dotenv.',
+      syntax: 'std::env::var, dotenv',
+      usage: 'Configuration management',
+      code: 'use std::env;\nuse dotenv::dotenv;\n\nfn main() {\n    dotenv().ok();\n    \n    let database_url = env::var("DATABASE_URL")\n        .expect("DATABASE_URL must be set");\n    \n    let port = env::var("PORT")\n        .unwrap_or_else(|_| "8080".to_string());\n    \n    println!("Database: {}", database_url);\n    println!("Port: {}", port);\n}'
+    },
+    {
+      title: 'Logging',
+      description: 'Implement logging with env_logger or tracing for structured logging.',
+      syntax: 'log::info!, env_logger',
+      usage: 'Application logging',
+      code: 'use log::{info, warn, error};\nuse env_logger::Env;\n\nfn main() {\n    env_logger::Builder::from_env(Env::default().default_filter_or("info"))\n        .init();\n    \n    info!("Starting application");\n    warn!("This is a warning");\n    error!("This is an error");\n    \n    // Set RUST_LOG=debug cargo run\n}'
+    },
+    {
+      title: 'Middleware',
+      description: 'Create custom middleware for Actix-web: authentication, logging, CORS, rate limiting.',
+      syntax: 'Transform trait, wrap',
+      usage: 'Request/response processing',
+      code: 'use actix_web::{dev::ServiceRequest, HttpMessage};\nuse actix_web::middleware::{self, Logger};\n\nasync fn auth_middleware(\n    req: ServiceRequest,\n    next: Next<impl MessageBody>,\n) -> Result<ServiceResponse<impl MessageBody>, Error> {\n    let token = req.headers().get("Authorization");\n    if token.is_none() {\n        return Err(ErrorUnauthorized("No token"));\n    }\n    next.call(req).await\n}\n\n// Apply\nApp::new()\n    .wrap(Logger::default())\n    .wrap(middleware::Compress::default())'
+    },
+    {
+      title: 'JWT Authentication',
+      description: 'Implement JWT-based authentication with jsonwebtoken crate.',
+      syntax: 'encode, decode, Claims',
+      usage: 'Secure authentication',
+      code: 'use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey};\nuse serde::{Serialize, Deserialize};\n\n#[derive(Debug, Serialize, Deserialize)]\nstruct Claims {\n    sub: String,\n    exp: usize,\n}\n\nfn create_token(user_id: &str) -> String {\n    let claims = Claims {\n        sub: user_id.to_owned(),\n        exp: 10000000000, // expiration\n    };\n    encode(&Header::default(), &claims, &EncodingKey::from_secret("secret".as_ref())).unwrap()\n}\n\nfn validate_token(token: &str) -> Result<Claims, jsonwebtoken::errors::Error> {\n    decode::<Claims>(token, &DecodingKey::from_secret("secret".as_ref()), &Validation::default())\n        .map(|data| data.claims)\n}'
+    },
+    {
+      title: 'Database Pooling',
+      description: 'Use connection pooling with r2d2 for efficient database connections.',
+      syntax: 'r2d2::Pool',
+      usage: 'Connection management',
+      code: 'use r2d2::Pool;\nuse diesel::r2d2::ConnectionManager;\nuse diesel::PgConnection;\n\ntype DbPool = Pool<ConnectionManager<PgConnection>>;\n\nfn create_pool(database_url: &str) -> DbPool {\n    let manager = ConnectionManager::<PgConnection>::new(database_url);\n    Pool::builder()\n        .max_size(15)\n        .build(manager)\n        .expect("Failed to create pool")\n}\n\nasync fn handler(pool: web::Data<DbPool>) -> HttpResponse {\n    let conn = pool.get().expect("Failed to get DB connection");\n    // Use connection\n    HttpResponse::Ok().finish()\n}'
+    },
+    {
+      title: 'CORS',
+      description: 'Handle Cross-Origin Resource Sharing with actix-cors middleware.',
+      syntax: 'Cors::default()',
+      usage: 'Cross-origin requests',
+      code: 'use actix_cors::Cors;\nuse actix_web::http::header;\n\nHttpServer::new(|| {\n    let cors = Cors::default()\n        .allowed_origin("http://localhost:3000")\n        .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])\n        .allowed_headers(vec![header::AUTHORIZATION, header::CONTENT_TYPE])\n        .max_age(3600);\n    \n    App::new()\n        .wrap(cors)\n        .route("/api/users", web::get().to(get_users))\n})'
+    },
+    {
+      title: 'File Uploads',
+      description: 'Handle multipart file uploads with actix-multipart.',
+      syntax: 'Multipart, Field',
+      usage: 'File upload handling',
+      code: 'use actix_multipart::Multipart;\nuse futures::StreamExt;\nuse std::io::Write;\n\nasync fn upload(mut payload: Multipart) -> Result<HttpResponse, Error> {\n    while let Some(Ok(mut field)) = payload.next().await {\n        let filename = field.content_disposition()\n            .get_filename()\n            .unwrap_or("file");\n        \n        let filepath = format!("./uploads/{}", filename);\n        let mut f = web::block(|| std::fs::File::create(filepath))\n            .await?;\n        \n        while let Some(chunk) = field.next().await {\n            let data = chunk?;\n            f = web::block(move || f.write_all(&data).map(|_| f)).await?;\n        }\n    }\n    Ok(HttpResponse::Ok().finish())\n}'
+    },
+    {
+      title: 'WebSockets',
+      description: 'Implement real-time communication with actix-web-actors and WebSockets.',
+      syntax: 'ws::WebsocketContext',
+      usage: 'Real-time features',
+      code: 'use actix::prelude::*;\nuse actix_web_actors::ws;\n\nstruct MyWebSocket;\n\nimpl Actor for MyWebSocket {\n    type Context = ws::WebsocketContext<Self>;\n}\n\nimpl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {\n    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {\n        match msg {\n            Ok(ws::Message::Text(text)) => ctx.text(text),\n            Ok(ws::Message::Binary(bin)) => ctx.binary(bin),\n            Ok(ws::Message::Close(reason)) => ctx.close(reason),\n            _ => (),\n        }\n    }\n}'
+    },
+    {
+      title: 'Docker',
+      description: 'Containerize Rust applications with Docker for deployment.',
+      syntax: 'docker build, docker run',
+      usage: 'Container deployment',
+      code: '# Dockerfile\nFROM rust:1.70 as builder\nWORKDIR /app\nCOPY Cargo.toml Cargo.lock ./\nCOPY src ./src\nRUN cargo build --release\n\nFROM debian:bullseye-slim\nRUN apt-get update && apt-get install -y libpq5\nWORKDIR /app\nCOPY --from=builder /app/target/release/myapp .\nEXPOSE 8080\nCMD ["./myapp"]\n\n# Build and run\n# docker build -t myapp .\n# docker run -p 8080:8080 myapp'
+    },
+    {
+      title: 'Deployment',
+      description: 'Deploy Rust applications to production servers, cloud platforms, or Kubernetes.',
+      syntax: 'Production deployment',
+      usage: 'Ship to production',
+      code: '# Build for release\ncargo build --release\n\n# Systemd service\n[Unit]\nDescription=Rust App\nAfter=network.target\n\n[Service]\nType=simple\nUser=www-data\nWorkingDirectory=/var/www/app\nEnvironment="DATABASE_URL=postgres://..."\nExecStart=/var/www/app/target/release/myapp\nRestart=on-failure\n\n[Install]\nWantedBy=multi-user.target\n\n# Kubernetes deployment\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: rust-app\nspec:\n  replicas: 3\n  template:\n    spec:\n      containers:\n      - name: app\n        image: myapp:latest\n        ports:\n        - containerPort: 8080'
+    },
+    {
+      title: 'Best Practices',
+      description: 'Rust coding best practices: error handling, ownership patterns, naming conventions, and performance tips.',
+      syntax: 'Coding standards',
+      usage: 'Write idiomatic Rust',
+      code: '// Best Practices:\n// 1. Use Result for recoverable errors\nfn process() -> Result<(), Error> { Ok(()) }\n\n// 2. Prefer borrowing over cloning\nfn analyze(data: &[u8]) { }\n\n// 3. Use iterators over loops\nlet sum: i32 = vec.iter().sum();\n\n// 4. Implement traits for custom types\nimpl Display for MyType { }\n\n// 5. Use enums for state machines\nenum State { Ready, Processing, Done }\n\n// 6. Keep ownership clear\n// 7. Use cargo fmt and clippy\n// 8. Write tests\n// 9. Document public APIs\n// 10. Leverage type system for correctness'
+    },
   ]
 }
 
 // PHP Backend
 function phpBackendSpecs(languageName: string): SectionSpec[] {
-  return [
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
     {
       title: `${languageName} Backend HOME`,
       description: 'PHP is a widely-used server-side scripting language perfect for web development. It powers major platforms like WordPress, Laravel, and Symfony. PHP excels at building dynamic websites, REST APIs, and content management systems.',
       syntax: '<?php ... ?>',
       usage: 'Build dynamic web applications and APIs',
-      code: '<?php\n// Simple PHP script\necho "Hello, PHP!";\n\n// Variables\n$name = "World";\necho "Hello, $name!";\n?>'
+      code: '<?php\necho "Hello, PHP!";\n\n$name = "World";\necho "Hello, $name!";\n?>'
     },
     {
-      title: 'Getting Started',
-      description: 'Install PHP via your package manager or download from php.net. Use the built-in server for development. PHP files use .php extension and can mix HTML with PHP code using <?php ?> tags.',
+      title: 'Introduction to PHP',
+      description: 'Learn why PHP is one of the most popular server-side languages. Understand its role in web development, major frameworks (Laravel, Symfony), and where it excels.',
+      syntax: 'Server-side scripting',
+      usage: 'Understand PHP ecosystem',
+      code: '// PHP powers:\n// - WordPress (CMS)\n// - Laravel (Framework)\n// - Facebook (early days)\n// - Wikipedia\n// Great for: Web apps, APIs, CMS'
+    },
+    {
+      title: 'Setup and Environment',
+      description: 'Install PHP via your package manager or download from php.net. Use the built-in server for development. PHP files use .php extension and can mix HTML with PHP code.',
       syntax: 'php -S localhost:8000',
       usage: 'Set up PHP development environment',
-      code: '<?php\n// index.php\n?>\n<!DOCTYPE html>\n<html>\n<body>\n  <h1><?php echo "Welcome!"; ?></h1>\n  <p>Current time: <?php echo date("Y-m-d H:i:s"); ?></p>\n</body>\n</html>'
+      code: '<?php\n// index.php\n?>\n<!DOCTYPE html>\n<html>\n<body>\n  <h1><?php echo "Welcome!"; ?></h1>\n  <p>Time: <?php echo date("Y-m-d H:i:s"); ?></p>\n</body>\n</html>'
     },
     {
-      title: 'Routing & Controllers',
-      description: 'Modern PHP frameworks like Laravel use routing to map URLs to controller methods. Controllers handle business logic and return responses. Use route parameters for dynamic URLs.',
-      syntax: 'Route::get(), Route::post()',
-      usage: 'Define application endpoints',
-      code: '<?php\n// routes/web.php (Laravel)\nRoute::get(\'/users\', [UserController::class, \'index\']);\nRoute::post(\'/users\', [UserController::class, \'store\']);\nRoute::get(\'/users/{id}\', [UserController::class, \'show\']);\n\n// UserController.php\nclass UserController {\n  public function index() {\n    return User::all();\n  }\n  \n  public function show($id) {\n    return User::findOrFail($id);\n  }\n}'
+      title: 'PHP Basics',
+      description: 'Learn PHP syntax: echo for output, variables with $ prefix, statements end with semicolons. PHP code is embedded in <?php ?> tags.',
+      syntax: '<?php echo, $variable ?>',
+      usage: 'First PHP program',
+      code: '<?php\necho "Hello, World!";\n\n// Variables start with $\n$message = "Learning PHP";\necho $message;\n\n// Concatenation\necho "Hello " . "World";\n?>'
     },
     {
-      title: 'Database with PDO/Eloquent',
-      description: 'Use PDO for raw database queries with prepared statements to prevent SQL injection. Eloquent ORM (Laravel) provides an elegant ActiveRecord implementation for working with databases.',
-      syntax: 'PDO, Eloquent ORM',
-      usage: 'Interact with databases safely',
-      code: '<?php\n// PDO\n$pdo = new PDO(\'mysql:host=localhost;dbname=myapp\', \'user\', \'pass\');\n$stmt = $pdo->prepare(\'SELECT * FROM users WHERE id = :id\');\n$stmt->execute([\'id\' => $userId]);\n$user = $stmt->fetch();\n\n// Eloquent (Laravel)\n$users = User::where(\'active\', true)\n  ->orderBy(\'created_at\', \'desc\')\n  ->take(10)\n  ->get();\n  \n$user = User::create([\n  \'name\' => \'Alice\',\n  \'email\' => \'alice@example.com\'\n]);\n?>'
+      title: 'Variables and Data Types',
+      description: 'PHP is loosely typed. Main types: string, integer, float, boolean, array, object, null. Use var_dump() to inspect types.',
+      syntax: '$variable = value',
+      usage: 'Store data',
+      code: '<?php\n$name = "Alice"; // string\n$age = 25; // integer\n$price = 19.99; // float\n$isActive = true; // boolean\n$items = [1, 2, 3]; // array\n\nvar_dump($name);\necho gettype($age);\n?>'
+    },
+
+    // BASICS (20 lessons)
+    {
+      title: 'Strings',
+      description: 'Work with strings using single quotes or double quotes. Double quotes allow variable interpolation. Use string functions for manipulation.',
+      syntax: '"string $var", strlen(), substr()',
+      usage: 'String manipulation',
+      code: '<?php\n$name = "Alice";\necho "Hello, $name!"; // interpolation\necho strlen($name); // 5\necho substr($name, 0, 2); // "Al"\necho strtoupper($name); // "ALICE"\necho str_replace("A", "B", $name); // "Blice"\n?>'
     },
     {
-      title: 'Validation & Forms',
-      description: 'Validate user input to ensure data integrity and security. Use built-in filter functions or framework validators. Always validate on the server side, never trust client input.',
-      syntax: 'filter_var(), validate()',
-      usage: 'Ensure data quality and security',
-      code: '<?php\n// Built-in validation\n$email = $_POST[\'email\'] ?? \'\';\nif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {\n  die(\'Invalid email\');\n}\n\n// Laravel validation\n$validated = $request->validate([\n  \'name\' => \'required|max:255\',\n  \'email\' => \'required|email|unique:users\',\n  \'password\' => \'required|min:8|confirmed\'\n]);\n?>'
+      title: 'Arrays',
+      description: 'Indexed arrays store ordered values. Access elements by numeric index starting at 0.',
+      syntax: '$array = [val1, val2]',
+      usage: 'Store ordered data',
+      code: '<?php\n$fruits = ["apple", "banana", "cherry"];\necho $fruits[0]; // "apple"\necho count($fruits); // 3\n\n$fruits[] = "date"; // append\narray_push($fruits, "elderberry");\nprint_r($fruits);\n?>'
     },
     {
-      title: 'Authentication & Sessions',
-      description: 'Use sessions to maintain user state across requests. Implement secure authentication with password hashing using bcrypt. Laravel provides built-in auth scaffolding.',
-      syntax: 'session_start(), password_hash()',
-      usage: 'Manage user authentication',
-      code: '<?php\nsession_start();\n\n// Login\nif (password_verify($password, $user->password)) {\n  $_SESSION[\'user_id\'] = $user->id;\n  $_SESSION[\'username\'] = $user->name;\n}\n\n// Check auth\nif (!isset($_SESSION[\'user_id\'])) {\n  header(\'Location: /login\');\n  exit;\n}\n\n// Laravel Auth\nif (Auth::attempt([\'email\' => $email, \'password\' => $password])) {\n  return redirect(\'/dashboard\');\n}\n?>'
+      title: 'Associative Arrays',
+      description: 'Associative arrays use named keys instead of numeric indexes. Perfect for key-value data.',
+      syntax: '$array = ["key" => "value"]',
+      usage: 'Key-value storage',
+      code: '<?php\n$user = [\n  "name" => "Alice",\n  "email" => "alice@example.com",\n  "age" => 25\n];\n\necho $user["name"]; // "Alice"\n$user["city"] = "Paris";\nforeach ($user as $key => $value) {\n  echo "$key: $value\\n";\n}\n?>'
     },
     {
-      title: 'RESTful APIs',
-      description: 'Build REST APIs that return JSON responses. Use proper HTTP methods (GET, POST, PUT, DELETE) and status codes. Set appropriate headers for JSON content.',
-      syntax: 'json_encode(), header()',
-      usage: 'Create API endpoints',
-      code: '<?php\nheader(\'Content-Type: application/json\');\n\n// GET /api/users\nif ($_SERVER[\'REQUEST_METHOD\'] === \'GET\') {\n  $users = getAllUsers();\n  echo json_encode($users);\n  http_response_code(200);\n}\n\n// POST /api/users\nif ($_SERVER[\'REQUEST_METHOD\'] === \'POST\') {\n  $data = json_decode(file_get_contents(\'php://input\'), true);\n  $user = createUser($data);\n  echo json_encode($user);\n  http_response_code(201);\n}\n?>'
+      title: 'Control Flow - If/Else/Switch',
+      description: 'Use if, elseif, else for conditional logic. Switch statements for multiple conditions.',
+      syntax: 'if, elseif, else, switch',
+      usage: 'Conditional logic',
+      code: '<?php\n$age = 20;\nif ($age >= 18) {\n  echo "Adult";\n} else {\n  echo "Minor";\n}\n\n$role = "admin";\nswitch ($role) {\n  case "admin":\n    echo "Full access";\n    break;\n  case "user":\n    echo "Limited access";\n    break;\n  default:\n    echo "No access";\n}\n?>'
     },
     {
-      title: 'Middleware',
-      description: 'Middleware processes requests before they reach your application logic. Use for authentication, logging, CORS, and rate limiting. Laravel makes middleware easy to implement.',
-      syntax: 'Middleware classes',
-      usage: 'Handle cross-cutting concerns',
-      code: '<?php\n// Laravel Middleware\nclass CheckAge {\n  public function handle($request, Closure $next) {\n    if ($request->age <= 18) {\n      return redirect(\'home\');\n    }\n    return $next($request);\n  }\n}\n\n// Apply middleware\nRoute::get(\'/profile\', function () {\n  //\n})->middleware(\'auth\', \'verified\');\n?>'
+      title: 'Loops',
+      description: 'Iterate with for, while, do-while, and foreach loops.',
+      syntax: 'for, while, foreach',
+      usage: 'Iteration',
+      code: '<?php\nfor ($i = 0; $i < 5; $i++) {\n  echo $i;\n}\n\n$fruits = ["apple", "banana"];\nforeach ($fruits as $fruit) {\n  echo $fruit;\n}\n\nforeach ($fruits as $index => $fruit) {\n  echo "$index: $fruit";\n}\n?>'
+    },
+    {
+      title: 'Functions',
+      description: 'Define reusable code blocks with function keyword. Use parameters and return values.',
+      syntax: 'function name($param) { return $value; }',
+      usage: 'Reusable logic',
+      code: '<?php\nfunction greet($name) {\n  return "Hello, $name!";\n}\n\necho greet("Alice");\n\nfunction add($a, $b = 0) {\n  return $a + $b;\n}\n\necho add(5, 3); // 8\necho add(5); // 5\n?>'
+    },
+    {
+      title: 'Superglobals',
+      description: 'Built-in arrays available everywhere: $_GET, $_POST, $_SERVER, $_SESSION, $_COOKIE, $_FILES.',
+      syntax: '$_GET, $_POST, $_SERVER',
+      usage: 'Access request data',
+      code: '<?php\n// URL: page.php?name=Alice&age=25\necho $_GET["name"]; // "Alice"\necho $_GET["age"]; // 25\n\n// Form POST\necho $_POST["username"];\n\n// Server info\necho $_SERVER["REQUEST_METHOD"];\necho $_SERVER["HTTP_USER_AGENT"];\n?>'
+    },
+    {
+      title: 'Forms and POST/GET',
+      description: 'Handle HTML form submissions using $_POST and $_GET. Validate and sanitize user input.',
+      syntax: '$_POST, $_GET, htmlspecialchars()',
+      usage: 'Process forms',
+      code: '<?php\nif ($_SERVER["REQUEST_METHOD"] == "POST") {\n  $name = htmlspecialchars($_POST["name"]);\n  $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);\n  \n  if ($email) {\n    echo "Valid email: $email";\n  } else {\n    echo "Invalid email";\n  }\n}\n?>\n<form method="post">\n  <input name="name" required>\n  <input name="email" type="email" required>\n  <button>Submit</button>\n</form>'
+    },
+    {
+      title: 'File Handling',
+      description: 'Read, write, and manipulate files using file functions.',
+      syntax: 'fopen(), fread(), fwrite(), file_get_contents()',
+      usage: 'File operations',
+      code: '<?php\n// Read file\n$content = file_get_contents("data.txt");\necho $content;\n\n// Write file\nfile_put_contents("output.txt", "Hello, File!");\n\n// Append\n$file = fopen("log.txt", "a");\nfwrite($file, "New log entry\\n");\nfclose($file);\n?>'
+    },
+    {
+      title: 'Include and Require',
+      description: 'Include external PHP files with include/require. Use _once variants to prevent multiple inclusions.',
+      syntax: 'include, require, include_once, require_once',
+      usage: 'Code organization',
+      code: '<?php\n// header.php\ninclude "header.php";\n\n// Will error if not found\nrequire "config.php";\n\n// Include once (prevent duplicates)\nrequire_once "database.php";\ninclude_once "functions.php";\n?>'
+    },
+    {
+      title: 'Object-Oriented PHP - Classes',
+      description: 'Define classes with properties and methods. Create objects with new keyword.',
+      syntax: 'class Name { properties, methods }',
+      usage: 'Object-oriented programming',
+      code: '<?php\nclass User {\n  public $name;\n  public $email;\n  \n  public function greet() {\n    return "Hello, " . $this->name;\n  }\n}\n\n$user = new User();\n$user->name = "Alice";\necho $user->greet();\n?>'
+    },
+    {
+      title: 'Constructors and Properties',
+      description: 'Use __construct() to initialize objects. Define property visibility: public, private, protected.',
+      syntax: '__construct(), public/private',
+      usage: 'Initialize objects',
+      code: '<?php\nclass User {\n  private $name;\n  private $email;\n  \n  public function __construct($name, $email) {\n    $this->name = $name;\n    $this->email = $email;\n  }\n  \n  public function getName() {\n    return $this->name;\n  }\n}\n\n$user = new User("Alice", "alice@example.com");\necho $user->getName();\n?>'
+    },
+    {
+      title: 'Methods and Visibility',
+      description: 'Define methods with public, private, or protected visibility. Static methods belong to the class.',
+      syntax: 'public/private function, static',
+      usage: 'Encapsulation',
+      code: '<?php\nclass Math {\n  public static function add($a, $b) {\n    return $a + $b;\n  }\n  \n  private function secret() {\n    return "Hidden";\n  }\n}\n\necho Math::add(5, 3); // 8\n// Math::secret(); // Error: private\n?>'
+    },
+    {
+      title: 'Inheritance',
+      description: 'Extend classes to inherit properties and methods. Override methods in child classes.',
+      syntax: 'extends, parent::',
+      usage: 'Code reuse',
+      code: '<?php\nclass Animal {\n  public function speak() {\n    return "Some sound";\n  }\n}\n\nclass Dog extends Animal {\n  public function speak() {\n    return "Woof!";\n  }\n  \n  public function parentSpeak() {\n    return parent::speak();\n  }\n}\n\n$dog = new Dog();\necho $dog->speak(); // "Woof!"\n?>'
+    },
+    {
+      title: 'Interfaces',
+      description: 'Define contracts that classes must implement. Use implements keyword.',
+      syntax: 'interface, implements',
+      usage: 'Define contracts',
+      code: '<?php\ninterface Logger {\n  public function log($message);\n}\n\nclass FileLogger implements Logger {\n  public function log($message) {\n    file_put_contents("log.txt", $message, FILE_APPEND);\n  }\n}\n\n$logger = new FileLogger();\n$logger->log("Error occurred");\n?>'
+    },
+    {
+      title: 'Namespaces',
+      description: 'Organize code with namespaces to avoid name conflicts. Use use keyword to import.',
+      syntax: 'namespace, use',
+      usage: 'Code organization',
+      code: '<?php\n// File: App/Models/User.php\nnamespace App\\Models;\n\nclass User {\n  // ...\n}\n\n// File: index.php\nuse App\\Models\\User;\n\n$user = new User();\n// Or: $user = new \\App\\Models\\User();\n?>'
+    },
+    {
+      title: 'Composer and Autoloading',
+      description: 'Use Composer for dependency management and PSR-4 autoloading.',
+      syntax: 'composer require, autoload',
+      usage: 'Package management',
+      code: '# Install Composer package\ncomposer require guzzlehttp/guzzle\n\n<?php\n// composer.json\n{\n  "autoload": {\n    "psr-4": {\n      "App\\\\": "src/"\n    }\n  }\n}\n\n// index.php\nrequire "vendor/autoload.php";\nuse App\\Models\\User;\n?>'
     },
     {
       title: 'Error Handling',
-      description: 'Handle errors gracefully with try-catch blocks. Set up custom error handlers and use logging for debugging. Never expose sensitive error details in production.',
-      syntax: 'try-catch, set_error_handler()',
-      usage: 'Manage application errors',
-      code: '<?php\ntry {\n  $result = riskyOperation();\n} catch (Exception $e) {\n  error_log($e->getMessage());\n  http_response_code(500);\n  echo json_encode([\'error\' => \'Something went wrong\']);\n}\n\n// Custom error handler\nset_error_handler(function($errno, $errstr, $errfile, $errline) {\n  error_log("Error [$errno]: $errstr in $errfile:$errline");\n  return true;\n});\n?>'
+      description: 'Handle errors with try-catch blocks. Throw and catch exceptions.',
+      syntax: 'try, catch, throw',
+      usage: 'Manage errors',
+      code: '<?php\ntry {\n  $result = riskyOperation();\n  if (!$result) {\n    throw new Exception("Operation failed");\n  }\n} catch (Exception $e) {\n  error_log($e->getMessage());\n  echo "Error: " . $e->getMessage();\n} finally {\n  echo "Cleanup";\n}\n?>'
+    },
+    {
+      title: 'Date and Time',
+      description: 'Work with dates using date(), time(), strtotime(), and DateTime class.',
+      syntax: 'date(), DateTime',
+      usage: 'Date operations',
+      code: '<?php\necho date("Y-m-d H:i:s"); // 2024-01-15 14:30:00\necho time(); // Unix timestamp\n\n$date = new DateTime("2024-01-15");\necho $date->format("Y-m-d");\n\n$date->modify("+7 days");\necho $date->format("Y-m-d");\n?>'
+    },
+    {
+      title: 'Regular Expressions',
+      description: 'Pattern matching with preg_match(), preg_replace(), and PCRE syntax.',
+      syntax: 'preg_match(), preg_replace()',
+      usage: 'Pattern matching',
+      code: '<?php\n$email = "user@example.com";\nif (preg_match("/^[a-z0-9]+@[a-z]+\\.[a-z]{2,}$/i", $email)) {\n  echo "Valid email";\n}\n\n$text = "Hello 123 World 456";\n$numbers = preg_replace("/[^0-9]/", "", $text);\necho $numbers; // "123456"\n?>'
+    },
+
+    // INTERMEDIATE (10 lessons)
+    {
+      title: 'MySQL with PDO',
+      description: 'Connect to MySQL using PDO. Use prepared statements to prevent SQL injection.',
+      syntax: 'PDO, prepare(), execute()',
+      usage: 'Database operations',
+      code: '<?php\n$pdo = new PDO("mysql:host=localhost;dbname=myapp", "user", "pass");\n$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);\n\n// Prepared statement\n$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");\n$stmt->execute(["id" => $userId]);\n$user = $stmt->fetch(PDO::FETCH_ASSOC);\n?>'
+    },
+    {
+      title: 'CRUD Operations',
+      description: 'Create, Read, Update, Delete operations with PDO.',
+      syntax: 'INSERT, SELECT, UPDATE, DELETE',
+      usage: 'Database manipulation',
+      code: '<?php\n// Create\n$stmt = $pdo->prepare("INSERT INTO users (name, email) VALUES (?, ?)");\n$stmt->execute(["Alice", "alice@example.com"]);\n\n// Read\n$stmt = $pdo->query("SELECT * FROM users");\n$users = $stmt->fetchAll();\n\n// Update\n$stmt = $pdo->prepare("UPDATE users SET email = ? WHERE id = ?");\n$stmt->execute(["newemail@example.com", 1]);\n\n// Delete\n$stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");\n$stmt->execute([1]);\n?>'
+    },
+    {
+      title: 'Eloquent ORM (Laravel)',
+      description: 'Use Laravel Eloquent for elegant database operations with ActiveRecord pattern.',
+      syntax: 'Model::all(), find(), create()',
+      usage: 'ORM operations',
+      code: '<?php\n// Define model\nclass User extends Model {}\n\n// Query\n$users = User::all();\n$user = User::find(1);\n$active = User::where("active", true)->get();\n\n// Create\n$user = User::create([\n  "name" => "Alice",\n  "email" => "alice@example.com"\n]);\n\n// Update\n$user->email = "new@example.com";\n$user->save();\n?>'
+    },
+    {
+      title: 'Routing (Laravel)',
+      description: 'Define routes to map URLs to controllers. Use route parameters and middleware.',
+      syntax: 'Route::get(), Route::post()',
+      usage: 'URL mapping',
+      code: '<?php\n// routes/web.php\nRoute::get("/", function () {\n  return view("welcome");\n});\n\nRoute::get("/users", [UserController::class, "index"]);\nRoute::post("/users", [UserController::class, "store"]);\nRoute::get("/users/{id}", [UserController::class, "show"]);\n\n// Route groups\nRoute::middleware("auth")->group(function () {\n  Route::get("/dashboard", [DashboardController::class, "index"]);\n});\n?>'
+    },
+    {
+      title: 'Controllers',
+      description: 'Handle business logic in controllers. Use resource controllers for REST operations.',
+      syntax: 'Controller classes',
+      usage: 'Business logic',
+      code: '<?php\nclass UserController extends Controller {\n  public function index() {\n    $users = User::all();\n    return view("users.index", compact("users"));\n  }\n  \n  public function store(Request $request) {\n    $user = User::create($request->all());\n    return redirect("/users");\n  }\n  \n  public function show($id) {\n    $user = User::findOrFail($id);\n    return view("users.show", compact("user"));\n  }\n}\n?>'
+    },
+    {
+      title: 'Blade Templates',
+      description: 'Use Laravel Blade templating engine for views. Includes layouts, sections, and directives.',
+      syntax: '@extends, @section, @foreach',
+      usage: 'View rendering',
+      code: '{{-- layout.blade.php --}}\n<!DOCTYPE html>\n<html>\n<head><title>@yield("title")</title></head>\n<body>\n  @yield("content")\n</body>\n</html>\n\n{{-- users.blade.php --}}\n@extends("layout")\n\n@section("title", "Users")\n\n@section("content")\n  @foreach($users as $user)\n    <p>{{ $user->name }}</p>\n  @endforeach\n@endsection'
+    },
+    {
+      title: 'Validation',
+      description: 'Validate user input with built-in validators or Laravel validation rules.',
+      syntax: 'validate(), filter_var()',
+      usage: 'Input validation',
+      code: '<?php\n// Laravel validation\n$validated = $request->validate([\n  "name" => "required|max:255",\n  "email" => "required|email|unique:users",\n  "age" => "required|integer|min:18",\n  "password" => "required|min:8|confirmed"\n]);\n\n// Built-in\nif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {\n  die("Invalid email");\n}\n?>'
+    },
+    {
+      title: 'Sessions',
+      description: 'Maintain user state across requests with sessions. Store and retrieve session data.',
+      syntax: 'session_start(), $_SESSION',
+      usage: 'State management',
+      code: '<?php\nsession_start();\n\n// Set session\n$_SESSION["user_id"] = 1;\n$_SESSION["username"] = "Alice";\n\n// Get session\nif (isset($_SESSION["user_id"])) {\n  echo "User ID: " . $_SESSION["user_id"];\n}\n\n// Destroy session\nsession_destroy();\n?>'
+    },
+    {
+      title: 'Cookies',
+      description: 'Store data in user browser with cookies. Set expiration and security flags.',
+      syntax: 'setcookie(), $_COOKIE',
+      usage: 'Client-side storage',
+      code: '<?php\n// Set cookie (expires in 1 hour)\nsetcookie("username", "Alice", time() + 3600, "/", "", true, true);\n\n// Get cookie\nif (isset($_COOKIE["username"])) {\n  echo $_COOKIE["username"];\n}\n\n// Delete cookie\nsetcookie("username", "", time() - 3600);\n?>'
+    },
+    {
+      title: 'Authentication',
+      description: 'Implement user authentication with password hashing, login, and logout.',
+      syntax: 'password_hash(), password_verify()',
+      usage: 'User authentication',
+      code: '<?php\n// Register\n$hash = password_hash($password, PASSWORD_DEFAULT);\n$stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");\n$stmt->execute([$email, $hash]);\n\n// Login\n$stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");\n$stmt->execute([$email]);\n$user = $stmt->fetch();\n\nif ($user && password_verify($password, $user["password"])) {\n  $_SESSION["user_id"] = $user["id"];\n  echo "Login successful";\n}\n?>'
+    },
+
+    // ADVANCED (7 lessons)
+    {
+      title: 'RESTful APIs',
+      description: 'Build REST APIs with proper HTTP methods and JSON responses.',
+      syntax: 'json_encode(), header()',
+      usage: 'API development',
+      code: '<?php\nheader("Content-Type: application/json");\n\n$method = $_SERVER["REQUEST_METHOD"];\n\nswitch ($method) {\n  case "GET":\n    echo json_encode(User::all());\n    break;\n  case "POST":\n    $data = json_decode(file_get_contents("php://input"), true);\n    $user = User::create($data);\n    http_response_code(201);\n    echo json_encode($user);\n    break;\n}\n?>'
+    },
+    {
+      title: 'Middleware',
+      description: 'Process requests before they reach controllers. Implement auth, logging, CORS.',
+      syntax: 'Middleware classes',
+      usage: 'Request processing',
+      code: '<?php\n// Laravel Middleware\nclass Authenticate {\n  public function handle($request, Closure $next) {\n    if (!Auth::check()) {\n      return redirect("/login");\n    }\n    return $next($request);\n  }\n}\n\n// Apply\nRoute::middleware("auth")->group(function () {\n  Route::get("/dashboard", [DashboardController::class, "index"]);\n});\n?>'
     },
     {
       title: 'Caching',
-      description: 'Improve performance with caching. Use file caching, Redis, or Memcached for storing frequently accessed data. Laravel provides a unified caching API.',
-      syntax: 'Cache::get(), Cache::put()',
-      usage: 'Speed up application',
-      code: '<?php\n// Laravel Cache\n$users = Cache::remember(\'users\', 3600, function () {\n  return User::all();\n});\n\n// Redis\n$redis = new Redis();\n$redis->connect(\'127.0.0.1\', 6379);\n$redis->set(\'user:1\', json_encode($user));\n$redis->expire(\'user:1\', 3600);\n$cached = json_decode($redis->get(\'user:1\'));\n?>'
+      description: 'Improve performance with Redis, Memcached, or file caching.',
+      syntax: 'Cache::get(), Redis',
+      usage: 'Performance optimization',
+      code: '<?php\n// Laravel Cache\n$users = Cache::remember("users", 3600, function () {\n  return User::all();\n});\n\nCache::forget("users"); // Clear cache\n\n// Redis\n$redis = new Redis();\n$redis->connect("127.0.0.1", 6379);\n$redis->set("key", "value");\necho $redis->get("key");\n?>'
     },
     {
-      title: 'Testing',
-      description: 'Write tests using PHPUnit for unit and feature testing. Test your controllers, models, and business logic. Use factories and seeders for test data.',
-      syntax: 'PHPUnit, pest',
-      usage: 'Ensure code quality',
-      code: '<?php\n// PHPUnit test\nclass UserTest extends TestCase {\n  public function test_user_can_be_created() {\n    $user = User::create([\n      \'name\' => \'Test\',\n      \'email\' => \'test@example.com\'\n    ]);\n    \n    $this->assertDatabaseHas(\'users\', [\n      \'email\' => \'test@example.com\'\n    ]);\n  }\n}\n?>'
+      title: 'Queue and Jobs',
+      description: 'Process time-consuming tasks asynchronously with queues.',
+      syntax: 'dispatch(), Queue::push()',
+      usage: 'Background processing',
+      code: '<?php\n// Laravel Job\nclass SendEmail implements ShouldQueue {\n  public function handle() {\n    Mail::to($this->user)->send(new WelcomeEmail());\n  }\n}\n\n// Dispatch job\nSendEmail::dispatch($user);\n\n// Process queue\nphp artisan queue:work\n?>'
     },
     {
-      title: 'Mini Project',
-      description: 'Build a complete REST API for a blog with posts and comments. Include authentication, validation, and database operations. Deploy with proper error handling and caching.',
-      syntax: 'Full stack PHP application',
-      usage: 'Apply PHP backend skills',
-      code: '<?php\n// routes/api.php\nRoute::middleware(\'auth:api\')->group(function () {\n  Route::apiResource(\'posts\', PostController::class);\n  Route::apiResource(\'comments\', CommentController::class);\n});\n\n// PostController\nclass PostController {\n  public function index() {\n    return Post::with(\'author\', \'comments\')->paginate(20);\n  }\n}\n?>'
+      title: 'Testing with PHPUnit',
+      description: 'Write unit and feature tests with PHPUnit. Test controllers, models, and APIs.',
+      syntax: 'PHPUnit, assertions',
+      usage: 'Quality assurance',
+      code: '<?php\nclass UserTest extends TestCase {\n  public function test_user_creation() {\n    $user = User::create([\n      "name" => "Test",\n      "email" => "test@example.com"\n    ]);\n    \n    $this->assertDatabaseHas("users", [\n      "email" => "test@example.com"\n    ]);\n    $this->assertEquals("Test", $user->name);\n  }\n}\n?>'
+    },
+    {
+      title: 'Security Best Practices',
+      description: 'Prevent SQL injection, XSS, CSRF attacks. Use prepared statements, escape output, validate input.',
+      syntax: 'Security patterns',
+      usage: 'Secure applications',
+      code: '<?php\n// SQL Injection prevention\n$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");\n$stmt->execute([$id]);\n\n// XSS prevention\necho htmlspecialchars($userInput, ENT_QUOTES, "UTF-8");\n\n// CSRF protection (Laravel)\n@csrf\n\n// Password hashing\n$hash = password_hash($password, PASSWORD_DEFAULT);\n?>'
+    },
+    {
+      title: 'Deployment',
+      description: 'Deploy PHP applications to production servers. Configure Apache/Nginx, set environment variables, optimize for production.',
+      syntax: 'Deployment strategies',
+      usage: 'Production deployment',
+      code: '# Apache .htaccess\nRewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^ index.php [L]\n\n# Nginx config\nlocation / {\n  try_files $uri $uri/ /index.php?$query_string;\n}\n\n# Optimize\ncomposer install --optimize-autoloader --no-dev\nphp artisan config:cache\nphp artisan route:cache'
     }
   ]
+  return lessons
 }
 
 // Ruby Backend (Ruby on Rails)
 function rubyBackendSpecs(languageName: string): SectionSpec[] {
-  return [
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
     {
       title: `${languageName} Backend HOME`,
-      description: 'Ruby is an elegant, readable programming language. Ruby on Rails is a full-stack web framework that emphasizes convention over configuration. It\'s perfect for rapid development of web applications and APIs.',
+      description: 'Ruby is an elegant, readable programming language. Ruby on Rails is a full-stack web framework that emphasizes convention over configuration, making it perfect for rapid development of web applications and APIs.',
       syntax: 'class, def, end',
       usage: 'Build web applications quickly',
       code: '# Hello Ruby\nputs "Hello, Ruby!"\n\n# Variables and methods\nname = "World"\ndef greet(name)\n  "Hello, #{name}!"\nend\n\nputs greet(name)'
     },
     {
-      title: 'Rails Setup',
-      description: 'Install Ruby via rbenv or RVM. Install Rails gem and create a new Rails app. Rails follows MVC architecture with clear conventions for file organization.',
-      syntax: 'rails new app_name',
-      usage: 'Start a Rails project',
-      code: '# Install Rails\ngem install rails\n\n# Create new app\nrails new myapp --database=postgresql\n\n# Start server\ncd myapp\nrails server\n\n# Generate scaffold\nrails generate scaffold Post title:string body:text\nrails db:migrate'
+      title: 'Introduction to Ruby',
+      description: 'Learn why Ruby is beloved for its elegant syntax and developer happiness. Understand its principles: everything is an object, duck typing, and the principle of least surprise.',
+      syntax: 'Object-oriented, expressive',
+      usage: 'Understand Ruby philosophy',
+      code: '# Everything is an object\n5.times { puts "Hello" }\n"hello".upcase # "HELLO"\n\n# Blocks and iterators\n[1, 2, 3].each { |n| puts n }\n[1, 2, 3].map { |n| n * 2 } # [2, 4, 6]'
     },
     {
-      title: 'Routes & Controllers',
-      description: 'Define routes in config/routes.rb. Controllers handle requests and render responses. Use resourceful routing for RESTful APIs. Rails automatically maps routes to controller actions.',
-      syntax: 'resources :posts',
-      usage: 'Define application endpoints',
-      code: '# config/routes.rb\nRails.application.routes.draw do\n  resources :posts do\n    resources :comments\n  end\n  \n  namespace :api do\n    namespace :v1 do\n      resources :users\n    end\n  end\nend\n\n# app/controllers/posts_controller.rb\nclass PostsController < ApplicationController\n  def index\n    @posts = Post.all\n    render json: @posts\n  end\n  \n  def show\n    @post = Post.find(params[:id])\n    render json: @post\n  end\nend'
+      title: 'Setup and Environment',
+      description: 'Install Ruby via rbenv or RVM for version management. Install Rails gem and create a new Rails app. Set up database and dependencies.',
+      syntax: 'rbenv, gem install rails',
+      usage: 'Development environment',
+      code: '# Install rbenv\ncurl -fsSL https://github.com/rbenv/rbenv-installer/raw/main/bin/rbenv-installer | bash\n\n# Install Ruby\nrbenv install 3.2.0\nrbenv global 3.2.0\n\n# Install Rails\ngem install rails\n\n# Create app\nrails new myapp --database=postgresql'
     },
     {
-      title: 'Models & ActiveRecord',
-      description: 'ActiveRecord is Rails\' ORM for database interaction. Define models as Ruby classes. Use migrations to modify database schema. Query the database with intuitive Ruby methods.',
-      syntax: 'Model.where(), .find()',
-      usage: 'Work with database records',
-      code: '# app/models/post.rb\nclass Post < ApplicationRecord\n  belongs_to :user\n  has_many :comments, dependent: :destroy\n  \n  validates :title, presence: true, length: { minimum: 5 }\n  validates :body, presence: true\n  \n  scope :published, -> { where(published: true) }\n  scope :recent, -> { order(created_at: :desc) }\nend\n\n# Query examples\nPost.where(published: true).recent.limit(10)\nPost.find_by(title: "Hello")\nPost.create(title: "New Post", body: "Content")'
+      title: 'Ruby Basics',
+      description: 'Learn Ruby syntax: variables, strings, numbers, symbols, and basic operations. Use irb for interactive Ruby.',
+      syntax: 'Variables, strings, symbols',
+      usage: 'First Ruby program',
+      code: '# Variables (no declaration needed)\nname = "Alice"\nage = 25\nprice = 19.99\n\n# String interpolation\nputs "Hello, #{name}!"\n\n# Symbols (immutable strings)\nstatus = :active\nrole = :admin'
+    },
+    {
+      title: 'Ruby Data Types',
+      description: 'Work with arrays, hashes, strings, numbers, and ranges. Ruby has flexible, dynamic typing.',
+      syntax: 'Array, Hash, String, Integer',
+      usage: 'Data structures',
+      code: '# Arrays\nfruits = ["apple", "banana", "cherry"]\nfruits << "date"\nfruits.each { |f| puts f }\n\n# Hashes (key-value pairs)\nuser = { name: "Alice", age: 25, email: "alice@example.com" }\nuser[:city] = "Paris"\n\n# Ranges\n(1..5).each { |i| puts i }'
+    },
+
+    // BASICS (20 lessons)
+    {
+      title: 'Strings and Symbols',
+      description: 'Work with strings and symbols. String interpolation, concatenation, and common methods.',
+      syntax: '"string", :symbol',
+      usage: 'Text manipulation',
+      code: 'name = "Alice"\ngreeting = "Hello, #{name}!"\n\n# String methods\nname.upcase # "ALICE"\nname.length # 5\nname.include?("Al") # true\n\n# Symbols (immutable, efficient)\nstatus = :active\nrole = :admin'
+    },
+    {
+      title: 'Arrays',
+      description: 'Create and manipulate arrays. Use iteration methods like each, map, select, reduce.',
+      syntax: '[elements]',
+      usage: 'Ordered collections',
+      code: 'numbers = [1, 2, 3, 4, 5]\nnumbers.push(6)\nnumbers << 7\n\n# Iteration\nnumbers.each { |n| puts n }\ndoubled = numbers.map { |n| n * 2 }\nevens = numbers.select { |n| n.even? }\nsum = numbers.reduce(:+)'
+    },
+    {
+      title: 'Hashes',
+      description: 'Work with hashes for key-value data. Access, iteration, and common operations.',
+      syntax: '{key: value}',
+      usage: 'Key-value storage',
+      code: 'user = { name: "Alice", age: 25, email: "alice@example.com" }\n\n# Access\nuser[:name] # "Alice"\nuser[:city] = "Paris"\n\n# Iteration\nuser.each do |key, value|\n  puts "#{key}: #{value}"\nend'
+    },
+    {
+      title: 'Control Flow',
+      description: 'Conditional logic with if, elsif, else, unless, and case statements.',
+      syntax: 'if, elsif, else, case',
+      usage: 'Branching logic',
+      code: 'age = 20\nif age >= 18\n  puts "Adult"\nelsif age >= 13\n  puts "Teen"\nelse\n  puts "Child"\nend\n\n# Case statement\nrole = :admin\ncase role\nwhen :admin\n  puts "Full access"\nwhen :user\n  puts "Limited access"\nelse\n  puts "No access"\nend'
+    },
+    {
+      title: 'Loops and Iterators',
+      description: 'Iterate with while, until, for, and powerful iterator methods.',
+      syntax: 'while, each, times, upto',
+      usage: 'Iteration',
+      code: '# While loop\ni = 0\nwhile i < 5\n  puts i\n  i += 1\nend\n\n# Times\n5.times { |i| puts i }\n\n# Each\n[1, 2, 3].each { |n| puts n }\n\n# Upto\n1.upto(5) { |i| puts i }'
+    },
+    {
+      title: 'Methods',
+      description: 'Define methods with def keyword. Use parameters, default values, and return values.',
+      syntax: 'def method_name(params)',
+      usage: 'Reusable logic',
+      code: 'def greet(name)\n  "Hello, #{name}!"\nend\n\nputs greet("Alice")\n\n# Default parameters\ndef greet(name = "World", prefix = "Hello")\n  "#{prefix}, #{name}!"\nend\n\n# Implicit return\ndef add(a, b)\n  a + b # Returns last expression\nend'
+    },
+    {
+      title: 'Blocks and Procs',
+      description: 'Use blocks, lambdas, and procs for functional programming patterns.',
+      syntax: '{  block  }, lambda, proc',
+      usage: 'Higher-order functions',
+      code: '# Blocks\n[1, 2, 3].each { |n| puts n }\n\n# Lambda\ngreet = lambda { |name| "Hello, #{name}!" }\nputs greet.call("Alice")\n\n# Proc\ndouble = Proc.new { |n| n * 2 }\nputs double.call(5) # 10'
+    },
+    {
+      title: 'Classes and Objects',
+      description: 'Define classes with initialize constructor and instance methods.',
+      syntax: 'class Name',
+      usage: 'Object-oriented programming',
+      code: 'class User\n  def initialize(name, email)\n    @name = name\n    @email = email\n  end\n  \n  def greet\n    "Hello, I am #{@name}"\n  end\nend\n\nuser = User.new("Alice", "alice@example.com")\nputs user.greet'
+    },
+    {
+      title: 'Instance Variables and Accessors',
+      description: 'Use @instance variables and attr_reader, attr_writer, attr_accessor for properties.',
+      syntax: '@variable, attr_accessor',
+      usage: 'Object state',
+      code: 'class User\n  attr_accessor :name, :email\n  attr_reader :id\n  \n  def initialize(id, name, email)\n    @id = id\n    @name = name\n    @email = email\n  end\nend\n\nuser = User.new(1, "Alice", "alice@example.com")\nuser.name = "Bob"\nputs user.name # "Bob"'
+    },
+    {
+      title: 'Inheritance',
+      description: 'Extend classes with inheritance. Use super to call parent methods.',
+      syntax: 'class Child < Parent',
+      usage: 'Code reuse',
+      code: 'class Animal\n  def speak\n    "Some sound"\n  end\nend\n\nclass Dog < Animal\n  def speak\n    "Woof!"\n  end\n  \n  def parent_speak\n    super\n  end\nend\n\ndog = Dog.new\nputs dog.speak # "Woof!"'
+    },
+    {
+      title: 'Modules and Mixins',
+      description: 'Use modules for namespacing and mixins for shared behavior.',
+      syntax: 'module Name, include, extend',
+      usage: 'Code organization',
+      code: 'module Greetable\n  def greet\n    "Hello from #{self.class}"\n  end\nend\n\nclass User\n  include Greetable\nend\n\nuser = User.new\nputs user.greet'
+    },
+    {
+      title: 'File I/O',
+      description: 'Read and write files with File class. Handle file operations safely.',
+      syntax: 'File.read, File.write',
+      usage: 'File operations',
+      code: '# Write file\nFile.write("data.txt", "Hello, File!")\n\n# Read file\ncontent = File.read("data.txt")\nputs content\n\n# Block form (auto-closes)\nFile.open("log.txt", "a") do |file|\n  file.puts "New log entry"\nend'
+    },
+    {
+      title: 'Exception Handling',
+      description: 'Handle errors with begin, rescue, ensure, and raise.',
+      syntax: 'begin, rescue, ensure, raise',
+      usage: 'Error management',
+      code: 'begin\n  result = risky_operation\n  raise "Error!" unless result\nrescue StandardError => e\n  puts "Error: #{e.message}"\nensure\n  puts "Cleanup"\nend\n\n# Inline rescue\nvalue = may_fail rescue "default"'
+    },
+    {
+      title: 'Regular Expressions',
+      description: 'Pattern matching with regex. Use match, scan, and gsub.',
+      syntax: '/pattern/, match, gsub',
+      usage: 'Pattern matching',
+      code: 'email = "user@example.com"\nif email.match?(/\\w+@\\w+\\.\\w+/)\n  puts "Valid email"\nend\n\n# Extract matches\ntext = "Phone: 123-456-7890"\nphone = text[/(\\d{3})-(\\d{3})-(\\d{4})/, 0]\n\n# Replace\ntext.gsub(/\\d/, "*")'
+    },
+    {
+      title: 'Gems and Bundler',
+      description: 'Manage dependencies with Bundler and Gemfile. Install and use gems.',
+      syntax: 'gem install, bundle install',
+      usage: 'Package management',
+      code: '# Gemfile\nsource "https://rubygems.org"\n\ngem "rails", "~> 7.0"\ngem "pg"\ngem "puma"\n\n# Install\nbundle install\n\n# Use gem\nrequire "httparty"\nresponse = HTTParty.get("https://api.example.com/users")'
+    },
+    {
+      title: 'Rails MVC Architecture',
+      description: 'Understand Model-View-Controller pattern in Rails. How components interact.',
+      syntax: 'Models, Views, Controllers',
+      usage: 'Application structure',
+      code: '# MVC Flow:\n# 1. Request hits Router\n# 2. Router directs to Controller\n# 3. Controller uses Model to fetch data\n# 4. Controller renders View with data\n# 5. View returns HTML response\n\n# Directories:\n# app/models - Business logic and data\n# app/views - Templates\n# app/controllers - Request handlers'
+    },
+    {
+      title: 'Rails Generators',
+      description: 'Use Rails generators to scaffold code quickly. Generate models, controllers, migrations.',
+      syntax: 'rails generate',
+      usage: 'Code generation',
+      code: '# Generate model\nrails generate model User name:string email:string\n\n# Generate controller\nrails generate controller Users index show\n\n# Generate scaffold (all at once)\nrails generate scaffold Post title:string body:text\n\n# Run migrations\nrails db:migrate'
+    },
+    {
+      title: 'Database Migrations',
+      description: 'Create and modify database schema with migrations. Version control for database changes.',
+      syntax: 'rails db:migrate',
+      usage: 'Schema management',
+      code: '# Create migration\nrails generate migration AddAgeToUsers age:integer\n\n# Migration file\nclass AddAgeToUsers < ActiveRecord::Migration[7.0]\n  def change\n    add_column :users, :age, :integer\n    add_index :users, :email, unique: true\n  end\nend\n\n# Run\nrails db:migrate\n\n# Rollback\nrails db:rollback'
+    },
+    {
+      title: 'ActiveRecord Queries',
+      description: 'Query database with ActiveRecord methods. Chain queries for complex operations.',
+      syntax: 'Model.where, .find, .includes',
+      usage: 'Database queries',
+      code: '# Find\nUser.find(1)\nUser.find_by(email: "alice@example.com")\n\n# Where\nUser.where(active: true)\nUser.where("age > ?", 18)\n\n# Chaining\nUser.where(active: true).order(created_at: :desc).limit(10)\n\n# Joins\nPost.joins(:user).where(users: { active: true })'
+    },
+    {
+      title: 'ActiveRecord Associations',
+      description: 'Define relationships between models: has_many, belongs_to, has_one, has_and_belongs_to_many.',
+      syntax: 'has_many, belongs_to',
+      usage: 'Model relationships',
+      code: '# app/models/user.rb\nclass User < ApplicationRecord\n  has_many :posts, dependent: :destroy\n  has_many :comments\nend\n\n# app/models/post.rb\nclass Post < ApplicationRecord\n  belongs_to :user\n  has_many :comments, dependent: :destroy\nend\n\n# Usage\nuser = User.first\nuser.posts # All posts by user\npost = user.posts.create(title: "Hello")'
+    },
+
+    // INTERMEDIATE (10 lessons)
+    {
+      title: 'Routing',
+      description: 'Define routes with resourceful routing. Nested routes and custom routes.',
+      syntax: 'resources, namespace',
+      usage: 'URL mapping',
+      code: '# config/routes.rb\nRails.application.routes.draw do\n  root "posts#index"\n  \n  resources :posts do\n    resources :comments\n  end\n  \n  namespace :api do\n    namespace :v1 do\n      resources :users\n    end\n  end\n  \n  get "/about", to: "pages#about"\nend'
+    },
+    {
+      title: 'Controllers',
+      description: 'Handle requests in controllers. Use before_action, params, and render.',
+      syntax: 'before_action, params, render',
+      usage: 'Request handling',
+      code: 'class PostsController < ApplicationController\n  before_action :set_post, only: [:show, :edit, :update, :destroy]\n  \n  def index\n    @posts = Post.all\n  end\n  \n  def show\n  end\n  \n  def create\n    @post = Post.new(post_params)\n    if @post.save\n      redirect_to @post\n    else\n      render :new\n    end\n  end\n  \n  private\n  \n  def set_post\n    @post = Post.find(params[:id])\n  end\n  \n  def post_params\n    params.require(:post).permit(:title, :body)\n  end\nend'
+    },
+    {
+      title: 'Views and ERB',
+      description: 'Create views with ERB templates. Use layouts, partials, and helpers.',
+      syntax: '<% %>, <%= %>, render',
+      usage: 'Template rendering',
+      code: '<!-- app/views/layouts/application.html.erb -->\n<html>\n  <head><%= yield :head %></head>\n  <body>\n    <%= yield %>\n  </body>\n</html>\n\n<!-- app/views/posts/index.html.erb -->\n<h1>Posts</h1>\n<% @posts.each do |post| %>\n  <%= render "post", post: post %>\n<% end %>\n\n<!-- app/views/posts/_post.html.erb -->\n<div class="post">\n  <h2><%= post.title %></h2>\n  <p><%= post.body %></p>\n</div>'
     },
     {
       title: 'Validations',
-      description: 'Validate model data before saving to database. Use built-in validators or create custom ones. Rails prevents invalid data from being persisted.',
-      syntax: 'validates :field, rules',
-      usage: 'Ensure data integrity',
-      code: '# app/models/user.rb\nclass User < ApplicationRecord\n  validates :email, presence: true, \n                    uniqueness: true,\n                    format: { with: URI::MailTo::EMAIL_REGEXP }\n  validates :username, presence: true,\n                       length: { minimum: 3, maximum: 20 }\n  validates :age, numericality: { greater_than: 0 }\n  \n  # Custom validation\n  validate :email_domain_allowed\n  \n  private\n  \n  def email_domain_allowed\n    unless email.end_with?(\'@example.com\')\n      errors.add(:email, \'must be from example.com\')\n    end\n  end\nend'
+      description: 'Validate model data with built-in and custom validators.',
+      syntax: 'validates, validate',
+      usage: 'Data integrity',
+      code: 'class User < ApplicationRecord\n  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }\n  validates :username, presence: true, length: { minimum: 3, maximum: 20 }\n  validates :age, numericality: { greater_than: 0 }, allow_nil: true\n  \n  validate :custom_validation\n  \n  private\n  \n  def custom_validation\n    if email && email.end_with?("@blocked.com")\n      errors.add(:email, "domain not allowed")\n    end\n  end\nend'
+    },
+    {
+      title: 'Callbacks',
+      description: 'Use Active Record callbacks for lifecycle hooks: before_save, after_create, etc.',
+      syntax: 'before_save, after_create',
+      usage: 'Lifecycle hooks',
+      code: 'class User < ApplicationRecord\n  before_save :downcase_email\n  after_create :send_welcome_email\n  before_destroy :cleanup_data\n  \n  private\n  \n  def downcase_email\n    self.email = email.downcase\n  end\n  \n  def send_welcome_email\n    UserMailer.welcome_email(self).deliver_later\n  end\n  \n  def cleanup_data\n    # Remove associated data\n  end\nend'
+    },
+    {
+      title: 'Strong Parameters',
+      description: 'Whitelist parameters to prevent mass assignment vulnerabilities.',
+      syntax: 'params.require().permit()',
+      usage: 'Security',
+      code: 'class UsersController < ApplicationController\n  def create\n    @user = User.new(user_params)\n    if @user.save\n      redirect_to @user\n    else\n      render :new\n    end\n  end\n  \n  private\n  \n  def user_params\n    params.require(:user).permit(:name, :email, :age)\n  end\nend'
+    },
+    {
+      title: 'Sessions and Cookies',
+      description: 'Maintain state with sessions and cookies. Store user data across requests.',
+      syntax: 'session[], cookies[]',
+      usage: 'State management',
+      code: 'class SessionsController < ApplicationController\n  def create\n    user = User.find_by(email: params[:email])\n    if user&.authenticate(params[:password])\n      session[:user_id] = user.id\n      redirect_to root_path\n    else\n      flash[:error] = "Invalid credentials"\n      render :new\n    end\n  end\n  \n  def destroy\n    session[:user_id] = nil\n    redirect_to root_path\n  end\nend\n\n# Set cookie\ncookies[:user_preference] = "dark_mode"'
     },
     {
       title: 'Authentication',
-      description: 'Use Devise gem for full-featured authentication or has_secure_password for simple auth. Implement sessions, password encryption, and user management.',
-      syntax: 'has_secure_password',
-      usage: 'Secure user authentication',
-      code: '# Gemfile\ngem \'bcrypt\'\n\n# app/models/user.rb\nclass User < ApplicationRecord\n  has_secure_password\n  validates :email, presence: true, uniqueness: true\nend\n\n# app/controllers/sessions_controller.rb\nclass SessionsController < ApplicationController\n  def create\n    user = User.find_by(email: params[:email])\n    if user&.authenticate(params[:password])\n      session[:user_id] = user.id\n      render json: { message: \'Logged in\' }, status: :ok\n    else\n      render json: { error: \'Invalid credentials\' }, status: :unauthorized\n    end\n  end\n  \n  def destroy\n    session[:user_id] = nil\n    render json: { message: \'Logged out\' }\n  end\nend'
+      description: 'Implement authentication with has_secure_password or Devise gem.',
+      syntax: 'has_secure_password, Devise',
+      usage: 'User authentication',
+      code: '# Gemfile\ngem "bcrypt"\n\n# app/models/user.rb\nclass User < ApplicationRecord\n  has_secure_password\n  validates :email, presence: true, uniqueness: true\nend\n\n# Migration\nrails generate migration AddPasswordDigestToUsers password_digest:string\n\n# Login\nuser = User.find_by(email: email)\nif user&.authenticate(password)\n  session[:user_id] = user.id\nend'
     },
     {
-      title: 'REST APIs',
-      description: 'Build JSON APIs with Rails API mode. Use serializers for custom JSON formatting. Implement proper HTTP status codes and error handling.',
-      syntax: 'render json:',
-      usage: 'Create REST endpoints',
-      code: '# app/controllers/api/v1/posts_controller.rb\nmodule Api\n  module V1\n    class PostsController < ApplicationController\n      before_action :set_post, only: [:show, :update, :destroy]\n      \n      def index\n        posts = Post.all\n        render json: posts, status: :ok\n      end\n      \n      def create\n        post = Post.new(post_params)\n        if post.save\n          render json: post, status: :created\n        else\n          render json: { errors: post.errors }, status: :unprocessable_entity\n        end\n      end\n      \n      private\n      \n      def post_params\n        params.require(:post).permit(:title, :body)\n      end\n      \n      def set_post\n        @post = Post.find(params[:id])\n      end\n    end\n  end\nend'
+      title: 'Action Mailer',
+      description: 'Send emails with Action Mailer. Configure SMTP and create mailer classes.',
+      syntax: 'ActionMailer::Base',
+      usage: 'Email notifications',
+      code: '# app/mailers/user_mailer.rb\nclass UserMailer < ApplicationMailer\n  def welcome_email(user)\n    @user = user\n    mail(to: @user.email, subject: "Welcome!")\n  end\nend\n\n# app/views/user_mailer/welcome_email.html.erb\n<h1>Welcome <%= @user.name %>!</h1>\n\n# Usage\nUserMailer.welcome_email(user).deliver_now\nUserMailer.welcome_email(user).deliver_later # Background job'
+    },
+    {
+      title: 'Active Storage',
+      description: 'Handle file uploads with Active Storage. Upload to local disk, S3, or other services.',
+      syntax: 'has_one_attached, has_many_attached',
+      usage: 'File uploads',
+      code: '# app/models/user.rb\nclass User < ApplicationRecord\n  has_one_attached :avatar\n  has_many_attached :documents\nend\n\n# Upload\nuser.avatar.attach(params[:avatar])\n\n# Display in view\n<%= image_tag user.avatar if user.avatar.attached? %>\n\n# URL\nuser.avatar.url'
+    },
+
+    // ADVANCED (7 lessons)
+    {
+      title: 'REST APIs with Rails',
+      description: 'Build JSON APIs with Rails API mode. Use serializers and proper status codes.',
+      syntax: 'render json:, status:',
+      usage: 'API development',
+      code: '# app/controllers/api/v1/users_controller.rb\nmodule Api\n  module V1\n    class UsersController < ApplicationController\n      def index\n        users = User.all\n        render json: users, status: :ok\n      end\n      \n      def create\n        user = User.new(user_params)\n        if user.save\n          render json: user, status: :created\n        else\n          render json: { errors: user.errors }, status: :unprocessable_entity\n        end\n      end\n    end\n  end\nend'
     },
     {
       title: 'Background Jobs',
-      description: 'Use ActiveJob for background processing with Sidekiq or Resque. Handle long-running tasks like emails, file processing, and API calls asynchronously.',
-      syntax: 'perform_later',
-      usage: 'Process tasks asynchronously',
-      code: '# app/jobs/email_job.rb\nclass EmailJob < ApplicationJob\n  queue_as :default\n  \n  def perform(user_id)\n    user = User.find(user_id)\n    UserMailer.welcome_email(user).deliver_now\n  end\nend\n\n# Usage\nEmailJob.perform_later(user.id)\n\n# Scheduled job\nEmailJob.set(wait: 1.hour).perform_later(user.id)'
+      description: 'Process tasks asynchronously with ActiveJob and Sidekiq.',
+      syntax: 'perform_later, Sidekiq',
+      usage: 'Async processing',
+      code: '# app/jobs/email_job.rb\nclass EmailJob < ApplicationJob\n  queue_as :default\n  \n  def perform(user_id)\n    user = User.find(user_id)\n    UserMailer.welcome_email(user).deliver_now\n  end\nend\n\n# Usage\nEmailJob.perform_later(user.id)\n\n# Delayed\nEmailJob.set(wait: 1.hour).perform_later(user.id)\n\n# Gemfile\ngem "sidekiq"'
     },
     {
       title: 'Caching',
-      description: 'Rails provides multiple caching strategies: page, action, fragment, and low-level caching. Use Redis or Memcached for production caching.',
-      syntax: 'Rails.cache',
-      usage: 'Improve performance',
-      code: '# config/environments/production.rb\nconfig.cache_store = :redis_cache_store, { url: ENV[\'REDIS_URL\'] }\n\n# Low-level caching\nRails.cache.fetch("users/all", expires_in: 12.hours) do\n  User.all.to_a\nend\n\n# Fragment caching (in views)\n<% cache @post do %>\n  <%= render @post %>\n<% end %>\n\n# Model caching\nclass Post < ApplicationRecord\n  after_commit :clear_cache\n  \n  def self.cached_recent\n    Rails.cache.fetch("posts/recent", expires_in: 1.hour) do\n      recent.limit(10).to_a\n    end\n  end\n  \n  private\n  \n  def clear_cache\n    Rails.cache.delete("posts/recent")\n  end\nend'
+      description: 'Improve performance with Rails caching strategies.',
+      syntax: 'Rails.cache, cache do',
+      usage: 'Performance optimization',
+      code: '# Low-level caching\nRails.cache.fetch("users/all", expires_in: 12.hours) do\n  User.all.to_a\nend\n\n# Fragment caching\n<% cache @post do %>\n  <%= render @post %>\n<% end %>\n\n# Russian doll caching\n<% cache [@post, @post.comments.maximum(:updated_at)] do %>\n  <%= render @post %>\n  <%= render @post.comments %>\n<% end %>'
     },
     {
       title: 'Testing with RSpec',
-      description: 'Use RSpec for behavior-driven testing. Test models, controllers, and request specs. FactoryBot provides test data factories.',
+      description: 'Write comprehensive tests with RSpec and FactoryBot.',
       syntax: 'describe, it, expect',
-      usage: 'Ensure code quality',
-      code: '# spec/models/post_spec.rb\nRSpec.describe Post, type: :model do\n  describe \'validations\' do\n    it { should validate_presence_of(:title) }\n    it { should validate_presence_of(:body) }\n  end\n  \n  describe \'associations\' do\n    it { should belong_to(:user) }\n    it { should have_many(:comments) }\n  end\nend\n\n# spec/requests/posts_spec.rb\nRSpec.describe "Posts API", type: :request do\n  describe "GET /posts" do\n    it "returns all posts" do\n      create_list(:post, 3)\n      get \'/posts\'\n      expect(response).to have_http_status(:ok)\n      expect(JSON.parse(response.body).size).to eq(3)\n    end\n  end\nend'
+      usage: 'Quality assurance',
+      code: '# Gemfile\ngem "rspec-rails"\ngem "factory_bot_rails"\n\n# spec/models/user_spec.rb\nRSpec.describe User, type: :model do\n  it { should validate_presence_of(:email) }\n  it { should validate_uniqueness_of(:email) }\n  \n  describe "#full_name" do\n    it "returns first and last name" do\n      user = User.new(first_name: "Alice", last_name: "Smith")\n      expect(user.full_name).to eq("Alice Smith")\n    end\n  end\nend\n\n# spec/factories/users.rb\nFactoryBot.define do\n  factory :user do\n    email { Faker::Internet.email }\n    name { Faker::Name.name }\n  end\nend'
+    },
+    {
+      title: 'ActionCable and WebSockets',
+      description: 'Real-time features with ActionCable for WebSocket connections.',
+      syntax: 'ActionCable, channels',
+      usage: 'Real-time communication',
+      code: '# app/channels/chat_channel.rb\nclass ChatChannel < ApplicationCable::Channel\n  def subscribed\n    stream_from "chat_#{params[:room]}"\n  end\n  \n  def speak(data)\n    ActionCable.server.broadcast("chat_#{params[:room]}", message: data["message"])\n  end\nend\n\n# JavaScript\nimport consumer from "./consumer"\n\nconsumer.subscriptions.create({ channel: "ChatChannel", room: 1 }, {\n  received(data) {\n    console.log(data.message)\n  }\n})'
+    },
+    {
+      title: 'Security Best Practices',
+      description: 'Prevent common vulnerabilities: SQL injection, XSS, CSRF, mass assignment.',
+      syntax: 'Security patterns',
+      usage: 'Secure applications',
+      code: '# CSRF protection (automatic)\nprotect_from_forgery with: :exception\n\n# SQL injection prevention (use ActiveRecord)\nUser.where("email = ?", params[:email]) # Safe\nUser.where("email = #{params[:email]}") # Unsafe!\n\n# XSS prevention (automatic in ERB)\n<%= user_input %> # Auto-escaped\n<%== user_input %> # Unescaped (dangerous!)\n\n# Mass assignment protection\nparams.require(:user).permit(:name, :email) # Whitelist'
     },
     {
       title: 'Deployment',
-      description: 'Deploy Rails apps to Heroku, AWS, or DigitalOcean. Use Capistrano for automated deployments. Configure environment variables and asset compilation.',
-      syntax: 'rails assets:precompile',
-      usage: 'Ship to production',
-      code: '# Gemfile\ngroup :development do\n  gem \'capistrano\'\n  gem \'capistrano-rails\'\nend\n\n# config/deploy.rb\nset :application, "myapp"\nset :repo_url, "git@github.com:user/myapp.git"\nset :deploy_to, "/var/www/myapp"\n\n# Heroku\n# Procfile\nweb: bundle exec puma -C config/puma.rb\nworker: bundle exec sidekiq\n\n# Deploy\ngit push heroku main\nheroku run rails db:migrate'
-    },
-    {
-      title: 'Mini Project',
-      description: 'Build a complete blog API with users, posts, and comments. Include authentication, validations, background jobs for emails, and caching. Write comprehensive tests.',
-      syntax: 'Full Rails API',
-      usage: 'Apply Ruby on Rails skills',
-      code: '# Complete blog API structure\n# Models: User, Post, Comment\n# Authentication with JWT\n# Background jobs for notifications\n# Caching for popular posts\n# RSpec tests for all features\n\n# app/models/user.rb\nclass User < ApplicationRecord\n  has_secure_password\n  has_many :posts, dependent: :destroy\n  has_many :comments, dependent: :destroy\n  validates :email, presence: true, uniqueness: true\nend\n\n# Run migrations\nrails db:migrate\n\n# Start server\nrails server'
+      description: 'Deploy Rails apps to production with Heroku, Capistrano, or Docker.',
+      syntax: 'Deployment strategies',
+      usage: 'Production deployment',
+      code: '# Heroku\ngit push heroku main\nheroku run rails db:migrate\nheroku run rails db:seed\n\n# Procfile\nweb: bundle exec puma -C config/puma.rb\nworker: bundle exec sidekiq\n\n# Environment variables\nheroku config:set DATABASE_URL=...\n\n# Capistrano (config/deploy.rb)\nset :application, "myapp"\nset :repo_url, "git@github.com:user/myapp.git"\nset :deploy_to, "/var/www/myapp"\n\n# Deploy\ncap production deploy'
     }
   ]
+  return lessons
 }
 
 // Database
 function databaseSpecs(languageName: string): SectionSpec[] {
-  return [
-    { title: `${languageName} HOME`, description: `${languageName} stores and retrieves structured data reliably.`, syntax: 'DDL, DML', usage: 'Persist data', code: 'CREATE TABLE users(id SERIAL PRIMARY KEY);' },
-    { title: 'Modeling', description: 'Design tables/collections with keys and constraints.', syntax: 'PRIMARY KEY, UNIQUE', usage: 'Shape data', code: 'CREATE TABLE posts(id SERIAL PRIMARY KEY, title TEXT);' },
-    { title: 'CRUD Operations', description: 'Insert, select, update, and delete records.', syntax: 'INSERT, SELECT, UPDATE, DELETE', usage: 'Work with data', code: 'SELECT id, email FROM users;' },
-    { title: 'Joins and Relations', description: 'Relate data with joins or references.', syntax: 'JOIN, FOREIGN KEY', usage: 'Combine datasets', code: 'SELECT * FROM orders JOIN users USING(user_id);' },
-    { title: 'Indexes and Performance', description: 'Add indexes for fast lookups; measure with explain.', syntax: 'CREATE INDEX, EXPLAIN', usage: 'Speed queries', code: 'CREATE INDEX idx_users_email ON users(email);' },
-    { title: 'Transactions', description: 'Group statements atomically for integrity.', syntax: 'BEGIN, COMMIT, ROLLBACK', usage: 'Consistency', code: 'BEGIN; UPDATE accounts SET balance=balance-10; COMMIT;' },
-    { title: 'Migrations', description: 'Version schema changes with repeatable scripts.', syntax: 'migration files', usage: 'Safe evolution', code: '-- add column status TEXT' },
-    { title: 'Views and Aggregations', description: 'Summarize data with views and aggregates.', syntax: 'VIEW, GROUP BY, COUNT', usage: 'Analytics', code: 'SELECT status, COUNT(*) FROM tickets GROUP BY status;' },
-    { title: 'Security and Access', description: 'Roles, least privilege, and parameterized queries.', syntax: 'GRANT, prepared statements', usage: 'Protect data', code: 'GRANT SELECT ON users TO reader;' },
-    { title: 'Backup and Recovery', description: 'Plan backups and test restores.', syntax: 'pg_dump, snapshots', usage: 'Resilience', code: '# pg_dump mydb > backup.sql' },
-    { title: 'Scaling', description: 'Partition, cache, and tune queries as data grows.', syntax: 'partitioning, caching', usage: 'Handle load', code: '-- consider read replicas' },
-    { title: 'Mini Project', description: 'Design schema and CRUD for a small app with migrations.', syntax: 'schema + queries', usage: 'Apply DB skills', code: 'INSERT INTO tasks(title) VALUES ("Ship")' },
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
+    { title: `${languageName} HOME`, description: 'SQL (Structured Query Language) is the standard language for managing and querying relational databases. Learn to store, retrieve, and manipulate data efficiently.', syntax: 'DDL, DML, DCL', usage: 'Persist and query data', code: 'SELECT * FROM users WHERE age >= 18;' },
+    { title: 'Introduction to Databases', description: 'Understand databases, DBMS (Database Management Systems), and the difference between SQL and NoSQL databases.', syntax: 'Relational databases', usage: 'Store structured data', code: '-- Relational: MySQL, PostgreSQL, SQLite\n-- NoSQL: MongoDB, Redis, Cassandra' },
+    { title: 'Setup and Environment', description: 'Install and set up a database system like PostgreSQL, MySQL, or SQLite. Connect using command line or GUI tools.', syntax: 'Installation, psql, mysql', usage: 'Development environment', code: '-- Connect to PostgreSQL\npsql -U username -d database_name\n\n-- Or use GUI tools like pgAdmin, MySQL Workbench' },
+    { title: 'SQL Basics', description: 'Learn the fundamental SQL commands: SELECT, INSERT, UPDATE, DELETE, and their basic syntax.', syntax: 'SELECT, INSERT, UPDATE, DELETE', usage: 'Basic operations', code: 'SELECT name, email FROM users;\nINSERT INTO users (name, email) VALUES ("Ada", "ada@example.com");' },
+    { title: 'Database Fundamentals', description: 'Understand tables, rows, columns, schemas, and how relational databases organize data.', syntax: 'Tables, Columns, Rows', usage: 'Data organization', code: '-- Table: users\n-- Columns: id, name, email, age\n-- Rows: individual user records' },
+
+    // BASICS (20 lessons)
+    { title: 'Creating Databases', description: 'Create and drop databases. Switch between databases.', syntax: 'CREATE DATABASE, DROP DATABASE', usage: 'Database management', code: 'CREATE DATABASE my_app;\nUSE my_app;\nDROP DATABASE old_app;' },
+    { title: 'Creating Tables', description: 'Define table structure with columns and data types.', syntax: 'CREATE TABLE, DROP TABLE', usage: 'Define schema', code: 'CREATE TABLE users (\n  id INT PRIMARY KEY,\n  name VARCHAR(100),\n  email VARCHAR(100),\n  age INT\n);' },
+    { title: 'Data Types', description: 'Common SQL data types: INT, VARCHAR, TEXT, DATE, BOOLEAN, DECIMAL, TIMESTAMP.', syntax: 'INT, VARCHAR, DATE, BOOLEAN', usage: 'Type safety', code: 'CREATE TABLE products (\n  id INT,\n  name VARCHAR(100),\n  price DECIMAL(10, 2),\n  in_stock BOOLEAN,\n  created_at TIMESTAMP\n);' },
+    { title: 'INSERT Data', description: 'Add new rows to tables with INSERT statement.', syntax: 'INSERT INTO', usage: 'Add records', code: 'INSERT INTO users (id, name, email, age)\nVALUES (1, "Alice", "alice@example.com", 25);\n\n-- Multiple rows\nINSERT INTO users VALUES\n  (2, "Bob", "bob@example.com", 30),\n  (3, "Carol", "carol@example.com", 28);' },
+    { title: 'SELECT Queries', description: 'Retrieve data with SELECT. Use * for all columns or specify column names.', syntax: 'SELECT columns FROM table', usage: 'Retrieve data', code: 'SELECT * FROM users;\nSELECT name, email FROM users;\nSELECT DISTINCT age FROM users;' },
+    { title: 'WHERE Clause', description: 'Filter results with WHERE using conditions and operators.', syntax: 'WHERE condition', usage: 'Filter data', code: 'SELECT * FROM users WHERE age >= 18;\nSELECT * FROM users WHERE name = "Alice";\nSELECT * FROM users WHERE age BETWEEN 20 AND 30;' },
+    { title: 'ORDER BY', description: 'Sort query results in ascending (ASC) or descending (DESC) order.', syntax: 'ORDER BY column ASC/DESC', usage: 'Sort results', code: 'SELECT * FROM users ORDER BY age DESC;\nSELECT * FROM users ORDER BY name ASC;\nSELECT * FROM users ORDER BY age DESC, name ASC;' },
+    { title: 'LIMIT and OFFSET', description: 'Limit the number of results and skip rows with OFFSET for pagination.', syntax: 'LIMIT n OFFSET m', usage: 'Pagination', code: 'SELECT * FROM users LIMIT 10;\nSELECT * FROM users LIMIT 10 OFFSET 20;\n-- Get page 3 (20 per page)\nSELECT * FROM users LIMIT 20 OFFSET 40;' },
+    { title: 'UPDATE Data', description: 'Modify existing records with UPDATE statement.', syntax: 'UPDATE table SET column = value', usage: 'Modify records', code: 'UPDATE users SET age = 26 WHERE id = 1;\nUPDATE users SET email = "newemail@example.com", age = 31 WHERE name = "Bob";' },
+    { title: 'DELETE Data', description: 'Remove records from tables with DELETE statement.', syntax: 'DELETE FROM table WHERE condition', usage: 'Remove records', code: 'DELETE FROM users WHERE id = 3;\nDELETE FROM users WHERE age < 18;\n-- Delete all (be careful!)\nDELETE FROM users;' },
+    { title: 'Primary Keys', description: 'Define unique identifiers for table rows with PRIMARY KEY constraint.', syntax: 'PRIMARY KEY, AUTO_INCREMENT', usage: 'Unique identification', code: 'CREATE TABLE users (\n  id INT PRIMARY KEY AUTO_INCREMENT,\n  email VARCHAR(100) UNIQUE,\n  name VARCHAR(100)\n);' },
+    { title: 'Foreign Keys', description: 'Create relationships between tables using FOREIGN KEY constraints.', syntax: 'FOREIGN KEY REFERENCES', usage: 'Table relationships', code: 'CREATE TABLE orders (\n  id INT PRIMARY KEY,\n  user_id INT,\n  total DECIMAL(10, 2),\n  FOREIGN KEY (user_id) REFERENCES users(id)\n);' },
+    { title: 'Constraints', description: 'Enforce data integrity with constraints: NOT NULL, UNIQUE, CHECK, DEFAULT.', syntax: 'NOT NULL, UNIQUE, CHECK, DEFAULT', usage: 'Data validation', code: 'CREATE TABLE products (\n  id INT PRIMARY KEY,\n  name VARCHAR(100) NOT NULL,\n  price DECIMAL(10, 2) CHECK (price > 0),\n  status VARCHAR(20) DEFAULT "active"\n);' },
+    { title: 'NULL Values', description: 'Handle NULL (missing/unknown) values with IS NULL and IS NOT NULL.', syntax: 'IS NULL, IS NOT NULL, COALESCE', usage: 'Handle missing data', code: 'SELECT * FROM users WHERE email IS NULL;\nSELECT * FROM users WHERE email IS NOT NULL;\nSELECT COALESCE(phone, "N/A") FROM users;' },
+    { title: 'DISTINCT', description: 'Retrieve unique values by eliminating duplicates.', syntax: 'SELECT DISTINCT', usage: 'Remove duplicates', code: 'SELECT DISTINCT city FROM users;\nSELECT DISTINCT age FROM users ORDER BY age;' },
+    { title: 'Aliases', description: 'Rename columns and tables temporarily using AS keyword.', syntax: 'AS alias_name', usage: 'Readable queries', code: 'SELECT name AS full_name, age AS years FROM users;\nSELECT u.name, o.total FROM users AS u, orders AS o;' },
+    { title: 'Basic Functions', description: 'Use built-in SQL functions for data manipulation and calculation.', syntax: 'COUNT, SUM, AVG, MIN, MAX', usage: 'Data analysis', code: 'SELECT COUNT(*) FROM users;\nSELECT AVG(age) FROM users;\nSELECT MIN(price), MAX(price) FROM products;' },
+    { title: 'String Functions', description: 'Manipulate strings with UPPER, LOWER, CONCAT, SUBSTRING, LENGTH.', syntax: 'UPPER, LOWER, CONCAT, SUBSTRING', usage: 'String manipulation', code: 'SELECT UPPER(name) FROM users;\nSELECT CONCAT(first_name, " ", last_name) AS full_name FROM users;\nSELECT SUBSTRING(email, 1, 5) FROM users;' },
+    { title: 'Date Functions', description: 'Work with dates using NOW, CURDATE, DATE_ADD, DATEDIFF, DATE_FORMAT.', syntax: 'NOW, DATE_ADD, DATEDIFF', usage: 'Date operations', code: 'SELECT NOW();\nSELECT DATE_ADD(created_at, INTERVAL 7 DAY) FROM users;\nSELECT DATEDIFF(NOW(), created_at) AS days_since FROM users;' },
+    { title: 'Numeric Functions', description: 'Mathematical operations with ROUND, CEIL, FLOOR, ABS, POWER.', syntax: 'ROUND, CEIL, FLOOR, ABS', usage: 'Math operations', code: 'SELECT ROUND(price, 2) FROM products;\nSELECT CEIL(4.3); -- Returns 5\nSELECT ABS(-10); -- Returns 10' },
+
+    // INTERMEDIATE (10 lessons)
+    { title: 'INNER JOIN', description: 'Combine rows from two tables based on matching values.', syntax: 'INNER JOIN ... ON', usage: 'Combine related data', code: 'SELECT users.name, orders.total\nFROM users\nINNER JOIN orders ON users.id = orders.user_id;' },
+    { title: 'LEFT and RIGHT JOIN', description: 'Include all rows from one table even if no match exists.', syntax: 'LEFT JOIN, RIGHT JOIN', usage: 'Include unmatched rows', code: 'SELECT users.name, orders.total\nFROM users\nLEFT JOIN orders ON users.id = orders.user_id;\n\n-- Shows all users, even those with no orders' },
+    { title: 'Multiple Joins', description: 'Join more than two tables in a single query.', syntax: 'Multiple JOIN clauses', usage: 'Complex relationships', code: 'SELECT u.name, o.total, p.name AS product\nFROM users u\nJOIN orders o ON u.id = o.user_id\nJOIN order_items oi ON o.id = oi.order_id\nJOIN products p ON oi.product_id = p.id;' },
+    { title: 'GROUP BY', description: 'Group rows that have the same values in specified columns.', syntax: 'GROUP BY column', usage: 'Aggregate by groups', code: 'SELECT city, COUNT(*) AS user_count\nFROM users\nGROUP BY city;\n\nSELECT user_id, SUM(total) AS total_spent\nFROM orders\nGROUP BY user_id;' },
+    { title: 'HAVING Clause', description: 'Filter groups created by GROUP BY (unlike WHERE which filters rows).', syntax: 'HAVING condition', usage: 'Filter aggregates', code: 'SELECT city, COUNT(*) AS user_count\nFROM users\nGROUP BY city\nHAVING COUNT(*) > 10;\n\nSELECT user_id, SUM(total)\nFROM orders\nGROUP BY user_id\nHAVING SUM(total) > 1000;' },
+    { title: 'Aggregate Functions', description: 'Advanced aggregation with COUNT, SUM, AVG, MIN, MAX, GROUP_CONCAT.', syntax: 'Aggregate functions with GROUP BY', usage: 'Statistical analysis', code: 'SELECT category, COUNT(*) AS count, AVG(price) AS avg_price\nFROM products\nGROUP BY category;\n\nSELECT user_id, GROUP_CONCAT(product_name) AS products\nFROM purchases\nGROUP BY user_id;' },
+    { title: 'Subqueries', description: 'Nest queries inside other queries for complex filtering and data retrieval.', syntax: 'SELECT in WHERE/FROM', usage: 'Complex queries', code: 'SELECT * FROM users\nWHERE id IN (SELECT user_id FROM orders WHERE total > 100);\n\nSELECT name, (SELECT COUNT(*) FROM orders WHERE user_id = users.id) AS order_count\nFROM users;' },
+    { title: 'UNION and UNION ALL', description: 'Combine results from multiple SELECT statements.', syntax: 'UNION, UNION ALL', usage: 'Merge results', code: 'SELECT name FROM customers\nUNION\nSELECT name FROM suppliers;\n\n-- UNION ALL includes duplicates\nSELECT email FROM users\nUNION ALL\nSELECT email FROM subscribers;' },
+    { title: 'Indexes', description: 'Create indexes to speed up query performance on frequently searched columns.', syntax: 'CREATE INDEX, DROP INDEX', usage: 'Query optimization', code: 'CREATE INDEX idx_email ON users(email);\nCREATE INDEX idx_name_age ON users(name, age);\nDROP INDEX idx_email ON users;' },
+    { title: 'Views', description: 'Create virtual tables based on SELECT queries for reusability and security.', syntax: 'CREATE VIEW, DROP VIEW', usage: 'Reusable queries', code: 'CREATE VIEW active_users AS\nSELECT id, name, email FROM users WHERE status = "active";\n\nSELECT * FROM active_users;\nDROP VIEW active_users;' },
+
+    // ADVANCED (7 lessons)
+    { title: 'Transactions', description: 'Group multiple operations atomically with ACID properties: BEGIN, COMMIT, ROLLBACK.', syntax: 'BEGIN, COMMIT, ROLLBACK', usage: 'Data consistency', code: 'BEGIN;\nUPDATE accounts SET balance = balance - 100 WHERE id = 1;\nUPDATE accounts SET balance = balance + 100 WHERE id = 2;\nCOMMIT;\n\n-- Or ROLLBACK to undo' },
+    { title: 'Stored Procedures', description: 'Create reusable SQL code blocks that can accept parameters and return results.', syntax: 'CREATE PROCEDURE, CALL', usage: 'Code reusability', code: 'CREATE PROCEDURE GetUserOrders(IN userId INT)\nBEGIN\n  SELECT * FROM orders WHERE user_id = userId;\nEND;\n\nCALL GetUserOrders(1);' },
+    { title: 'Triggers', description: 'Automatically execute code in response to INSERT, UPDATE, or DELETE events.', syntax: 'CREATE TRIGGER', usage: 'Automatic actions', code: 'CREATE TRIGGER update_timestamp\nBEFORE UPDATE ON users\nFOR EACH ROW\nBEGIN\n  SET NEW.updated_at = NOW();\nEND;' },
+    { title: 'Database Design', description: 'Design effective database schemas with proper entity relationships and ER diagrams.', syntax: 'ER diagrams, relationships', usage: 'Schema planning', code: '-- One-to-Many: User -> Orders\n-- Many-to-Many: Students <-> Courses (junction table)\n-- One-to-One: User -> Profile' },
+    { title: 'Normalization', description: 'Organize data to reduce redundancy using normal forms (1NF, 2NF, 3NF, BCNF).', syntax: 'Normal forms', usage: 'Reduce redundancy', code: '-- 1NF: Atomic values, no repeating groups\n-- 2NF: No partial dependencies\n-- 3NF: No transitive dependencies\n-- BCNF: Every determinant is a candidate key' },
+    { title: 'Performance Optimization', description: 'Optimize queries with EXPLAIN, proper indexing, query rewriting, and caching.', syntax: 'EXPLAIN, indexes, query optimization', usage: 'Fast queries', code: 'EXPLAIN SELECT * FROM users WHERE email = "test@example.com";\n\n-- Add indexes, avoid SELECT *, use WHERE efficiently' },
+    { title: 'Backup and Recovery', description: 'Implement backup strategies, point-in-time recovery, and disaster recovery plans.', syntax: 'pg_dump, mysqldump, restore', usage: 'Data protection', code: '-- PostgreSQL backup\npg_dump mydb > backup.sql\n\n-- MySQL backup\nmysqldump -u root -p mydb > backup.sql\n\n-- Restore\npsql mydb < backup.sql' },
   ]
+  return lessons
 }
 
 // Machine Learning / AI
@@ -2074,56 +2881,170 @@ function reactNativeSpecs(languageName: string): SectionSpec[] {
 
 // Flutter
 function flutterSpecs(languageName: string): SectionSpec[] {
-  return [
-    { title: `${languageName} HOME`, description: 'Flutter builds beautiful native apps from a single codebase using Dart. Build for iOS, Android, web, and desktop.', syntax: 'Widget tree, StatelessWidget, StatefulWidget', usage: 'Cross-platform apps', code: 'import "package:flutter/material.dart";\n\nvoid main() => runApp(MyApp());\n\nclass MyApp extends StatelessWidget {\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      home: Text("Hello Flutter"),\n    );\n  }\n}' },
-    { title: 'Widgets Basics', description: 'Everything is a widget. Compose UI with StatelessWidget and StatefulWidget.', syntax: 'StatelessWidget, StatefulWidget', usage: 'Build UI', code: 'class MyWidget extends StatelessWidget {\n  Widget build(BuildContext context) {\n    return Container(child: Text("Hello"));\n  }\n}' },
-    { title: 'Layouts', description: 'Use Row, Column, Stack, and Container for layouts.', syntax: 'Row, Column, Stack', usage: 'Arrange widgets', code: 'Column(\n  children: [\n    Text("Title"),\n    Text("Subtitle"),\n  ],\n)' },
-    { title: 'State Management', description: 'Manage state with setState, Provider, Riverpod, or Bloc.', syntax: 'setState, Provider', usage: 'Track state', code: 'setState(() { count++; })' },
-    { title: 'Navigation', description: 'Navigate between screens with Navigator and routes.', syntax: 'Navigator.push', usage: 'Multi-screen apps', code: 'Navigator.push(context, MaterialPageRoute(builder: (context) => SecondScreen()))' },
-    { title: 'Forms and Input', description: 'TextFields, validation, and form submission.', syntax: 'TextField, Form', usage: 'Collect data', code: 'TextField(controller: emailController)' },
-    { title: 'Networking', description: 'Fetch data with http package and decode JSON.', syntax: 'http.get, jsonDecode', usage: 'API integration', code: 'final response = await http.get(Uri.parse(url));' },
-    { title: 'Lists and Data', description: 'Display data with ListView and GridView.', syntax: 'ListView.builder', usage: 'Scrollable lists', code: 'ListView.builder(itemCount: items.length, itemBuilder: (ctx, i) => Text(items[i]))' },
-    { title: 'Styling and Themes', description: 'Use Theme, TextStyle, and custom widgets.', syntax: 'ThemeData, TextStyle', usage: 'Consistent design', code: 'Text("Hello", style: TextStyle(fontSize: 20, color: Colors.blue))' },
-    { title: 'Testing', description: 'Widget, unit, and integration tests.', syntax: 'testWidgets', usage: 'Quality assurance', code: 'testWidgets("test", (tester) async { await tester.pumpWidget(MyApp()); })' },
-    { title: 'Platform Features', description: 'Access camera, sensors, and storage with plugins.', syntax: 'plugins, permissions', usage: 'Device APIs', code: '// Add platform plugins' },
-    { title: 'Mini Project', description: 'Build a task list app with add, delete, and persistence.', syntax: 'widgets + state', usage: 'Apply Flutter skills', code: '// Complete task app' },
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
+    { title: `${languageName} HOME`, description: `${languageName} is Google's UI toolkit for building beautiful, natively compiled applications for mobile, web, and desktop from a single codebase. Uses Dart language and provides fast development with hot reload.`, syntax: 'Dart, Widgets, Material Design', usage: 'Cross-platform native apps', code: 'import \'package:flutter/material.dart\';\n\nvoid main() => runApp(MyApp());\n\nclass MyApp extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      home: Scaffold(\n        appBar: AppBar(title: Text(\'Hello Flutter\')),\n        body: Center(child: Text(\'Welcome!\')),\n      ),\n    );\n  }\n}' },
+    { title: `${languageName} Introduction`, description: `${languageName} was created by Google and released in 2017. It uses the Dart programming language and provides widgets for Material Design (Android) and Cupertino (iOS). Everything in Flutter is a widget.`, syntax: 'flutter create, flutter run', usage: 'Get started', code: '// Install Flutter SDK\n// flutter create my_app\n// cd my_app\n// flutter run' },
+    { title: `${languageName} Setup`, description: `Install Flutter SDK, set up an editor (VS Code or Android Studio), and configure Android/iOS emulators or physical devices. Use flutter doctor to check your setup. Hot reload enables instant updates during development.`, syntax: 'flutter doctor, flutter devices', usage: 'Development environment', code: 'flutter doctor\nflutter devices\nflutter create my_app\ncd my_app\nflutter run' },
+    { title: `${languageName} Dart Basics`, description: `Flutter uses Dart, a client-optimized language. Dart has strong typing, async/await, null safety, and modern syntax. Variables with var, const, final. Functions and classes similar to Java/C#.`, syntax: 'var, final, const, class, function', usage: 'Understand Dart fundamentals', code: 'void main() {\n  var name = \'Flutter\';\n  final age = 7;\n  const pi = 3.14;\n  \n  print(\'Hello \$name\');\n  \n  int add(int a, int b) => a + b;\n  print(add(2, 3));\n}' },
+    { title: `${languageName} Project Structure`, description: `Flutter projects have lib/ (Dart code), pubspec.yaml (dependencies), android/ and ios/ (platform code), test/ (tests). Main entry point is lib/main.dart. Assets go in pubspec.yaml and folders like assets/.`, syntax: 'lib/, pubspec.yaml, assets/', usage: 'Organize project', code: '// pubspec.yaml\nname: my_app\ndescription: My Flutter app\n\ndependencies:\n  flutter:\n    sdk: flutter\n  http: ^1.1.0\n\nflutter:\n  assets:\n    - assets/images/' },
+
+    // BASICS (20 lessons)
+    { title: `${languageName} Widgets Basics`, description: `Everything in Flutter is a widget. Widgets describe what their view should look like. StatelessWidget for static content, StatefulWidget for dynamic content. Compose widgets into a tree.`, syntax: 'StatelessWidget, StatefulWidget', usage: 'Build UI', code: 'class MyWidget extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      padding: EdgeInsets.all(16),\n      child: Text(\'Hello Widget\'),\n    );\n  }\n}' },
+    { title: `${languageName} StatelessWidget`, description: `StatelessWidget is immutable and doesn\'t change over time. Override build() method to describe UI. Use for static content like labels, icons, layouts that don\'t change.`, syntax: 'extends StatelessWidget, build()', usage: 'Static UI elements', code: 'class WelcomeScreen extends StatelessWidget {\n  final String title;\n  \n  const WelcomeScreen({Key? key, required this.title}) : super(key: key);\n  \n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text(title)),\n      body: Center(child: Text(\'Welcome!\')),\n    );\n  }\n}' },
+    { title: `${languageName} StatefulWidget`, description: `StatefulWidget can change over time. Has mutable State object. Call setState() to trigger rebuild. Use for interactive UI, forms, animations, data that changes.`, syntax: 'StatefulWidget, State, setState()', usage: 'Dynamic UI', code: 'class Counter extends StatefulWidget {\n  @override\n  _CounterState createState() => _CounterState();\n}\n\nclass _CounterState extends State<Counter> {\n  int count = 0;\n  \n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: [\n        Text(\'\$count\'),\n        ElevatedButton(\n          onPressed: () => setState(() => count++),\n          child: Text(\'Increment\'),\n        ),\n      ],\n    );\n  }\n}' },
+    { title: `${languageName} Layout Widgets`, description: `Layout widgets arrange children: Container (padding, margin, decoration), Row (horizontal), Column (vertical), Stack (overlay), Expanded (fill space), Padding, Center, Align.`, syntax: 'Row, Column, Container, Stack', usage: 'Arrange UI', code: 'Column(\n  crossAxisAlignment: CrossAxisAlignment.start,\n  children: [\n    Text(\'Title\'),\n    Row(\n      children: [\n        Expanded(child: Text(\'Left\')),\n        Text(\'Right\'),\n      ],\n    ),\n  ],\n)' },
+    { title: `${languageName} Material Widgets`, description: `Material Design widgets: Scaffold (screen structure), AppBar (top bar), FloatingActionButton, Card, ListTile, Drawer, BottomNavigationBar, SnackBar, Dialog.`, syntax: 'Scaffold, AppBar, Card', usage: 'Material Design UI', code: 'Scaffold(\n  appBar: AppBar(\n    title: Text(\'My App\'),\n    actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],\n  ),\n  body: Card(\n    child: ListTile(\n      leading: Icon(Icons.person),\n      title: Text(\'John Doe\'),\n      subtitle: Text(\'Developer\'),\n    ),\n  ),\n  floatingActionButton: FloatingActionButton(\n    onPressed: () {},\n    child: Icon(Icons.add),\n  ),\n)' },
+    { title: `${languageName} Text and Styling`, description: `Display text with Text widget. Style with TextStyle (fontSize, color, fontWeight, fontFamily). Rich text with RichText and TextSpan. Selectable text with SelectableText.`, syntax: 'Text, TextStyle, RichText', usage: 'Display formatted text', code: 'Text(\n  \'Hello Flutter\',\n  style: TextStyle(\n    fontSize: 24,\n    fontWeight: FontWeight.bold,\n    color: Colors.blue,\n    letterSpacing: 1.5,\n  ),\n)\n\nRichText(\n  text: TextSpan(\n    text: \'Hello \',\n    style: TextStyle(color: Colors.black),\n    children: [\n      TextSpan(text: \'World\', style: TextStyle(fontWeight: FontWeight.bold)),\n    ],\n  ),\n)' },
+    { title: `${languageName} Images and Icons`, description: `Display images with Image.asset(), Image.network(), Image.file(). Icons with Icon() or ImageIcon(). Configure in pubspec.yaml. Use CircleAvatar for profile images.`, syntax: 'Image, Icon, AssetImage', usage: 'Display media', code: 'Image.asset(\'assets/logo.png\', width: 100, height: 100)\nImage.network(\'https://example.com/image.jpg\')\nIcon(Icons.favorite, color: Colors.red, size: 48)\nCircleAvatar(\n  radius: 30,\n  backgroundImage: NetworkImage(\'https://example.com/avatar.jpg\'),\n)' },
+    { title: `${languageName} Buttons`, description: `Button types: ElevatedButton (raised), TextButton (flat), OutlinedButton (bordered), IconButton (icon only), FloatingActionButton. Handle taps with onPressed callback.`, syntax: 'ElevatedButton, TextButton, IconButton', usage: 'User interactions', code: 'ElevatedButton(\n  onPressed: () => print(\'Pressed\'),\n  child: Text(\'Click Me\'),\n)\n\nTextButton(\n  onPressed: () {},\n  child: Text(\'Cancel\'),\n)\n\nIconButton(\n  icon: Icon(Icons.delete),\n  onPressed: () {},\n)' },
+    { title: `${languageName} Forms and Input`, description: `Collect input with TextField, Form, and TextFormField. Use TextEditingController to read values. Validation with validator. InputDecoration for styling.`, syntax: 'TextField, TextFormField, Form', usage: 'User input', code: 'final controller = TextEditingController();\n\nTextField(\n  controller: controller,\n  decoration: InputDecoration(\n    labelText: \'Email\',\n    hintText: \'Enter your email\',\n    prefixIcon: Icon(Icons.email),\n    border: OutlineInputBorder(),\n  ),\n)\n\nTextFormField(\n  validator: (value) {\n    if (value == null || value.isEmpty) return \'Required\';\n    return null;\n  },\n)' },
+    { title: `${languageName} ListView`, description: `Scrollable list of widgets. ListView for simple lists, ListView.builder for dynamic/long lists, ListView.separated for dividers. Scroll direction: vertical or horizontal.`, syntax: 'ListView, ListView.builder', usage: 'Scrollable content', code: 'ListView.builder(\n  itemCount: items.length,\n  itemBuilder: (context, index) {\n    return ListTile(\n      title: Text(items[index]),\n      leading: Icon(Icons.star),\n      onTap: () => print(\'Tapped \${items[index]}\'),\n    );\n  },\n)' },
+    { title: `${languageName} GridView`, description: `Grid layout for items. GridView.count (fixed count), GridView.builder (dynamic), GridView.extent (max size). Configure crossAxisCount, spacing, aspectRatio.`, syntax: 'GridView, GridView.builder', usage: 'Grid layouts', code: 'GridView.count(\n  crossAxisCount: 2,\n  crossAxisSpacing: 10,\n  mainAxisSpacing: 10,\n  children: List.generate(20, (index) {\n    return Card(\n      child: Center(child: Text(\'Item \$index\')),\n    );\n  }),\n)' },
+    { title: `${languageName} State Management with setState`, description: `setState() rebuilds widget with new state. Call inside State class. Use for simple local state. For complex state, consider Provider, Riverpod, or Bloc.`, syntax: 'setState(() {})', usage: 'Update UI', code: 'class _MyWidgetState extends State<MyWidget> {\n  bool isLoading = false;\n  \n  void fetchData() async {\n    setState(() => isLoading = true);\n    await Future.delayed(Duration(seconds: 2));\n    setState(() => isLoading = false);\n  }\n  \n  @override\n  Widget build(BuildContext context) {\n    return isLoading ? CircularProgressIndicator() : Text(\'Ready\');\n  }\n}' },
+    { title: `${languageName} Navigation Basics`, description: `Navigate between screens with Navigator.push() and Navigator.pop(). Use MaterialPageRoute or CupertinoPageRoute. Pass data to new screen and get result back.`, syntax: 'Navigator.push, Navigator.pop', usage: 'Multi-screen apps', code: '// Navigate to new screen\nNavigator.push(\n  context,\n  MaterialPageRoute(builder: (context) => DetailScreen(id: 123)),\n);\n\n// Return to previous screen\nNavigator.pop(context);\n\n// Pop with result\nNavigator.pop(context, \'Result\');' },
+    { title: `${languageName} Named Routes`, description: `Define routes in MaterialApp. Navigate with Navigator.pushNamed(). Pass arguments with RouteSettings. Extract arguments in build method.`, syntax: 'routes, pushNamed', usage: 'Organized navigation', code: 'MaterialApp(\n  initialRoute: \'/\',\n  routes: {\n    \'/\': (context) => HomeScreen(),\n    \'/details\': (context) => DetailsScreen(),\n    \'/settings\': (context) => SettingsScreen(),\n  },\n)\n\n// Navigate\nNavigator.pushNamed(context, \'/details\', arguments: {\'id\': 123});' },
+    { title: `${languageName} GestureDetector`, description: `Detect taps, double taps, long press, swipes, drags. Wrap any widget with GestureDetector. Callbacks: onTap, onDoubleTap, onLongPress, onPanUpdate.`, syntax: 'GestureDetector, InkWell', usage: 'Touch interactions', code: 'GestureDetector(\n  onTap: () => print(\'Tapped\'),\n  onDoubleTap: () => print(\'Double tapped\'),\n  onLongPress: () => print(\'Long pressed\'),\n  child: Container(\n    width: 200,\n    height: 100,\n    color: Colors.blue,\n    child: Center(child: Text(\'Tap Me\')),\n  ),\n)' },
+    { title: `${languageName} Themes`, description: `Customize app appearance with ThemeData. Define colors, text styles, button themes globally. Access theme with Theme.of(context). Support light and dark themes.`, syntax: 'ThemeData, Theme.of(context)', usage: 'Consistent styling', code: 'MaterialApp(\n  theme: ThemeData(\n    primarySwatch: Colors.blue,\n    brightness: Brightness.light,\n    textTheme: TextTheme(\n      headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),\n    ),\n  ),\n  darkTheme: ThemeData.dark(),\n)\n\n// Use theme\nText(\'Styled\', style: Theme.of(context).textTheme.headlineLarge)' },
+    { title: `${languageName} MediaQuery`, description: `Get device info: screen size, orientation, padding, insets. Responsive layouts based on screen dimensions. SafeArea for notches and system UI.`, syntax: 'MediaQuery.of(context)', usage: 'Responsive design', code: 'final size = MediaQuery.of(context).size;\nfinal width = size.width;\nfinal height = size.height;\nfinal orientation = MediaQuery.of(context).orientation;\n\nContainer(\n  width: width * 0.8,  // 80% of screen width\n  child: Text(\'Responsive\'),\n)' },
+    { title: `${languageName} Async and Future`, description: `Handle asynchronous operations with Future and async/await. Load data, make API calls, delays. Use FutureBuilder to build UI from async data.`, syntax: 'async, await, Future', usage: 'Asynchronous operations', code: 'Future<String> fetchData() async {\n  await Future.delayed(Duration(seconds: 2));\n  return \'Data loaded\';\n}\n\n// Usage\nfinal data = await fetchData();\n\n// FutureBuilder\nFutureBuilder<String>(\n  future: fetchData(),\n  builder: (context, snapshot) {\n    if (snapshot.hasData) return Text(snapshot.data!);\n    return CircularProgressIndicator();\n  },\n)' },
+    { title: `${languageName} HTTP Requests`, description: `Make HTTP requests with http package. GET, POST, PUT, DELETE. Parse JSON with dart:convert. Handle errors with try/catch.`, syntax: 'http.get, jsonDecode', usage: 'API calls', code: 'import \'package:http/http.dart\' as http;\nimport \'dart:convert\';\n\nFuture<List<User>> fetchUsers() async {\n  final response = await http.get(Uri.parse(\'https://api.example.com/users\'));\n  \n  if (response.statusCode == 200) {\n    final List data = jsonDecode(response.body);\n    return data.map((json) => User.fromJson(json)).toList();\n  } else {\n    throw Exception(\'Failed to load\');\n  }\n}' },
+    { title: `${languageName} JSON Serialization`, description: `Convert JSON to Dart objects. Create fromJson() factory and toJson() method. Use for API responses and storage. Consider code generation with json_serializable.`, syntax: 'fromJson, toJson, jsonDecode', usage: 'Parse data', code: 'class User {\n  final int id;\n  final String name;\n  \n  User({required this.id, required this.name});\n  \n  factory User.fromJson(Map<String, dynamic> json) {\n    return User(id: json[\'id\'], name: json[\'name\']);\n  }\n  \n  Map<String, dynamic> toJson() => {\'id\': id, \'name\': name};\n}' },
+
+    // INTERMEDIATE (10 lessons)
+    { title: `${languageName} Provider State Management`, description: `Provider package for state management. ChangeNotifier for reactive state. Provider.of() or Consumer to access. Scoped state without boilerplate.`, syntax: 'Provider, ChangeNotifier, Consumer', usage: 'App-wide state', code: 'class CounterModel extends ChangeNotifier {\n  int _count = 0;\n  int get count => _count;\n  \n  void increment() {\n    _count++;\n    notifyListeners();\n  }\n}\n\n// Provide\nChangeNotifierProvider(create: (_) => CounterModel(), child: MyApp())\n\n// Consume\nConsumer<CounterModel>(\n  builder: (context, counter, child) => Text(\'\${counter.count}\'),\n)' },
+    { title: `${languageName} Animations`, description: `Animate widgets with AnimationController, Tween, and AnimatedBuilder. Implicit animations: AnimatedContainer, AnimatedOpacity. Hero animations for transitions.`, syntax: 'AnimationController, Tween, AnimatedContainer', usage: 'Smooth transitions', code: 'class _MyWidgetState extends State<MyWidget> with SingleTickerProviderStateMixin {\n  late AnimationController _controller;\n  \n  @override\n  void initState() {\n    super.initState();\n    _controller = AnimationController(\n      duration: Duration(seconds: 2),\n      vsync: this,\n    )..repeat(reverse: true);\n  }\n  \n  @override\n  Widget build(BuildContext context) {\n    return FadeTransition(\n      opacity: _controller,\n      child: Text(\'Animated\'),\n    );\n  }\n}' },
+    { title: `${languageName} Local Storage`, description: `Store data locally with shared_preferences (key-value), sqflite (SQL database), or hive (NoSQL). Persist settings, cache, offline data.`, syntax: 'SharedPreferences, sqflite, hive', usage: 'Data persistence', code: 'import \'package:shared_preferences/shared_preferences.dart\';\n\n// Save\nfinal prefs = await SharedPreferences.getInstance();\nawait prefs.setString(\'username\', \'Alice\');\nawait prefs.setInt(\'age\', 30);\n\n// Read\nfinal username = prefs.getString(\'username\') ?? \'Guest\';\nfinal age = prefs.getInt(\'age\') ?? 0;' },
+    { title: `${languageName} Forms and Validation`, description: `Complex forms with Form widget and GlobalKey. Validate with TextFormField validators. Save and reset forms. Custom validation logic.`, syntax: 'Form, GlobalKey<FormState>', usage: 'Data collection', code: 'final _formKey = GlobalKey<FormState>();\n\nForm(\n  key: _formKey,\n  child: Column(\n    children: [\n      TextFormField(\n        validator: (value) {\n          if (value == null || value.isEmpty) return \'Required\';\n          if (!value.contains(\'@\')) return \'Invalid email\';\n          return null;\n        },\n      ),\n      ElevatedButton(\n        onPressed: () {\n          if (_formKey.currentState!.validate()) {\n            _formKey.currentState!.save();\n          }\n        },\n        child: Text(\'Submit\'),\n      ),\n    ],\n  ),\n)' },
+    { title: `${languageName} Custom Widgets`, description: `Create reusable custom widgets. Extract common patterns into StatelessWidget or StatefulWidget. Accept parameters through constructor. Build widget library.`, syntax: 'Custom StatelessWidget', usage: 'Reusable components', code: 'class PrimaryButton extends StatelessWidget {\n  final String text;\n  final VoidCallback onPressed;\n  final bool isLoading;\n  \n  const PrimaryButton({\n    Key? key,\n    required this.text,\n    required this.onPressed,\n    this.isLoading = false,\n  }) : super(key: key);\n  \n  @override\n  Widget build(BuildContext context) {\n    return ElevatedButton(\n      onPressed: isLoading ? null : onPressed,\n      child: isLoading ? CircularProgressIndicator() : Text(text),\n    );\n  }\n}' },
+    { title: `${languageName} StreamBuilder`, description: `Build UI from Stream data. Real-time updates, live data, Firebase listeners. snapshot.hasData, snapshot.data, snapshot.error.`, syntax: 'StreamBuilder, Stream', usage: 'Real-time data', code: 'StreamBuilder<List<Message>>(\n  stream: messageStream,\n  builder: (context, snapshot) {\n    if (snapshot.hasError) return Text(\'Error: \${snapshot.error}\');\n    if (!snapshot.hasData) return CircularProgressIndicator();\n    \n    final messages = snapshot.data!;\n    return ListView.builder(\n      itemCount: messages.length,\n      itemBuilder: (context, index) => Text(messages[index].text),\n    );\n  },\n)' },
+    { title: `${languageName} Platform Channels`, description: `Communicate with native iOS/Android code. MethodChannel for method calls, EventChannel for streams. Access platform-specific features.`, syntax: 'MethodChannel, platform code', usage: 'Native integration', code: 'import \'package:flutter/services.dart\';\n\nfinal platform = MethodChannel(\'com.example/battery\');\n\nFuture<int> getBatteryLevel() async {\n  try {\n    final int result = await platform.invokeMethod(\'getBatteryLevel\');\n    return result;\n  } catch (e) {\n    return -1;\n  }\n}' },
+    { title: `${languageName} Responsive Design`, description: `Build responsive layouts with LayoutBuilder, MediaQuery, OrientationBuilder. Different layouts for phone/tablet. Breakpoints for screen sizes.`, syntax: 'LayoutBuilder, MediaQuery', usage: 'Multi-device support', code: 'LayoutBuilder(\n  builder: (context, constraints) {\n    if (constraints.maxWidth > 600) {\n      // Tablet layout\n      return Row(children: [Sidebar(), MainContent()]);\n    } else {\n      // Phone layout\n      return Column(children: [MainContent()]);\n    }\n  },\n)' },
+    { title: `${languageName} Testing`, description: `Unit tests for logic, widget tests for UI, integration tests for flows. Use flutter_test package. Test interactions, state changes, navigation.`, syntax: 'testWidgets, expect, find', usage: 'Quality assurance', code: 'testWidgets(\'Counter increments\', (WidgetTester tester) async {\n  await tester.pumpWidget(MyApp());\n  \n  expect(find.text(\'0\'), findsOneWidget);\n  \n  await tester.tap(find.byIcon(Icons.add));\n  await tester.pump();\n  \n  expect(find.text(\'1\'), findsOneWidget);\n});' },
+    { title: `${languageName} Error Handling`, description: `Handle errors gracefully. Try/catch for sync code, catchError for Futures. ErrorWidget for widget errors. Global error handling with FlutterError.onError.`, syntax: 'try/catch, catchError', usage: 'Robust apps', code: 'try {\n  await riskyOperation();\n} on NetworkException {\n  showSnackBar(\'Network error\');\n} catch (e) {\n  print(\'Error: \$e\');\n}\n\nfetchData().catchError((error) {\n  print(\'Failed to fetch: \$error\');\n  return [];\n});' },
+
+    // ADVANCED (7 lessons)
+    { title: `${languageName} Advanced State Management`, description: `Complex state with Riverpod, Bloc, or GetX. Separate business logic from UI. Testable, scalable architecture. State management patterns for large apps.`, syntax: 'Riverpod, Bloc, GetX', usage: 'Enterprise apps', code: '// Riverpod example\nfinal counterProvider = StateProvider<int>((ref) => 0);\n\nclass MyWidget extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final count = ref.watch(counterProvider);\n    return Text(\'\$count\');\n  }\n}' },
+    { title: `${languageName} Firebase Integration`, description: `Integrate Firebase for auth, database, storage, messaging. FirebaseAuth for users, Firestore for data, Cloud Storage for files. Real-time sync.`, syntax: 'Firebase, FirebaseAuth, Firestore', usage: 'Backend services', code: 'import \'package:firebase_auth/firebase_auth.dart\';\nimport \'package:cloud_firestore/cloud_firestore.dart\';\n\nfinal auth = FirebaseAuth.instance;\nfinal db = FirebaseFirestore.instance;\n\n// Sign in\nawait auth.signInWithEmailAndPassword(email: email, password: password);\n\n// Save data\nawait db.collection(\'users\').doc(userId).set({\'name\': \'Alice\'});' },
+    { title: `${languageName} Performance Optimization`, description: `Optimize with const constructors, RepaintBoundary, ListView.builder, cached images. Analyze with DevTools profiler. Reduce rebuilds, lazy loading.`, syntax: 'const, RepaintBoundary, DevTools', usage: 'Fast apps', code: '// Use const for static widgets\nconst Text(\'Static\');\n\n// Repaint boundary\nRepaintBoundary(\n  child: ExpensiveWidget(),\n)\n\n// Cached network image\nCachedNetworkImage(imageUrl: url)' },
+    { title: `${languageName} Custom Painters`, description: `Draw custom graphics with CustomPaint and CustomPainter. Use Canvas and Paint for shapes, paths, text. Create charts, diagrams, custom UI.`, syntax: 'CustomPaint, Canvas, Paint', usage: 'Custom graphics', code: 'class CirclePainter extends CustomPainter {\n  @override\n  void paint(Canvas canvas, Size size) {\n    final paint = Paint()\n      ..color = Colors.blue\n      ..style = PaintingStyle.fill;\n    \n    canvas.drawCircle(\n      Offset(size.width / 2, size.height / 2),\n      50,\n      paint,\n    );\n  }\n  \n  @override\n  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;\n}\n\nCustomPaint(painter: CirclePainter())' },
+    { title: `${languageName} Platform-Specific UI`, description: `Use Platform.isIOS/isAndroid for platform detection. Cupertino widgets for iOS, Material for Android. Adaptive widgets that switch automatically.`, syntax: 'Platform, Cupertino, Material', usage: 'Native look and feel', code: 'import \'dart:io\';\nimport \'package:flutter/cupertino.dart\';\nimport \'package:flutter/material.dart\';\n\nWidget buildButton() {\n  if (Platform.isIOS) {\n    return CupertinoButton(child: Text(\'iOS\'), onPressed: () {});\n  }\n  return ElevatedButton(child: Text(\'Android\'), onPressed: () {});\n}' },
+    { title: `${languageName} Internationalization`, description: `Support multiple languages with flutter_localizations and intl. Generate ARB files, translate strings. Format dates, numbers per locale. RTL support.`, syntax: 'intl, l10n, ARB files', usage: 'Multi-language apps', code: '// pubspec.yaml\nflutter:\n  generate: true\n\n// l10n.yaml\narb-dir: lib/l10n\ntemplate-arb-file: app_en.arb\n\n// Usage\nText(AppLocalizations.of(context)!.helloWorld)' },
+    { title: `${languageName} Build and Deployment`, description: `Build APK/AAB for Android, IPA for iOS. Configure app signing, version, permissions. Deploy to Play Store and App Store. CI/CD with GitHub Actions or Codemagic.`, syntax: 'flutter build, app signing', usage: 'Production release', code: '// Build Android\nflutter build apk --release\nflutter build appbundle --release\n\n// Build iOS\nflutter build ios --release\n\n// Web\nflutter build web --release' },
   ]
+
+  return lessons
 }
 
 // Swift
 function swiftSpecs(languageName: string): SectionSpec[] {
-  return [
-    { title: `${languageName} HOME`, description: 'Swift is a powerful language for iOS, macOS, watchOS, and tvOS. Build native Apple experiences with modern syntax.', syntax: 'var, let, func, class', usage: 'Apple platform apps', code: 'import UIKit\n\nclass ViewController: UIViewController {\n  override func viewDidLoad() {\n    super.viewDidLoad()\n    let label = UILabel()\n    label.text = "Hello Swift"\n    view.addSubview(label)\n  }\n}' },
-    { title: 'SwiftUI Basics', description: 'Declarative UI with Views, modifiers, and state.', syntax: 'View, @State', usage: 'Modern UI', code: 'struct ContentView: View {\n  var body: some View {\n    Text("Hello SwiftUI")\n  }\n}' },
-    { title: 'UIKit Basics', description: 'Imperative UI with ViewControllers and views.', syntax: 'UIViewController, UIView', usage: 'Traditional UI', code: 'let button = UIButton()\nbutton.setTitle("Tap", for: .normal)' },
-    { title: 'Variables and Types', description: 'Strong typing with var, let, and type inference.', syntax: 'var, let, Int, String', usage: 'Store data', code: 'let name: String = "Ada"\nvar count = 0' },
-    { title: 'Functions and Closures', description: 'Define functions and use closures for callbacks.', syntax: 'func, closure syntax', usage: 'Reusable logic', code: 'func greet(name: String) -> String {\n  return "Hello \\(name)"\n}' },
-    { title: 'Optionals', description: 'Handle nil safely with optionals and unwrapping.', syntax: 'Optional, if let, guard', usage: 'Null safety', code: 'if let name = optionalName {\n  print(name)\n}' },
-    { title: 'Collections', description: 'Arrays, dictionaries, and sets.', syntax: 'Array, Dictionary, Set', usage: 'Store collections', code: 'let names = ["Alice", "Bob"]\nlet scores = ["Alice": 95]' },
-    { title: 'Networking', description: 'Fetch data with URLSession and decode JSON.', syntax: 'URLSession, Codable', usage: 'API calls', code: 'URLSession.shared.dataTask(with: url) { data, response, error in }' },
-    { title: 'Navigation', description: 'NavigationController or NavigationView for multi-screen apps.', syntax: 'NavigationController, NavigationLink', usage: 'Screen transitions', code: 'NavigationLink("Go", destination: DetailView())' },
-    { title: 'State Management', description: '@State, @Binding, ObservableObject for reactive data.', syntax: '@State, @ObservedObject', usage: 'Track changes', code: '@State private var count = 0' },
-    { title: 'Testing', description: 'XCTest for unit and UI tests.', syntax: 'XCTest, XCUITest', usage: 'Quality', code: 'func testExample() {\n  XCTAssertEqual(1 + 1, 2)\n}' },
-    { title: 'Mini Project', description: 'Build a weather app with API fetching and navigation.', syntax: 'SwiftUI + networking', usage: 'Apply Swift skills', code: '// Weather app' },
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
+    { title: `${languageName} HOME`, description: `${languageName} is Apple's modern programming language for iOS, macOS, watchOS, and tvOS. Created by Apple in 2014, Swift is designed to be safe, fast, and expressive with modern syntax that's easy to read and write.`, syntax: 'var, let, func, class, struct', usage: 'Build Apple platform apps', code: 'import SwiftUI\n\n@main\nstruct MyApp: App {\n  var body: some Scene {\n    WindowGroup {\n      ContentView()\n    }\n  }\n}\n\nstruct ContentView: View {\n  var body: some View {\n    Text("Hello, Swift!")\n      .font(.largeTitle)\n      .padding()\n  }\n}' },
+    { title: `${languageName} Introduction`, description: `${languageName} combines the best of C and Objective-C without compatibility constraints. Features type safety, optionals for null safety, automatic memory management, and modern syntax. SwiftUI provides declarative UI framework.`, syntax: 'Type safety, Optionals, ARC', usage: 'Modern iOS development', code: 'let greeting = "Hello"\nvar count: Int = 0\n\nfunc greet(name: String) -> String {\n  return "\\(greeting), \\(name)!"\n}\n\nprint(greet(name: "World"))' },
+    { title: `${languageName} Setup`, description: `Install Xcode from Mac App Store for Swift development. Xcode includes Swift compiler, iOS simulator, Interface Builder. Create new project with iOS App template. Choose SwiftUI for modern UI or Storyboard for UIKit.`, syntax: 'Xcode, iOS Simulator, Playgrounds', usage: 'Development environment', code: '// Create new Xcode project\n// File > New > Project\n// iOS > App\n// Interface: SwiftUI\n// Language: Swift\n\n// Or use Swift Playgrounds for learning' },
+    { title: `${languageName} Basics`, description: `${languageName} syntax: statements end without semicolons, use camelCase naming. let for constants, var for variables. Type inference but can specify types. String interpolation with \\(). Comments with // or /* */.`, syntax: 'let, var, type inference', usage: 'Write Swift code', code: 'let name = "Alice"  // Constant\nvar age = 30        // Variable\nlet city: String = "NYC"  // Explicit type\n\nlet message = "\\(name) is \\(age) years old"\nprint(message)\n\n// Multi-line comment\n/* This is a\n   multi-line comment */' },
+    { title: `${languageName} Data Types`, description: `Basic types: Int, Double, Float, Bool, String, Character. Collections: Array, Dictionary, Set. Tuples for grouping values. Type aliases with typealias. Use type(of:) to check types.`, syntax: 'Int, String, Bool, Array, Dictionary', usage: 'Store different data', code: 'let integer: Int = 42\nlet decimal: Double = 3.14\nlet flag: Bool = true\nlet text: String = "Hello"\n\nlet numbers = [1, 2, 3, 4, 5]\nlet scores = ["Alice": 95, "Bob": 87]\nlet colors: Set = ["red", "blue", "green"]\n\nlet tuple = ("Alice", 30)\nlet (name, age) = tuple' },
+
+    // BASICS (20 lessons)
+    { title: `${languageName} Variables and Constants`, description: `Use let for immutable constants, var for mutable variables. Swift encourages immutability for safety. Constants must be assigned once before use. Can declare without value if type is specified.`, syntax: 'let constant, var variable', usage: 'Store values', code: 'let pi = 3.14159  // Cannot change\nvar counter = 0   // Can change\ncounter += 1\n\nlet x: Int  // Declare\nx = 10      // Initialize once\n\nlet maxAttempts = 3\nvar currentAttempt = 0' },
+    { title: `${languageName} Strings`, description: `Strings are collections of characters. String interpolation with \\(). Multi-line strings with """. String methods: count, isEmpty, uppercased(), lowercased(), contains(), split(). Concatenate with +.`, syntax: 'String, \\(), """, methods', usage: 'Text manipulation', code: 'let name = "Alice"\nlet age = 30\nlet message = "Hello, \\(name)! You are \\(age)."\n\nlet multiline = """\n  Line 1\n  Line 2\n  Line 3\n  """\n\nlet uppercase = name.uppercased()\nlet contains = message.contains("Alice")  // true\nlet words = message.split(separator: " ")' },
+    { title: `${languageName} Optionals`, description: `Optionals handle absence of value safely. Type? means optional. Unwrap with if let, guard let, or force unwrap !. Nil coalescing ?? for defaults. Optional chaining with ?.`, syntax: 'Type?, if let, guard let, ??, ?.', usage: 'Null safety', code: 'var name: String? = "Alice"\nvar age: Int? = nil\n\n// Optional binding\nif let unwrappedName = name {\n  print("Name is \\(unwrappedName)")\n}\n\n// Guard\nguard let unwrappedAge = age else {\n  print("No age"); return\n}\n\n// Nil coalescing\nlet displayName = name ?? "Guest"\n\n// Optional chaining\nlet length = name?.count' },
+    { title: `${languageName} Arrays`, description: `Arrays store ordered collections of same type. Create with [] or Array<Type>(). Access with subscript [index]. Methods: append(), insert(), remove(), count, isEmpty, sorted(), filter(), map().`, syntax: 'Array, [Type], methods', usage: 'Ordered collections', code: 'var fruits = ["Apple", "Banana", "Cherry"]\nfruits.append("Date")\nfruits.insert("Avocado", at: 0)\nfruits.remove(at: 1)\n\nprint(fruits.count)      // 4\nprint(fruits[0])         // "Avocado"\nprint(fruits.first)      // Optional("Avocado")\n\nlet sorted = fruits.sorted()\nlet uppercase = fruits.map { $0.uppercased() }' },
+    { title: `${languageName} Dictionaries`, description: `Dictionaries store key-value pairs. Keys must be unique and hashable. Access with [key] returns optional. Methods: updateValue(), removeValue(), keys, values, count.`, syntax: '[Key: Value], subscript', usage: 'Key-value storage', code: 'var scores = ["Alice": 95, "Bob": 87, "Carol": 92]\n\nscores["David"] = 88\nscores["Alice"] = 97  // Update\n\nif let aliceScore = scores["Alice"] {\n  print("Alice: \\(aliceScore)")\n}\n\nfor (name, score) in scores {\n  print("\\(name): \\(score)")\n}\n\nlet names = Array(scores.keys)\nlet values = Array(scores.values)' },
+    { title: `${languageName} Control Flow`, description: `If/else for conditionals. Conditions don\'t need parentheses. Switch statements are powerful with pattern matching. Must be exhaustive or have default case. No fallthrough by default.`, syntax: 'if, else, switch, case', usage: 'Make decisions', code: 'let age = 18\n\nif age >= 18 {\n  print("Adult")\n} else if age >= 13 {\n  print("Teen")\n} else {\n  print("Child")\n}\n\nlet grade = "B"\nswitch grade {\ncase "A": print("Excellent")\ncase "B", "C": print("Good")\ncase "D": print("Pass")\ndefault: print("Fail")\n}' },
+    { title: `${languageName} Loops`, description: `For-in loops iterate collections or ranges. While and repeat-while loops. Use where clause for filtering. break exits loop, continue skips iteration.`, syntax: 'for-in, while, repeat-while', usage: 'Iteration', code: '// For-in with array\nfor fruit in ["Apple", "Banana"] {\n  print(fruit)\n}\n\n// Range\nfor i in 1...5 {\n  print(i)  // 1, 2, 3, 4, 5\n}\n\n// Where clause\nfor i in 1...10 where i % 2 == 0 {\n  print(i)  // Even numbers\n}\n\n// While\nvar count = 0\nwhile count < 5 {\n  print(count)\n  count += 1\n}' },
+    { title: `${languageName} Functions`, description: `Functions with func keyword. Parameter labels for readability. Return type with ->. Multiple return values with tuples. Default parameters. Variadic parameters with ....`, syntax: 'func name(param: Type) -> ReturnType', usage: 'Reusable code', code: 'func greet(person name: String) -> String {\n  return "Hello, \\(name)!"\n}\ngreet(person: "Alice")\n\n// Multiple returns\nfunc minMax(array: [Int]) -> (min: Int, max: Int) {\n  return (array.min()!, array.max()!)\n}\nlet bounds = minMax(array: [1, 5, 3])\nprint(bounds.min)\n\n// Default param\nfunc greet(_ name: String = "Guest") -> String {\n  return "Hello, \\(name)"\n}' },
+    { title: `${languageName} Closures`, description: `Closures are self-contained blocks of functionality. Similar to lambdas or anonymous functions. Trailing closure syntax for last parameter. Shorthand argument names $0, $1. Capture values from surrounding context.`, syntax: '{ params in code }, trailing closure', usage: 'Inline functions', code: 'let numbers = [1, 2, 3, 4, 5]\n\n// Full syntax\nlet doubled = numbers.map({ (number: Int) -> Int in\n  return number * 2\n})\n\n// Shorthand\nlet tripled = numbers.map { $0 * 3 }\n\n// Trailing closure\nfunc perform(operation: () -> Void) {\n  operation()\n}\n\nperform {\n  print("Hello from closure")\n}' },
+    { title: `${languageName} Enums`, description: `Enumerations define types with finite set of related values. Associated values store additional data. Raw values for underlying values. Switch over all cases.`, syntax: 'enum Name { case value }', usage: 'Type-safe constants', code: 'enum Direction {\n  case north, south, east, west\n}\n\nlet heading = Direction.north\n\n// Associated values\nenum Result {\n  case success(String)\n  case failure(Error)\n}\n\n// Raw values\nenum Planet: Int {\n  case mercury = 1, venus, earth, mars\n}\n\nlet earth = Planet.earth\nprint(earth.rawValue)  // 3' },
+    { title: `${languageName} Structs`, description: `Structures are value types with properties and methods. Memberwise initializer auto-generated. Copied when assigned or passed. Lightweight for simple data. Prefer over classes for immutability.`, syntax: 'struct Name { }', usage: 'Value types', code: 'struct User {\n  var name: String\n  var age: Int\n  \n  func greet() -> String {\n    return "Hi, I\'m \\(name)"\n  }\n}\n\nvar user1 = User(name: "Alice", age: 30)\nvar user2 = user1  // Copy\nuser2.name = "Bob"\nprint(user1.name)  // "Alice" (unchanged)\n\nmutating func haveBirthday() {\n  age += 1\n}' },
+    { title: `${languageName} Classes`, description: `Classes are reference types with inheritance. Reference counted (ARC). Use init for initialization, deinit for cleanup. Inherit from parent classes. Override methods. Reference semantics.`, syntax: 'class Name { init, deinit }', usage: 'Reference types', code: 'class Animal {\n  var name: String\n  \n  init(name: String) {\n    self.name = name\n  }\n  \n  func makeSound() -> String {\n    return "Some sound"\n  }\n}\n\nclass Dog: Animal {\n  override func makeSound() -> String {\n    return "Woof!"\n  }\n}\n\nlet dog = Dog(name: "Buddy")\nprint(dog.makeSound())  // "Woof!"' },
+    { title: `${languageName} Properties`, description: `Stored properties hold values. Computed properties calculate values. Property observers: willSet, didSet. Lazy properties delay initialization. Static/class properties shared across instances.`, syntax: 'var, computed var, lazy var', usage: 'Object state', code: 'struct Circle {\n  var radius: Double\n  \n  // Computed property\n  var area: Double {\n    return .pi * radius * radius\n  }\n  \n  var diameter: Double {\n    get { radius * 2 }\n    set { radius = newValue / 2 }\n  }\n}\n\n// Property observer\nvar score = 0 {\n  didSet {\n    print("Score changed from \\(oldValue) to \\(score)")\n  }\n}' },
+    { title: `${languageName} Protocols`, description: `Protocols define blueprint of methods, properties, and requirements. Classes, structs, enums can conform. Multiple protocol conformance. Protocol extensions add default implementations. Protocol-oriented programming.`, syntax: 'protocol Name { }', usage: 'Define interfaces', code: 'protocol Drivable {\n  var speed: Int { get set }\n  func drive()\n}\n\nstruct Car: Drivable {\n  var speed: Int\n  \n  func drive() {\n    print("Driving at \\(speed) mph")\n  }\n}\n\n// Protocol extension\nextension Drivable {\n  func stop() {\n    print("Stopping")\n  }\n}' },
+    { title: `${languageName} Extensions`, description: `Add functionality to existing types without modifying source. Add computed properties, methods, initializers, subscripts. Conform to protocols. Can extend Int, String, Array, etc.`, syntax: 'extension Type { }', usage: 'Extend types', code: 'extension Int {\n  var squared: Int {\n    return self * self\n  }\n  \n  func times(_ block: () -> Void) {\n    for _ in 0..<self {\n      block()\n    }\n  }\n}\n\nlet num = 5\nprint(num.squared)  // 25\n\n3.times {\n  print("Hello")\n}' },
+    { title: `${languageName} Error Handling`, description: `Errors conform to Error protocol. Throw errors with throw. Handle with do-try-catch. Propagate with throws. Convert to optional with try?. Force with try!. Defer for cleanup.`, syntax: 'throw, do-try-catch, throws', usage: 'Handle failures', code: 'enum NetworkError: Error {\n  case badURL\n  case timeout\n}\n\nfunc fetchData(from url: String) throws -> String {\n  guard !url.isEmpty else {\n    throw NetworkError.badURL\n  }\n  return "Data"\n}\n\ndo {\n  let data = try fetchData(from: "https://api.com")\n  print(data)\n} catch NetworkError.badURL {\n  print("Invalid URL")\n} catch {\n  print("Error: \\(error)")\n}' },
+    { title: `${languageName} Generics`, description: `Write flexible, reusable functions and types. Type parameters in angle brackets <T>. Generic functions, structs, classes, enums. Type constraints with where clause. Associated types in protocols.`, syntax: 'func name<T>(param: T)', usage: 'Type-safe reusability', code: 'func swap<T>(_ a: inout T, _ b: inout T) {\n  let temp = a\n  a = b\n  b = temp\n}\n\nstruct Stack<Element> {\n  private var items: [Element] = []\n  \n  mutating func push(_ item: Element) {\n    items.append(item)\n  }\n  \n  mutating func pop() -> Element? {\n    return items.popLast()\n  }\n}\n\nvar intStack = Stack<Int>()\nintStack.push(5)' },
+    { title: `${languageName} Guard and Defer`, description: `Guard exits early if condition fails, improving readability. Defer runs code when exiting scope, useful for cleanup. Multiple defer statements run in reverse order.`, syntax: 'guard condition else { }, defer { }', usage: 'Control flow helpers', code: 'func greet(person: String?) {\n  guard let name = person else {\n    print("No name")\n    return\n  }\n  print("Hello, \\(name)")\n}\n\nfunc processFile() {\n  let file = openFile()\n  defer {\n    closeFile(file)  // Always runs\n  }\n  \n  // Work with file\n  readFile(file)\n}' },
+    { title: `${languageName} Higher-Order Functions`, description: `Functions that take functions as parameters or return functions. Array methods: map, filter, reduce, compactMap, flatMap, sorted, forEach. Chainable for powerful data transformations.`, syntax: 'map, filter, reduce', usage: 'Functional programming', code: 'let numbers = [1, 2, 3, 4, 5]\n\nlet doubled = numbers.map { $0 * 2 }\nlet evens = numbers.filter { $0 % 2 == 0 }\nlet sum = numbers.reduce(0, +)\n\nlet words = ["Hello", "", "World"]\nlet nonEmpty = words.compactMap { $0.isEmpty ? nil : $0 }\n\nlet sorted = numbers.sorted { $0 > $1 }' },
+    { title: `${languageName} Memory Management`, description: `Automatic Reference Counting (ARC) manages memory. Strong references keep objects alive. Weak references don\'t increase count. Unowned for non-optional references. Capture lists in closures prevent retain cycles.`, syntax: 'weak, unowned, [weak self]', usage: 'Prevent memory leaks', code: 'class Person {\n  var name: String\n  weak var friend: Person?  // Prevent cycle\n  \n  init(name: String) {\n    self.name = name\n  }\n}\n\n// Closure capture\nclass ViewController {\n  func setupHandler() {\n    someAsyncCall { [weak self] in\n      guard let self = self else { return }\n      self.updateUI()\n    }\n  }\n}' },
+
+    // SWIFTUI (10 lessons)
+    { title: `${languageName} SwiftUI Basics`, description: `SwiftUI is declarative UI framework. Views described as functions of state. Struct-based views conform to View protocol. Body property returns view hierarchy. Modifiers style and configure views.`, syntax: 'struct ContentView: View, body, modifiers', usage: 'Build modern UI', code: 'struct ContentView: View {\n  var body: some View {\n    VStack {\n      Text("Hello, SwiftUI!")\n        .font(.largeTitle)\n        .foregroundColor(.blue)\n      \n      Button("Tap Me") {\n        print("Tapped")\n      }\n      .buttonStyle(.borderedProminent)\n    }\n    .padding()\n  }\n}' },
+    { title: `${languageName} SwiftUI State`, description: `@State for view-local mutable state. Changes trigger view updates. Use for simple UI state. @Binding creates two-way connection. $ prefix accesses binding.`, syntax: '@State, @Binding', usage: 'Reactive UI', code: 'struct CounterView: View {\n  @State private var count = 0\n  \n  var body: some View {\n    VStack {\n      Text("Count: \\(count)")\n      Button("Increment") {\n        count += 1\n      }\n    }\n  }\n}\n\nstruct ChildView: View {\n  @Binding var value: Int\n  \n  var body: some View {\n    Stepper("Value", value: $value)\n  }\n}' },
+    { title: `${languageName} SwiftUI Lists`, description: `List displays scrollable rows. Use ForEach for dynamic content. Identifiable protocol or id parameter. Sections for grouping. Swipe actions, delete, move.`, syntax: 'List, ForEach, id', usage: 'Scrollable content', code: 'struct Todo: Identifiable {\n  let id = UUID()\n  var title: String\n  var done: Bool\n}\n\nstruct TodoListView: View {\n  @State private var todos = [Todo(title: "Task 1", done: false)]\n  \n  var body: some View {\n    List {\n      ForEach(todos) { todo in\n        HStack {\n          Image(systemName: todo.done ? "checkmark.circle.fill" : "circle")\n          Text(todo.title)\n        }\n      }\n      .onDelete { indices in\n        todos.remove(atOffsets: indices)\n      }\n    }\n  }\n}' },
+    { title: `${languageName} SwiftUI Navigation`, description: `NavigationStack for navigation hierarchy. NavigationLink for transitions. Pass data to destination. Toolbar for buttons. Present sheets with .sheet(). Alerts with .alert().`, syntax: 'NavigationStack, NavigationLink, .sheet', usage: 'Multi-screen apps', code: 'struct MasterView: View {\n  var body: some View {\n    NavigationStack {\n      List(1..<20) { item in\n        NavigationLink("Item \\(item)", value: item)\n      }\n      .navigationDestination(for: Int.self) { item in\n        DetailView(item: item)\n      }\n      .navigationTitle("Items")\n      .toolbar {\n        Button("Add") { }\n      }\n    }\n  }\n}' },
+    { title: `${languageName} SwiftUI Forms`, description: `Form container for grouped input controls. TextField, Toggle, Picker, Stepper, Slider. Sections for organization. Validation and submission.`, syntax: 'Form, TextField, Toggle', usage: 'User input', code: 'struct SettingsView: View {\n  @State private var username = ""\n  @State private var notificationsEnabled = true\n  @State private var theme = "Light"\n  \n  var body: some View {\n    Form {\n      Section("Account") {\n        TextField("Username", text: $username)\n      }\n      \n      Section("Preferences") {\n        Toggle("Notifications", isOn: $notificationsEnabled)\n        Picker("Theme", selection: $theme) {\n          Text("Light").tag("Light")\n          Text("Dark").tag("Dark")\n        }\n      }\n    }\n  }\n}' },
+    { title: `${languageName} ObservableObject`, description: `@ObservableObject for reference types that publish changes. Classes conform to ObservableObject. @Published marks properties that trigger updates. @StateObject creates and owns instance. @EnvironmentObject shares across view hierarchy.`, syntax: '@ObservableObject, @Published, @StateObject', usage: 'Shared state', code: 'class UserData: ObservableObject {\n  @Published var name = ""\n  @Published var age = 0\n}\n\nstruct ContentView: View {\n  @StateObject private var userData = UserData()\n  \n  var body: some View {\n    VStack {\n      TextField("Name", text: $userData.name)\n      Text("Hello, \\(userData.name)")\n      ChildView()\n    }\n    .environmentObject(userData)\n  }\n}\n\nstruct ChildView: View {\n  @EnvironmentObject var userData: UserData\n  var body: some View { Text(userData.name) }\n}' },
+    { title: `${languageName} SwiftUI Animations`, description: `Implicit animations with .animation() modifier. Explicit animations with withAnimation. Spring, linear, easeIn animations. Transitions for insertion/removal. Custom timing curves.`, syntax: 'withAnimation, .animation(), .transition', usage: 'Smooth UI', code: 'struct AnimatedView: View {\n  @State private var isExpanded = false\n  \n  var body: some View {\n    VStack {\n      RoundedRectangle(cornerRadius: isExpanded ? 50 : 10)\n        .fill(isExpanded ? Color.blue : Color.red)\n        .frame(width: isExpanded ? 200 : 100,\n               height: isExpanded ? 200 : 100)\n        .animation(.spring(response: 0.5), value: isExpanded)\n      \n      Button("Toggle") {\n        withAnimation {\n          isExpanded.toggle()\n        }\n      }\n    }\n  }\n}' },
+    { title: `${languageName} AsyncImage and Images`, description: `AsyncImage loads images from URLs. Image displays local images from assets. Resizable, aspectRatio, clipped modifiers. SF Symbols for icons.`, syntax: 'AsyncImage, Image, SF Symbols', usage: 'Display images', code: 'struct ImageView: View {\n  var body: some View {\n    VStack {\n      // Remote image\n      AsyncImage(url: URL(string: "https://example.com/image.jpg")) { image in\n        image.resizable()\n          .aspectRatio(contentMode: .fit)\n      } placeholder: {\n        ProgressView()\n      }\n      .frame(width: 200, height: 200)\n      \n      // SF Symbol\n      Image(systemName: "heart.fill")\n        .foregroundColor(.red)\n        .font(.largeTitle)\n    }\n  }\n}' },
+    { title: `${languageName} Task and Async/Await`, description: `Task runs async code in SwiftUI. async/await for sequential async operations. .task() modifier for view lifecycle. @MainActor for UI updates. Structured concurrency with Task groups.`, syntax: 'async/await, Task, .task()', usage: 'Asynchronous operations', code: 'struct DataView: View {\n  @State private var users: [User] = []\n  \n  var body: some View {\n    List(users) { user in\n      Text(user.name)\n    }\n    .task {\n      await loadUsers()\n    }\n  }\n  \n  func loadUsers() async {\n    do {\n      let url = URL(string: "https://api.example.com/users")!\n      let (data, _) = try await URLSession.shared.data(from: url)\n      users = try JSONDecoder().decode([User].self, from: data)\n    } catch {\n      print("Error: \\(error)")\n    }\n  }\n}' },
+    { title: `${languageName} SwiftUI Best Practices`, description: `Extract subviews for complex UIs. Use ViewBuilder for custom containers. PreferenceKey for child-to-parent communication. Equatable for performance. @ViewBuilder for conditional views.`, syntax: '@ViewBuilder, PreferenceKey', usage: 'Clean, performant code', code: 'struct ContentView: View {\n  var body: some View {\n    VStack {\n      HeaderView()\n      ContentSection()\n      FooterView()\n    }\n  }\n}\n\n// Extract subviews\nstruct HeaderView: View {\n  var body: some View {\n    Text("Header").font(.title)\n  }\n}\n\n// Custom ViewBuilder\n@ViewBuilder\nfunc buildContent(for state: State) -> some View {\n  switch state {\n  case .loading: ProgressView()\n  case .loaded: Text("Done")\n  case .error: Text("Error")\n  }\n}' },
+
+    // ADVANCED (5 lessons)
+    { title: `${languageName} URLSession and Networking`, description: `URLSession for HTTP requests. async/await with data(from:). Decode JSON with Codable. Handle errors. Upload/download tasks. Custom URLSession configuration.`, syntax: 'URLSession, Codable, async/await', usage: 'API communication', code: 'struct User: Codable {\n  let id: Int\n  let name: String\n  let email: String\n}\n\nfunc fetchUsers() async throws -> [User] {\n  let url = URL(string: "https://api.example.com/users")!\n  let (data, response) = try await URLSession.shared.data(from: url)\n  \n  guard let httpResponse = response as? HTTPURLResponse,\n        httpResponse.statusCode == 200 else {\n    throw NetworkError.invalidResponse\n  }\n  \n  return try JSONDecoder().decode([User].self, from: data)\n}' },
+    { title: `${languageName} Core Data`, description: `Core Data for local persistence. NSManagedObject for entities. NSFetchRequest for queries. @FetchRequest in SwiftUI. NSPersistentContainer manages stack. Relationships, predicates, sorting.`, syntax: 'Core Data, @FetchRequest, NSManagedObject', usage: 'Local database', code: '// Define entity in .xcdatamodeld\n\nstruct TodoListView: View {\n  @Environment(\\.managedObjectContext) private var viewContext\n  @FetchRequest(\n    sortDescriptors: [NSSortDescriptor(keyPath: \\Todo.timestamp, ascending: true)],\n    animation: .default)\n  private var todos: FetchedResults<Todo>\n  \n  var body: some View {\n    List {\n      ForEach(todos) { todo in\n        Text(todo.title ?? "")\n      }\n    }\n  }\n  \n  func addTodo() {\n    let newTodo = Todo(context: viewContext)\n    newTodo.title = "New Task"\n    try? viewContext.save()\n  }\n}' },
+    { title: `${languageName} UserDefaults and Storage`, description: `UserDefaults for simple key-value storage. Store strings, numbers, bools, data, arrays, dictionaries. @AppStorage wrapper in SwiftUI. FileManager for file operations. Documents directory for user files.`, syntax: 'UserDefaults, @AppStorage, FileManager', usage: 'Data persistence', code: '// SwiftUI\nstruct SettingsView: View {\n  @AppStorage("username") private var username = ""\n  @AppStorage("notificationsEnabled") private var notifications = true\n  \n  var body: some View {\n    Form {\n      TextField("Username", text: $username)\n      Toggle("Notifications", isOn: $notifications)\n    }\n  }\n}\n\n// Traditional\nUserDefaults.standard.set("Alice", forKey: "username")\nlet name = UserDefaults.standard.string(forKey: "username")' },
+    { title: `${languageName} Testing`, description: `XCTest framework for unit and UI tests. XCTestCase subclasses. test methods. Assertions: XCTAssertEqual, XCTAssertTrue. UI testing with XCUIApplication. Async testing with expectations.`, syntax: 'XCTest, XCTAssert, XCUIApplication', usage: 'Quality assurance', code: 'import XCTest\n\nclass CalculatorTests: XCTestCase {\n  func testAddition() {\n    let calculator = Calculator()\n    let result = calculator.add(2, 3)\n    XCTAssertEqual(result, 5)\n  }\n  \n  func testAsync() async {\n    let data = await fetchData()\n    XCTAssertNotNil(data)\n  }\n}\n\nclass UITests: XCTestCase {\n  func testButtonTap() {\n    let app = XCUIApplication()\n    app.launch()\n    app.buttons["Login"].tap()\n    XCTAssertTrue(app.staticTexts["Welcome"].exists)\n  }\n}' },
+    { title: `${languageName} App Deployment`, description: `Build and archive app in Xcode. App Store Connect for submission. Provisioning profiles and certificates. TestFlight for beta testing. Version and build numbers. App icons and screenshots.`, syntax: 'Archive, App Store Connect, TestFlight', usage: 'Publish apps', code: '// 1. Update version/build in Xcode\n// 2. Product > Archive\n// 3. Upload to App Store Connect\n// 4. TestFlight for beta testing\n// 5. Submit for review\n\n// Info.plist\nCFBundleShortVersionString: 1.0\nCFBundleVersion: 1\n\n// TestFlight beta\n// Distribute to internal/external testers\n// Collect feedback and crash reports' },
   ]
+
+  return lessons
 }
 
 // Kotlin
 function kotlinSpecs(languageName: string): SectionSpec[] {
-  return [
-    { title: `${languageName} HOME`, description: 'Kotlin is a modern language for Android, server, and multiplatform apps. Concise, safe, and interoperable with Java.', syntax: 'val, var, fun, class', usage: 'Android and backend', code: 'import android.os.Bundle\nimport androidx.appcompat.app.AppCompatActivity\nimport android.widget.TextView\n\nclass MainActivity : AppCompatActivity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    val text = TextView(this)\n    text.text = "Hello Kotlin"\n    setContentView(text)\n  }\n}' },
-    { title: 'Variables and Types', description: 'val for immutable, var for mutable. Strong type inference.', syntax: 'val, var, Int, String', usage: 'Store data', code: 'val name: String = "Ada"\nvar count = 0' },
-    { title: 'Functions', description: 'Concise function syntax with default params and named args.', syntax: 'fun, default params', usage: 'Reusable logic', code: 'fun greet(name: String = "World") = "Hello $name"' },
-    { title: 'Null Safety', description: 'Nullable and non-nullable types with safe calls.', syntax: '?, !!, ?.', usage: 'Avoid crashes', code: 'val length = name?.length ?: 0' },
-    { title: 'Collections', description: 'Lists, maps, sets with functional operations.', syntax: 'listOf, mapOf, filter, map', usage: 'Data structures', code: 'val evens = listOf(1,2,3,4).filter { it % 2 == 0 }' },
-    { title: 'Classes and Objects', description: 'Data classes, objects, and companion objects.', syntax: 'class, data class, object', usage: 'Model data', code: 'data class User(val id: Int, val name: String)' },
-    { title: 'Android UI', description: 'Build layouts with XML or Jetpack Compose.', syntax: 'XML layouts, Compose', usage: 'Screen design', code: '@Composable\nfun Greeting() {\n  Text("Hello")\n}' },
-    { title: 'Networking', description: 'Retrofit or Ktor for API calls.', syntax: 'Retrofit, coroutines', usage: 'Fetch data', code: 'val response = apiService.getUsers()' },
-    { title: 'Coroutines', description: 'Async programming with suspend functions and scopes.', syntax: 'suspend, launch, async', usage: 'Concurrency', code: 'GlobalScope.launch {\n  val data = fetchData()\n}' },
-    { title: 'Navigation', description: 'Navigate with Navigation Component or Compose.', syntax: 'NavController, navigate', usage: 'Multi-screen apps', code: 'navController.navigate("detail")' },
-    { title: 'Testing', description: 'JUnit and Espresso for unit and UI tests.', syntax: 'JUnit, Espresso', usage: 'Quality', code: '@Test\nfun testAddition() {\n  assertEquals(4, 2 + 2)\n}' },
-    { title: 'Mini Project', description: 'Build a note-taking app with CRUD and persistence.', syntax: 'Android + Room DB', usage: 'Apply Kotlin skills', code: '// Notes app' },
+  const lessons: SectionSpec[] = [
+    // INTRODUCTION (5 lessons)
+    { title: `${languageName} HOME`, description: 'Kotlin is a modern, statically-typed programming language for Android, server, and multiplatform apps. Concise, safe, and fully interoperable with Java.', syntax: 'val, var, fun, class', usage: 'Android and backend', code: 'fun main() {\n  println("Hello, Kotlin!")\n}' },
+    { title: 'Introduction to Kotlin', description: 'Learn why Kotlin is the preferred language for Android development and its key features like null safety, conciseness, and Java interoperability.', syntax: 'Modern JVM language', usage: 'Understand Kotlin benefits', code: '// Concise, Safe, Interoperable\n// Official Android language\n// Multiplatform support' },
+    { title: 'Setup and Environment', description: 'Set up Kotlin with IntelliJ IDEA or Android Studio. Configure your first Kotlin project.', syntax: 'IDE setup, build.gradle', usage: 'Development environment', code: 'plugins {\n  kotlin("jvm") version "1.9.0"\n}\n\ndependencies {\n  implementation(kotlin("stdlib"))\n}' },
+    { title: 'Kotlin Basics', description: 'Learn the basic syntax: functions, print statements, and running your first program.', syntax: 'fun main(), println()', usage: 'First program', code: 'fun main() {\n  println("Welcome to Kotlin")\n  val greeting = "Hello"\n  println(greeting)\n}' },
+    { title: 'Variables and Data Types', description: 'Understand val (immutable) vs var (mutable) and basic types: Int, String, Double, Boolean.', syntax: 'val, var, Int, String', usage: 'Store data', code: 'val name: String = "Ada"\nvar age: Int = 25\nval pi = 3.14159\nvar isActive = true' },
+
+    // BASICS (20 lessons)
+    { title: 'Type Inference', description: 'Kotlin can infer types automatically, making code more concise without losing type safety.', syntax: 'Type inference', usage: 'Concise declarations', code: 'val name = "Kotlin" // String inferred\nval count = 42 // Int inferred\nval price = 19.99 // Double inferred' },
+    { title: 'Strings and String Templates', description: 'Work with strings and use string templates for easy interpolation.', syntax: '$variable, ${expression}', usage: 'String manipulation', code: 'val name = "Ada"\nval age = 25\nprintln("Name: $name, Age: $age")\nprintln("Next year: ${age + 1}")' },
+    { title: 'Numbers and Operators', description: 'Numeric types (Int, Long, Double, Float) and arithmetic operators.', syntax: '+, -, *, /, %', usage: 'Math operations', code: 'val x = 10\nval y = 3\nprintln(x + y) // 13\nprintln(x / y) // 3\nprintln(x % y) // 1' },
+    { title: 'Booleans and Logic', description: 'Boolean type and logical operators for conditions.', syntax: '&&, ||, !, ==, !=', usage: 'Logic operations', code: 'val isAdult = age >= 18\nval hasPermission = true\nif (isAdult && hasPermission) {\n  println("Allowed")\n}' },
+    { title: 'Null Safety', description: 'Nullable vs non-nullable types. Use safe calls (?.) and Elvis operator (?:) to handle nulls.', syntax: '?, ?., ?:, !!', usage: 'Avoid NullPointerException', code: 'var name: String? = null\nval length = name?.length ?: 0\nprintln(length) // 0' },
+    { title: 'Control Flow - If and When', description: 'Use if expressions and when for branching logic.', syntax: 'if, when', usage: 'Conditional logic', code: 'val score = 85\nval grade = when {\n  score >= 90 -> "A"\n  score >= 80 -> "B"\n  else -> "C"\n}' },
+    { title: 'Loops - For and While', description: 'Iterate with for loops (ranges, collections) and while loops.', syntax: 'for, while, do-while', usage: 'Iteration', code: 'for (i in 1..5) {\n  println(i)\n}\n\nvar x = 0\nwhile (x < 3) {\n  println(x++)\n}' },
+    { title: 'Ranges', description: 'Create ranges with .. and use them in loops and conditions.', syntax: '1..10, 1 until 10, downTo', usage: 'Range expressions', code: 'val range = 1..5\nfor (i in 1..10 step 2) {\n  println(i)\n}\nif (5 in range) println("In range")' },
+    { title: 'Functions', description: 'Define functions with fun keyword. Use return types and parameters.', syntax: 'fun name(params): ReturnType', usage: 'Reusable logic', code: 'fun add(a: Int, b: Int): Int {\n  return a + b\n}\n\nfun greet(name: String) = "Hello, $name"' },
+    { title: 'Function Parameters', description: 'Default parameters, named arguments, and varargs.', syntax: 'default params, vararg', usage: 'Flexible functions', code: 'fun greet(name: String = "World", prefix: String = "Hello") {\n  println("$prefix, $name")\n}\n\ngreet()\ngreet(name = "Ada")' },
+    { title: 'Lambda Expressions', description: 'Anonymous functions with concise syntax. Use them with higher-order functions.', syntax: '{ params -> body }', usage: 'Functional programming', code: 'val sum = { a: Int, b: Int -> a + b }\nprintln(sum(3, 4)) // 7\n\nval numbers = listOf(1, 2, 3)\nnumbers.forEach { println(it) }' },
+    { title: 'Collections Overview', description: 'Immutable (List, Set, Map) vs mutable (MutableList, MutableSet, MutableMap) collections.', syntax: 'List, Set, Map', usage: 'Data structures', code: 'val list = listOf(1, 2, 3)\nval mutableList = mutableListOf(1, 2, 3)\nmutableList.add(4)' },
+    { title: 'Lists', description: 'Work with lists: creation, access, iteration, and common operations.', syntax: 'listOf, get, size', usage: 'Ordered collections', code: 'val fruits = listOf("Apple", "Banana", "Cherry")\nprintln(fruits[0]) // Apple\nprintln(fruits.size) // 3\nfruits.forEach { println(it) }' },
+    { title: 'Maps', description: 'Key-value pairs with mapOf. Access, iteration, and modification.', syntax: 'mapOf, get, put', usage: 'Key-value storage', code: 'val ages = mapOf("Ada" to 25, "Bob" to 30)\nprintln(ages["Ada"]) // 25\nages.forEach { (name, age) -> println("$name: $age") }' },
+    { title: 'Sets', description: 'Unique elements with setOf. Operations like union, intersection, difference.', syntax: 'setOf, contains', usage: 'Unique collections', code: 'val numbers = setOf(1, 2, 3, 2)\nprintln(numbers.size) // 3\nprintln(2 in numbers) // true' },
+    { title: 'Collection Operations', description: 'Functional operations: filter, map, reduce, flatMap, groupBy.', syntax: 'filter, map, reduce', usage: 'Transform collections', code: 'val numbers = listOf(1, 2, 3, 4)\nval evens = numbers.filter { it % 2 == 0 }\nval doubled = numbers.map { it * 2 }\nval sum = numbers.reduce { acc, n -> acc + n }' },
+    { title: 'Classes and Objects', description: 'Define classes with properties and methods. Create object instances.', syntax: 'class, constructor', usage: 'Object-oriented programming', code: 'class Person(val name: String, var age: Int) {\n  fun greet() = "Hello, I am $name"\n}\n\nval person = Person("Ada", 25)\nprintln(person.greet())' },
+    { title: 'Properties', description: 'Getters, setters, and backing fields for class properties.', syntax: 'get(), set(value)', usage: 'Custom property logic', code: 'class User {\n  var name: String = ""\n    get() = field.uppercase()\n    set(value) {\n      field = value.trim()\n    }\n}' },
+    { title: 'Data Classes', description: 'Classes for holding data with auto-generated equals, hashCode, toString, and copy.', syntax: 'data class', usage: 'Model data', code: 'data class User(val id: Int, val name: String)\n\nval user = User(1, "Ada")\nval copy = user.copy(name = "Bob")\nprintln(user)' },
+    { title: 'Inheritance', description: 'Extend classes with open keyword. Override methods and properties.', syntax: 'open, override', usage: 'Code reuse', code: 'open class Animal(val name: String) {\n  open fun sound() = "Some sound"\n}\n\nclass Dog(name: String) : Animal(name) {\n  override fun sound() = "Woof"\n}' },
+
+    // INTERMEDIATE (10 lessons)
+    { title: 'Interfaces', description: 'Define contracts with interfaces. Implement multiple interfaces.', syntax: 'interface, implement', usage: 'Abstraction', code: 'interface Clickable {\n  fun click()\n  fun showOff() = println("Clickable")\n}\n\nclass Button : Clickable {\n  override fun click() = println("Clicked")\n}' },
+    { title: 'Abstract Classes', description: 'Abstract classes with abstract and concrete members.', syntax: 'abstract class', usage: 'Partial implementation', code: 'abstract class Shape {\n  abstract fun area(): Double\n  fun describe() = "A shape"\n}\n\nclass Circle(val radius: Double) : Shape() {\n  override fun area() = Math.PI * radius * radius\n}' },
+    { title: 'Sealed Classes', description: 'Restricted class hierarchies for when expressions.', syntax: 'sealed class', usage: 'Represent restricted types', code: 'sealed class Result {\n  data class Success(val data: String) : Result()\n  data class Error(val error: String) : Result()\n}\n\nfun handle(result: Result) = when(result) {\n  is Result.Success -> println(result.data)\n  is Result.Error -> println(result.error)\n}' },
+    { title: 'Object Declarations', description: 'Singleton objects with object keyword.', syntax: 'object', usage: 'Single instance', code: 'object Database {\n  fun connect() = println("Connected")\n}\n\nDatabase.connect()' },
+    { title: 'Companion Objects', description: 'Factory methods and constants with companion object.', syntax: 'companion object', usage: 'Static-like members', code: 'class User(val id: Int, val name: String) {\n  companion object {\n    fun create(name: String) = User(0, name)\n  }\n}\n\nval user = User.create("Ada")' },
+    { title: 'Extensions', description: 'Add functions and properties to existing classes without inheritance.', syntax: 'fun Type.functionName()', usage: 'Extend classes', code: 'fun String.isPalindrome(): Boolean {\n  return this == this.reversed()\n}\n\nprintln("madam".isPalindrome()) // true' },
+    { title: 'Generics', description: 'Type parameters for classes, functions, and interfaces.', syntax: '<T>', usage: 'Type-safe code', code: 'class Box<T>(val value: T)\n\nfun <T> singletonList(item: T): List<T> {\n  return listOf(item)\n}\n\nval box = Box(42)\nval list = singletonList("Hello")' },
+    { title: 'Enum Classes', description: 'Define a fixed set of constants with enum class.', syntax: 'enum class', usage: 'Represent states', code: 'enum class Direction {\n  NORTH, SOUTH, EAST, WEST\n}\n\nval dir = Direction.NORTH\nwhen(dir) {\n  Direction.NORTH -> println("Going north")\n  else -> println("Other direction")\n}' },
+    { title: 'Coroutines Basics', description: 'Launch coroutines for asynchronous programming with launch and async.', syntax: 'launch, async, runBlocking', usage: 'Async operations', code: 'import kotlinx.coroutines.*\n\nfun main() = runBlocking {\n  launch {\n    delay(1000)\n    println("World")\n  }\n  println("Hello")\n}' },
+    { title: 'Suspend Functions', description: 'Create suspendable functions that can be paused and resumed.', syntax: 'suspend fun', usage: 'Async building blocks', code: 'suspend fun fetchData(): String {\n  delay(1000)\n  return "Data loaded"\n}\n\nfun main() = runBlocking {\n  val data = fetchData()\n  println(data)\n}' },
+
+    // ADVANCED (7 lessons)
+    { title: 'Coroutines Advanced', description: 'Structured concurrency, coroutine scopes, and dispatchers.', syntax: 'CoroutineScope, Dispatchers', usage: 'Production async code', code: 'GlobalScope.launch(Dispatchers.IO) {\n  val data = fetchData()\n  withContext(Dispatchers.Main) {\n    updateUI(data)\n  }\n}' },
+    { title: 'Flow and Channels', description: 'Reactive streams with Flow for cold streams and Channels for hot streams.', syntax: 'Flow, Channel', usage: 'Stream processing', code: 'fun numbers(): Flow<Int> = flow {\n  for (i in 1..3) {\n    delay(100)\n    emit(i)\n  }\n}\n\nnumbers().collect { value -> println(value) }' },
+    { title: 'Android Development', description: 'Build Android apps with Activities, Fragments, and ViewModels.', syntax: 'Activity, Fragment, ViewModel', usage: 'Android apps', code: 'class MainActivity : AppCompatActivity() {\n  override fun onCreate(savedInstanceState: Bundle?) {\n    super.onCreate(savedInstanceState)\n    setContentView(R.layout.activity_main)\n  }\n}' },
+    { title: 'Jetpack Compose', description: 'Modern declarative UI toolkit for Android.', syntax: '@Composable, remember, State', usage: 'UI development', code: '@Composable\nfun Greeting(name: String) {\n  Text(text = "Hello $name!")\n}\n\n@Composable\nfun Counter() {\n  var count by remember { mutableStateOf(0) }\n  Button(onClick = { count++ }) {\n    Text("Clicked $count times")\n  }\n}' },
+    { title: 'Ktor Server', description: 'Build server-side applications and REST APIs with Ktor.', syntax: 'embeddedServer, routing', usage: 'Backend services', code: 'fun main() {\n  embeddedServer(Netty, port = 8080) {\n    routing {\n      get("/") {\n        call.respondText("Hello, Ktor!")\n      }\n    }\n  }.start(wait = true)\n}' },
+    { title: 'Testing', description: 'Unit testing with JUnit and MockK. UI testing with Espresso and Compose Test.', syntax: 'JUnit, MockK, Espresso', usage: 'Quality assurance', code: 'class CalculatorTest {\n  @Test\n  fun testAddition() {\n    val calc = Calculator()\n    assertEquals(4, calc.add(2, 2))\n  }\n}' },
+    { title: 'Best Practices', description: 'Kotlin idioms, naming conventions, null safety best practices, and performance tips.', syntax: 'Coding standards', usage: 'Professional code', code: '// Use data classes for data\n// Prefer val over var\n// Use sealed classes for state\n// Leverage extension functions\n// Use coroutines for async' },
   ]
+  return lessons
 }
 
 // General fallback
