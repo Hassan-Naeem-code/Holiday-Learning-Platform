@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import WelcomeScreen from '@/components/Onboarding/WelcomeScreen'
 import NewUserForm from '@/components/Onboarding/NewUserForm'
 import ReturningUserForm from '@/components/Onboarding/ReturningUserForm'
-import DrinkPreferenceScreen from '@/components/Onboarding/DrinkPreferenceScreen'
+import GoalSelectionScreen from '@/components/Onboarding/GoalSelectionScreen'
 import { getSession, migrateOldSession, createSession } from '@/utils/sessionManager'
 
-type OnboardingStep = 'welcome' | 'new-user' | 'returning-user' | 'drink-preference'
+type OnboardingStep = 'welcome' | 'new-user' | 'returning-user' | 'goal-selection'
 
 export default function Home() {
   const router = useRouter()
@@ -58,7 +58,7 @@ export default function Home() {
     setUserCode(code)
     setUserName(name)
     setUserAge(age)
-    setCurrentStep('drink-preference')
+    setCurrentStep('goal-selection')
   }
 
   const handleReturningUserSuccess = (code: string) => {
@@ -70,8 +70,8 @@ export default function Home() {
     }
   }
 
-  const handleDrinkPreferenceComplete = (preference: 'beer' | 'coffee' | 'coke') => {
-    void preference
+  const handleGoalSelectionComplete = (goal: 'career' | 'hobby' | 'school') => {
+    void goal
     // Create secure session and redirect to dashboard
     if (userCode) {
       if (createSession(userCode)) {
@@ -128,12 +128,11 @@ export default function Home() {
         <ReturningUserForm onSuccess={handleReturningUserSuccess} onBack={handleBack} />
       )}
 
-      {currentStep === 'drink-preference' && userCode && (
-        <DrinkPreferenceScreen
+      {currentStep === 'goal-selection' && userCode && (
+        <GoalSelectionScreen
           code={userCode}
           name={userName}
-          age={userAge}
-          onComplete={handleDrinkPreferenceComplete}
+          onComplete={handleGoalSelectionComplete}
         />
       )}
     </>

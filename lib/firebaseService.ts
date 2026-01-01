@@ -55,12 +55,21 @@ export interface UserProfile {
   code: string
   name: string
   age: number
+  // New fields for learning tree system
+  learningGoal?: 'career' | 'hobby' | 'school'
+  treeProgress?: {
+    stage: 'seedling' | 'sapling' | 'growing' | 'mature' | 'flourishing'
+    overallGrowth: number // 0-100
+    lastCelebration?: Timestamp
+  }
+  // Legacy fields (keep for backward compatibility)
   drinkPreference?: 'beer' | 'coffee' | 'coke'
+  glassProgress?: number // 0-100, represents how full the glass is
+  // Common fields
   level: number
   totalXP: number
   streak: number
   achievements: string[]
-  glassProgress: number // 0-100, represents how full the glass is
   languageProgress?: { [key: string]: LanguageProgress } // key format: "moduleId-languageId"
   createdAt: Timestamp
   lastActive: Timestamp
@@ -95,6 +104,12 @@ export async function createUserProfile(
           totalXP: 0,
           streak: 0,
           achievements: [],
+          // Initialize tree progress for new system
+          treeProgress: {
+            stage: 'seedling',
+            overallGrowth: 0,
+          },
+          // Keep legacy field for backward compatibility
           glassProgress: 0,
           createdAt: Timestamp.now(),
           lastActive: Timestamp.now(),
@@ -158,7 +173,7 @@ export async function updateDrinkPreference(
 }
 
 /**
- * Adds XP to user and updates glass progress
+ * Adds XP to user and updates both glass (legacy) and tree progress
  * @throws Error if update fails or user not found
  */
 export async function addUserXP(code: string, xpAmount: number): Promise<void> {
@@ -179,20 +194,26 @@ export async function addUserXP(code: string, xpAmount: number): Promise<void> {
     const newTotalXP = userData.totalXP + xpAmount
     const newLevel = Math.floor(newTotalXP / 1000) + 1
 
-    // Increase glass progress (every 100 XP = 10% fill)
-    let newGlassProgress = userData.glassProgress + (xpAmount / 10)
-
-    // Cap at 100
-    if (newGlassProgress > 100) {
-      newGlassProgress = 100
-    }
-
-    await updateDoc(userRef, {
+    // Update core XP and level
+    const updates: any = {
       totalXP: newTotalXP,
       level: newLevel,
-      glassProgress: newGlassProgress,
       lastActive: Timestamp.now(),
-    })
+    }
+
+    // Legacy: Update glass progress if it exists
+    if (userData.glassProgress !== undefined) {
+      let newGlassProgress = userData.glassProgress + (xpAmount / 10)
+      if (newGlassProgress > 100) {
+        newGlassProgress = 100
+      }
+      updates.glassProgress = newGlassProgress
+    }
+
+    await updateDoc(userRef, updates)
+
+    // Update tree progress (new system)
+    await updateTreeProgress(code, xpAmount)
   } catch (error) {
     console.error('Error adding XP:', error)
     throw new Error('Failed to update XP. Progress may not be saved.')
@@ -260,6 +281,61 @@ export async function unlockAchievement(
 }
 
 /**
+ * Updates user's streak based on last active date
+ * Returns the updated streak value and whether it increased
+ */
+export async function updateUserStreak(code: string): Promise<{ streak: number; increased: boolean; isNew: boolean }> {
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
+
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
+    const userData = userDoc.data() as UserProfile
+    const lastActive = userData.lastActive.toDate()
+    const now = new Date()
+
+    // Reset time to midnight for accurate day comparison
+    const lastActiveDay = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate())
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const daysDiff = Math.floor((today.getTime() - lastActiveDay.getTime()) / (1000 * 60 * 60 * 24))
+
+    let newStreak = userData.streak
+    let increased = false
+    let isNew = false
+
+    if (daysDiff === 0) {
+      // Same day - no change to streak
+      return { streak: newStreak, increased: false, isNew: false }
+    } else if (daysDiff === 1) {
+      // Consecutive day - increment streak
+      newStreak += 1
+      increased = true
+      if (newStreak === 1) {
+        isNew = true
+      }
+    } else if (daysDiff > 1) {
+      // Streak broken - reset to 1
+      newStreak = 1
+      isNew = true
+    }
+
+    await updateDoc(userRef, {
+      streak: newStreak,
+      lastActive: Timestamp.now(),
+    })
+
+    return { streak: newStreak, increased, isNew }
+  } catch (error) {
+    console.error('Error updating streak:', error)
+    throw new Error('Failed to update streak. Please try again.')
+  }
+}
+
+/**
  * Updates user's last active timestamp
  */
 export async function updateLastActive(code: string): Promise<void> {
@@ -271,6 +347,94 @@ export async function updateLastActive(code: string): Promise<void> {
   } catch (error) {
     console.error('Error updating last active:', error)
     // Don't throw - this is non-critical, allow silent fail
+  }
+}
+
+/**
+ * Updates user's learning goal
+ */
+export async function updateLearningGoal(
+  code: string,
+  goal: 'career' | 'hobby' | 'school'
+): Promise<void> {
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    await updateDoc(userRef, {
+      learningGoal: goal,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating learning goal:', error)
+    throw new Error('Failed to update learning goal. Please try again.')
+  }
+}
+
+/**
+ * Updates tree progress when user gains XP
+ */
+export async function updateTreeProgress(
+  code: string,
+  xpGained: number
+): Promise<void> {
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    const userDoc = await getDoc(userRef)
+
+    if (!userDoc.exists()) {
+      throw new Error('User not found')
+    }
+
+    const userData = userDoc.data() as UserProfile
+
+    // Initialize tree progress if it doesn't exist
+    if (!userData.treeProgress) {
+      await updateDoc(userRef, {
+        treeProgress: {
+          stage: 'seedling',
+          overallGrowth: 0,
+        },
+        lastActive: Timestamp.now(),
+      })
+      return
+    }
+
+    // Calculate new growth (10% per 100 XP, same as old glass system)
+    const newGrowth = Math.min(100, userData.treeProgress.overallGrowth + (xpGained / 10))
+
+    // Determine stage based on growth
+    let stage: 'seedling' | 'sapling' | 'growing' | 'mature' | 'flourishing'
+    if (newGrowth < 25) stage = 'seedling'
+    else if (newGrowth < 50) stage = 'sapling'
+    else if (newGrowth < 75) stage = 'growing'
+    else if (newGrowth < 100) stage = 'mature'
+    else stage = 'flourishing'
+
+    await updateDoc(userRef, {
+      'treeProgress.overallGrowth': newGrowth,
+      'treeProgress.stage': stage,
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error updating tree progress:', error)
+    throw new Error('Failed to update tree progress. Please try again.')
+  }
+}
+
+/**
+ * Resets tree progress after celebration (back to 75% mature state)
+ */
+export async function resetTreeProgress(code: string): Promise<void> {
+  try {
+    const userRef = doc(db, USERS_COLLECTION, code)
+    await updateDoc(userRef, {
+      'treeProgress.overallGrowth': 75,
+      'treeProgress.stage': 'mature',
+      'treeProgress.lastCelebration': Timestamp.now(),
+      lastActive: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Error resetting tree progress:', error)
+    throw new Error('Failed to reset tree progress. Please try again.')
   }
 }
 

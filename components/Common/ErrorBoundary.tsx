@@ -78,7 +78,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       } = this.props
 
       return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-900 via-purple-900 to-blue-900">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-blue-dark">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -146,7 +146,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                     onClick={this.handleGoHome}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                    className="px-6 py-3 bg-gradient-to-r from-brand-gold to-brand-gold-dark text-gray-900 font-bold rounded-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
                   >
                     <Home className="w-5 h-5" />
                     Go Home

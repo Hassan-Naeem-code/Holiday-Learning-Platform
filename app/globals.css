@@ -3,10 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --christmas-red: #C41E3A;
-  --christmas-green: #165B33;
-  --christmas-gold: #FFD700;
-  --snow-white: #FFFAFA;
+  /* Brand Colors (from logo) */
+  --brand-purple-dark: #6B46C1;
+  --brand-purple: #7C3AED;
+  --brand-purple-light: #A78BFA;
+
+  --brand-blue-dark: #3B82F6;
+  --brand-blue: #60A5FA;
+  --brand-blue-light: #93C5FD;
+
+  --brand-gold: #FCD34D;
+  --brand-gold-dark: #F59E0B;
+  --brand-gold-light: #FDE68A;
+
+  /* Tree Colors */
+  --tree-green-dark: #059669;
+  --tree-green: #10B981;
+  --tree-green-light: #6EE7B7;
+  --tree-brown: #92400E;
 }
 
 * {
@@ -29,7 +43,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-green) 100%);
+  background: linear-gradient(135deg, var(--brand-purple-dark) 0%, var(--brand-blue-dark) 100%);
   min-height: 100vh;
   position: relative;
 }
@@ -84,7 +98,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--christmas-gold);
+  background: var(--brand-gold);
   border-radius: 10px;
 }
 
@@ -94,7 +108,7 @@ body {
 
 /* Accessibility */
 .focus-visible:focus {
-  outline: 3px solid var(--christmas-gold);
+  outline: 3px solid var(--brand-gold);
   outline-offset: 2px;
 }
 
@@ -105,8 +119,8 @@ body {
 }
 
 .btn-primary {
-  @apply bg-christmas-gold text-gray-900 hover:bg-yellow-400;
-  @apply focus:ring-christmas-gold;
+  @apply bg-brand-gold text-gray-900 hover:bg-brand-gold-dark;
+  @apply focus:ring-brand-gold;
 }
 
 .btn-secondary {

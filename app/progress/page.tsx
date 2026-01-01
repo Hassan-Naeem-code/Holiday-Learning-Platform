@@ -100,7 +100,7 @@ export default function ProgressPage() {
 
   return (
     <>
-      <div className="min-h-screen pb-20 bg-gradient-to-br from-red-900 via-red-800 to-red-700">
+      <div className="min-h-screen pb-20 bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-blue-dark">
         <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div

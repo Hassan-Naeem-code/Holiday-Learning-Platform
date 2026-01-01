@@ -18,7 +18,7 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-purple-900 to-indigo-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-blue-dark p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -41,7 +41,7 @@ export default function Error({
 
         {/* Error Message */}
         <p className="text-lg md:text-xl text-white/80 mb-6">
-          We encountered an unexpected error. Don&apos;t worry, Santa&apos;s elves are on it! 🎅
+          We encountered an unexpected error. Don&apos;t worry, our team is on it! 🔧
         </p>
 
         {/* Technical Details (optional, for debugging) */}
@@ -74,7 +74,7 @@ export default function Error({
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg hover:shadow-xl transition-all w-full"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-brand-gold to-brand-gold-dark text-gray-900 font-bold rounded-lg hover:shadow-xl transition-all w-full"
             >
               <Home className="w-5 h-5" />
               Go to Dashboard
@@ -83,7 +83,7 @@ export default function Error({
         </div>
 
         {/* Decorative Elements */}
-        <div className="mt-8 text-6xl">❄️ 🎄 ❄️</div>
+        <div className="mt-8 text-6xl">💻 ⚡ 💻</div>
       </motion.div>
     </div>
   )

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'CodeLikeBasics - Learn to Code from the Basics!',
   description: 'Interactive learning platform for beginners. Learn software development, web dev, AI/ML, and more through engaging tutorials, games, and sandboxes!',
-  keywords: ['learning', 'education', 'programming', 'games', 'interactive', 'christmas', 'technology'],
+  keywords: ['learning', 'education', 'programming', 'games', 'interactive', 'coding education', 'technology'],
   applicationName: 'CodeLikeBasics',
   manifest: '/manifest.json',
   alternates: {

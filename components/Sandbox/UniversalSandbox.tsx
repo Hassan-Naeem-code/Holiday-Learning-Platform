@@ -9,7 +9,7 @@ import { useXP, XP_REWARDS } from '@/hooks/useXP'
 import { generateSandboxExercises } from '@/utils/sandboxExercises'
 import { getSession } from '@/utils/sessionManager'
 import { getLanguageProgress, updateSandboxProgress, initializeLanguageProgress, fillGlass, getUserProfile, getNextDifficulty } from '@/lib/firebaseService'
-import { triggerProfileRefresh } from '@/components/Progress/GlobalProgressGlass'
+import { triggerProfileRefresh } from '@/components/Progress/GlobalLearningTree'
 import confetti from 'canvas-confetti'
 import Certificate from '@/components/Common/Certificate'
 

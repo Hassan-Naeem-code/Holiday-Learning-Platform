@@ -84,7 +84,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900 relative overflow-hidden p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-blue-dark relative overflow-hidden p-4">
       {/* Animated Background */}
       <div className="absolute inset-0">
         {[...Array(15)].map((_, i) => (
@@ -128,7 +128,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="inline-block mb-4"
                 >
-                  <User className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-green-600" />
+                  <User className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-brand-gold" />
                 </motion.div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
                   Create Your Profile
@@ -151,7 +151,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Enter your name"
-                      className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors text-gray-800"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-brand-purple focus:outline-none transition-colors text-gray-800"
                       disabled={loading}
                     />
                   </div>
@@ -171,7 +171,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                       placeholder="Enter your age"
                       min="5"
                       max="120"
-                      className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors text-gray-800"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-brand-purple focus:outline-none transition-colors text-gray-800"
                       disabled={loading}
                     />
                   </div>
@@ -198,7 +198,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                   disabled={loading}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-brand-gold to-brand-gold-dark text-gray-900 font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -234,7 +234,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                   transition={{ duration: 1, repeat: Infinity }}
                   className="inline-block mb-4"
                 >
-                  <Check className="w-16 h-16 text-green-600" />
+                  <Check className="w-16 h-16 text-brand-gold" />
                 </motion.div>
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">
                   Your Unique Code!
@@ -245,7 +245,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
               </div>
 
               {/* Code Display */}
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-6 mb-6">
+              <div className="bg-gradient-to-r from-brand-purple to-brand-blue rounded-2xl p-6 mb-6">
                 <div className="text-center">
                   <p className="text-white/80 text-sm mb-2">Your Code</p>
                   <motion.p
@@ -260,7 +260,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                     onClick={copyCode}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-white text-green-600 font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto"
+                    className="bg-white text-brand-purple font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto"
                   >
                     {copied ? (
                       <>
@@ -296,7 +296,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                 disabled={!copied}
                 whileHover={copied ? { scale: 1.02 } : {}}
                 whileTap={copied ? { scale: 0.98 } : {}}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-brand-gold to-brand-gold-dark text-gray-900 font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {copied ? 'Continue to Platform' : 'Copy Code First'}
               </motion.button>

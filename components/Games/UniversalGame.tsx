@@ -19,7 +19,7 @@ import {
 import confetti from 'canvas-confetti'
 import Certificate from '@/components/Common/Certificate'
 import { triggerAchievementCheck } from '@/components/Common/AchievementProvider'
-import { triggerProfileRefresh } from '@/components/Progress/GlobalProgressGlass'
+import { triggerProfileRefresh } from '@/components/Progress/GlobalLearningTree'
 import { getSession } from '@/utils/sessionManager'
 
 interface UniversalGameProps {

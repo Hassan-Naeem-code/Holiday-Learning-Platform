@@ -1,4 +1,4 @@
-# 🎄 **CodeLikeBasics** - Interactive Learning Platform
+# 💻 **CodeLikeBasics** - Interactive Learning Platform
 
 > An interactive, gamified learning platform where beginners master programming and technology through engaging tutorials, quiz games, and hands-on coding sandboxes. Progress through multiple difficulty levels, earn XP, unlock achievements, and receive certificates.
 
@@ -52,20 +52,20 @@
 ### 🎯 **Gamification System**
 
 - ⭐ **XP Rewards** — Earn points for tutorials, games, and sandbox exercises
-- 📈 **Progress Tracking** — Visual progress glass fills as you learn
+- 🌳 **Learning Tree Progress** — Watch your knowledge tree grow as you learn
 - 🏆 **Achievements** — 12+ badges including First Steps, Speed Demon, Night Owl, and more
-- 🔥 **Streak System** — Build daily learning habits
-- 📊 **Real-time Dashboard** — Track XP, achievements, and completion status
-- 🎯 **User Profiles** — Personalized learning experience with session management
+- 🔥 **Streak System** — Build daily learning habits with bonus XP
+- 📊 **Real-time Dashboard** — Track XP, level, achievements, and completion status
+- 🎯 **User Profiles** — Personalized learning experience with goal-based paths (career/hobby/school)
 
-### 🎄 **Festive Themed UI**
+### 🎨 **Modern Professional UI**
 
-- ❄️ Animated falling snow effects
-- 🎅 Interactive Santa character with cart animation
-- 🎵 Background music player (Christmas Carol)
-- 🔊 Toggle sound effects
-- ✨ Smooth animations with Framer Motion
-- 🎨 Beautiful gradient designs
+- 💜 **Brand Colors** — Beautiful purple, blue, and gold gradient design
+- 🌳 **Learning Tree** — Visual progress tracker that grows with your knowledge
+- ✨ **Smooth Animations** — Powered by Framer Motion
+- 🎯 **Goal-Based Learning** — Choose your path: career, hobby, or school
+- 🎊 **Celebrations** — Confetti and animations for achievements
+- 📱 **Responsive Design** — Perfect on desktop, tablet, and mobile
 
 ---
 
@@ -119,7 +119,6 @@ npm run type-check   # TypeScript type checking
 | **Database** | Firebase 11.1 (Firestore, Auth) |
 | **Icons** | Lucide React 0.468 |
 | **Code Editor** | react-simple-code-editor 0.14 |
-| **Audio** | HTML5 Audio API |
 | **Deployment** | Vercel |
 
 ---
@@ -139,15 +138,15 @@ codelikebasics/
 │   └── progress/            # Progress tracking page
 │
 ├── components/
-│   ├── Layout/             # Navbar, Santa, FallingSnow, HolidayBanner
+│   ├── Layout/             # Navbar, ClientShell, ErrorBoundary
 │   ├── Tutorials/          # TutorialPlayer, InteractiveTutorial, QuizComponent
 │   ├── Games/              # UniversalGame, GameHUD, GameContainer
 │   ├── Sandbox/            # UniversalSandbox, SandboxContainer
 │   ├── Dashboard/          # ModuleCard, LanguageCard
-│   ├── Progress/           # ProgressGlass, SantaDrinkingAnimation
-│   ├── Common/             # Certificate, AchievementNotification, SoundToggle
-│   ├── Onboarding/         # WelcomeScreen, NewUserForm, ReturningUserForm
-│   └── Music/              # MusicPlayer
+│   ├── Progress/           # LearningTree, TreeCelebration, GlobalLearningTree
+│   ├── Common/             # Certificate, AchievementNotification
+│   ├── Onboarding/         # WelcomeScreen, NewUserForm, ReturningUserForm, GoalSelection
+│   └── AICoach/            # AICoachButton, AICoachPopup
 │
 ├── games/
 │   ├── SoftwareDev/        # CodeBlockGame
@@ -176,9 +175,8 @@ codelikebasics/
 │   ├── techModules.ts      # 9 modules with 43+ languages
 │   ├── topicConfig.ts      # 7 main topic configurations
 │   ├── achievementManager.ts # Achievement system
-│   ├── soundManager.ts     # Sound effects
+│   ├── sessionManager.ts   # Session security
 │   ├── storage.ts          # localStorage utilities
-│   ├── security.ts         # Session security
 │   └── tutorialContent.ts  # Tutorial generators
 │
 ├── hooks/
@@ -189,8 +187,7 @@ codelikebasics/
 │   └── firebaseService.ts  # Firestore operations
 │
 ├── public/
-│   ├── music/              # Background music (christmas-carol.mp3)
-│   └── a/                  # Audio assets
+│   └── assets/             # Static assets
 │
 └── styles/
     └── globals.css         # Global styles & Tailwind
@@ -204,13 +201,15 @@ codelikebasics/
 
 1. **First Visit**
    - Choose "New User" or "Returning User"
-   - Enter your name and select drink preference
+   - Enter your name and age
+   - Select your learning goal (career/hobby/school)
    - Get unique session code (save it to track progress)
 
 2. **Dashboard**
    - View 9 technology modules with 43+ languages
-   - See XP, achievements, and progress glass
-   - Track learning streak
+   - See your level, total XP, and learning streak
+   - Watch your learning tree grow with progress
+   - Track achievements and certificates
 
 3. **Learning Paths**
    - **Tutorials**: Complete animated lessons with embedded quizzes
@@ -224,9 +223,9 @@ codelikebasics/
 
 5. **Progress Tracking**
    - Earn XP for every activity
-   - Fill Santa's progress glass
+   - Watch your learning tree grow (10% per 100 XP)
    - Unlock achievements (12+ available)
-   - Build daily learning streaks
+   - Build daily learning streaks with bonus XP
 
 ---
 
@@ -323,11 +322,12 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
 ### Progress Tracking
 
-- **Progress Glass**: Visual fill indicator based on total XP
-- **Firebase Sync**: All progress saved to Firestore
-- **Session Management**: Secure 8-character codes
-- **Real-time Updates**: Instant XP and achievement notifications
+- **Learning Tree**: Visual progress tracker that grows through 5 stages (seedling → sapling → growing → mature → flourishing)
+- **Firebase Sync**: All progress saved to Firestore in real-time
+- **Session Management**: Secure 8-character codes for user authentication
+- **Real-time Updates**: Instant XP, level-up, and achievement notifications
 - **Difficulty Progression**: Auto-unlock next difficulty levels
+- **Streak Bonuses**: Earn +50 XP bonus for maintaining daily streaks
 
 ---
 
@@ -378,7 +378,7 @@ git push origin feature/your-feature-name
 - 🎨 Improve UI/UX design
 - 🐛 Bug fixes and optimizations
 - 📚 Documentation improvements
-- 🔊 Sound effects enhancements
+- 🌍 Add internationalization support
 
 ### Code Guidelines
 
@@ -412,7 +412,7 @@ Permission is hereby granted, free of charge, to use, copy, modify, merge, publi
 
 <div align="center">
 
-**🎄 Made with love for beginners learning to code! 🎄**
+**💻 Made with love for beginners learning to code! 💻**
 
 [🌐 Live Demo](https://code-like-basics.vercel.app) • [⭐ Star on GitHub](https://github.com/yourusername/codelikebasics) • [🐛 Report Issues](https://github.com/yourusername/codelikebasics/issues)
 

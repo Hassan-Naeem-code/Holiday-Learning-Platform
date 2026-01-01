@@ -8,27 +8,11 @@ import Navbar from "./Navbar";
 import ErrorBoundary from "../Common/ErrorBoundary";
 import { getSession } from "@/utils/sessionManager";
 
-// Client-only shell to lazy-load heavy visual/audio components
-const FallingSnow = dynamic(() => import("./FallingSnow"), {
-  ssr: false,
-  loading: () => null,
-});
-const AnimatedSanta = dynamic(() => import("./AnimatedSanta"), {
-  ssr: false,
-  loading: () => null,
-});
-const SantaWithCart = dynamic(() => import("./SantaWithCart"), {
-  ssr: false,
-  loading: () => null,
-});
-const GlobalProgressGlass = dynamic(
-  () => import("../Progress/GlobalProgressGlass"),
+// Client-only shell to lazy-load heavy visual components
+const GlobalLearningTree = dynamic(
+  () => import("../Progress/GlobalLearningTree"),
   { ssr: false, loading: () => null }
 );
-const MusicPlayer = dynamic(() => import("../Music/MusicPlayer"), {
-  ssr: false,
-  loading: () => null,
-});
 const AICoachButton = dynamic(() => import("../AICoach/AICoachButton"), {
   ssr: false,
   loading: () => null,
@@ -66,33 +50,13 @@ export default function ClientShell({ children }: Props) {
 
   return (
     <div className="w-full min-w-full overflow-x-hidden">
-      {/* Visual effects with isolated error boundaries */}
-      <ErrorBoundary
-        fallbackTitle="Decorations Error"
-        fallbackMessage="Some visual effects couldn't load, but you can still use the app."
-        showHomeButton={false}
-      >
-        <FallingSnow />
-        <AnimatedSanta />
-        <SantaWithCart />
-      </ErrorBoundary>
-
       {/* Progress tracking with isolated error boundary */}
       <ErrorBoundary
         fallbackTitle="Progress Error"
         fallbackMessage="Progress tracking had an issue, but you can still continue learning."
         showHomeButton={false}
       >
-        <GlobalProgressGlass />
-      </ErrorBoundary>
-
-      {/* Music player with isolated error boundary */}
-      <ErrorBoundary
-        fallbackTitle="Music Player Error"
-        fallbackMessage="Music player had an issue, but you can still use the app."
-        showHomeButton={false}
-      >
-        <MusicPlayer />
+        <GlobalLearningTree />
       </ErrorBoundary>
 
       {/* AI Coach with isolated error boundary - Only show for authenticated users */}
