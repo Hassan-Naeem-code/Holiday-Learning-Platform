@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Award, Lock } from 'lucide-react'
 import { validateSession } from '@/utils/sessionManager'
-import { getUserProfile, getLanguageProgress } from '@/lib/firebaseService'
+import { getUserProfile, getLanguageProgress, type UserProfile, type LanguageProgress } from '@/lib/firebaseService'
 import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 
 interface Achievement {
@@ -14,7 +14,7 @@ interface Achievement {
   description: string
   icon: string
   color: string
-  condition: (profile: any, progressMap: Map<string, any>) => boolean
+  condition: (profile: UserProfile, progressMap: Map<string, LanguageProgress>) => boolean
 }
 
 const ALL_ACHIEVEMENTS: Achievement[] = [
@@ -178,8 +178,8 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
 export default function AchievementsPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const [userProfile, setUserProfile] = useState<any>(null)
-  const [languageProgressMap, setLanguageProgressMap] = useState<Map<string, any>>(new Map())
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [languageProgressMap, setLanguageProgressMap] = useState<Map<string, LanguageProgress>>(new Map())
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
 
   useEffect(() => {
@@ -197,7 +197,7 @@ export default function AchievementsPage() {
         }
 
         // Load all language progress
-        const progressMap = new Map<string, any>()
+        const progressMap = new Map<string, LanguageProgress>()
         for (const mod of TECHNOLOGY_MODULES) {
           for (const language of mod.languages) {
             const languageKey = `${mod.id}-${language.id}`
@@ -211,9 +211,11 @@ export default function AchievementsPage() {
 
         // Check which achievements are unlocked
         const unlocked: string[] = []
-        for (const achievement of ALL_ACHIEVEMENTS) {
-          if (achievement.condition(profile, progressMap)) {
-            unlocked.push(achievement.id)
+        if (profile) {
+          for (const achievement of ALL_ACHIEVEMENTS) {
+            if (achievement.condition(profile, progressMap)) {
+              unlocked.push(achievement.id)
+            }
           }
         }
         setUnlockedAchievements(unlocked)

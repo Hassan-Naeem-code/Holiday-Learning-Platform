@@ -8,7 +8,6 @@ import { useUserStore } from '@/stores/userStore'
 import { useTutorialStore } from '@/stores/tutorialStore'
 import { achievementManager } from '@/utils/achievementManager'
 import { soundManager } from '@/utils/soundManager'
-import { rateLimiter } from '@/utils/security'
 import confetti from 'canvas-confetti'
 
 interface DesignElement {
@@ -97,12 +96,6 @@ export default function DesignMatcherGame() {
   const questionsToAnswer = difficulty === 'easy' ? 3 : difficulty === 'medium' ? 4 : 5
 
   const handleAnswer = (optionId: string) => {
-    if (!rateLimiter.check('game-submission', 10, 60000)) {
-      setFeedback('⏳ Too many attempts! Please wait.')
-      setTimeout(() => setFeedback(''), 2000)
-      return
-    }
-
     setSelectedAnswer(optionId)
     const currentChallenge = DESIGN_CHALLENGES[currentQuestion]
     const selectedOption = currentChallenge.options.find(o => o.id === optionId)

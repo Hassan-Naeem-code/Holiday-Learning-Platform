@@ -45,13 +45,17 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   const [allCompleted, setAllCompleted] = useState(false)
   const [showCertificate, setShowCertificate] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [hintMessage, setHintMessage] = useState<string | null>(null)
 
   const languageKey = `${moduleId}-${languageId}`
 
   // Generate comprehensive quiz
   const quiz = generateProgressiveQuiz(languageId, language.name, difficulty)
   const totalLevels = quiz.questions.length
-  const question = quiz.questions[currentLevel]
+
+  // Bounds-safe question access - clamp currentLevel to valid range
+  const safeLevel = Math.min(Math.max(currentLevel, 0), totalLevels - 1)
+  const question = quiz.questions[safeLevel]
 
   // Load progress from Firebase
   useEffect(() => {
@@ -75,9 +79,11 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         const progress = await getLanguageProgress(code, languageKey)
 
         if (progress && progress.difficulty === difficulty) {
-          // Resume from saved progress
-          setCurrentLevel(progress.gameProgress.currentLevel)
-          setCompletedLevels(progress.gameProgress.completedLevels)
+          // Resume from saved progress with bounds checking
+          const savedLevel = progress.gameProgress.currentLevel ?? 0
+          const boundedLevel = Math.min(Math.max(savedLevel, 0), totalLevels - 1)
+          setCurrentLevel(boundedLevel)
+          setCompletedLevels(progress.gameProgress.completedLevels ?? [])
 
           // Restore game state if saved, otherwise use defaults
           setLives(progress.gameProgress.lives ?? 3)
@@ -256,7 +262,10 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
 
       const correctIndex = question.correctAnswer
       const wrongIndex = correctIndex === 0 ? 1 : 0
-      alert(`Hint: Option ${String.fromCharCode(65 + wrongIndex)} is NOT the correct answer!`)
+      setHintMessage(`Option ${String.fromCharCode(65 + wrongIndex)} is NOT the correct answer!`)
+
+      // Auto-hide hint after 5 seconds
+      setTimeout(() => setHintMessage(null), 5000)
     }
   }
 
@@ -288,6 +297,24 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
         <div className="text-center">
           <div className="text-6xl mb-4">🎮</div>
           <div className="text-white text-2xl font-bold">Loading your game progress...</div>
+        </div>
+      </div>
+    )
+  }
+
+  // Guard against empty quiz
+  if (!question || totalLevels === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <div className="text-white text-2xl font-bold mb-4">No questions available</div>
+          <button
+            onClick={() => router.push(`/module/${moduleId}`)}
+            className="bg-white text-purple-600 px-6 py-3 rounded-xl font-bold"
+          >
+            Back to Module
+          </button>
         </div>
       </div>
     )
@@ -409,6 +436,29 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
             </div>
           </div>
         </motion.div>
+
+        {/* Hint Message Toast */}
+        <AnimatePresence>
+          {hintMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="max-w-4xl mx-auto mb-4 px-2"
+            >
+              <div className="bg-yellow-500/20 border border-yellow-500/50 backdrop-blur-lg rounded-xl p-4 flex items-center gap-3">
+                <Lightbulb className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+                <p className="text-yellow-200 font-medium">{hintMessage}</p>
+                <button
+                  onClick={() => setHintMessage(null)}
+                  className="ml-auto text-yellow-400 hover:text-yellow-200"
+                >
+                  ✕
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Progress Bar */}
         <div className="max-w-4xl mx-auto mb-3 md:mb-6 px-2">

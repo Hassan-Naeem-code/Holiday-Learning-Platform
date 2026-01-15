@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { User, Cake, Copy, Check, AlertCircle, Loader2 } from 'lucide-react'
 import { createUserProfile } from '@/lib/firebaseService'
 import confetti from 'canvas-confetti'
+import { toast } from '@/components/Common/Toast'
 
 interface NewUserFormProps {
   onComplete: (code: string, name: string, age: number) => void
@@ -70,7 +71,7 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
           window.getSelection()?.removeAllRanges()
           window.getSelection()?.addRange(range)
         }
-        alert('Please manually copy the code: ' + generatedCode)
+        toast.warning('Please manually copy the code: ' + generatedCode, 6000)
         // Still mark as copied so user can proceed
         setCopied(true)
       }

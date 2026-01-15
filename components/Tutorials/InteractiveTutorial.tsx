@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, BookOpen, Code2, Play, Rocket } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BookOpen, Code2, Play, Rocket, Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { Tutorial } from '@/utils/comprehensiveTutorialContent'
@@ -13,6 +13,7 @@ import {
   updateTutorialProgress,
 } from '@/lib/firebaseService'
 import { getSession } from '@/utils/sessionManager'
+import { executeCode, isPreviewOnly } from '@/utils/pistonService'
 
 interface InteractiveTutorialProps {
   tutorial: Tutorial
@@ -35,6 +36,8 @@ export default function InteractiveTutorial({
   const [output, setOutput] = useState('')
   const [userCode, setUserCode] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isRunning, setIsRunning] = useState(false)
+  const [showLivePreview, setShowLivePreview] = useState(true)
 
   const sections = tutorial.sections ?? []
   const totalSections = sections.length
@@ -42,6 +45,44 @@ export default function InteractiveTutorial({
   const isFirstSection = currentSection === 0
   const isLastSection = currentSection === totalSections - 1
   const languageKey = `${moduleId}-${languageId}`
+  const isWebLanguage = ['html', 'css', 'javascript'].includes(languageId)
+
+  // Generate live preview HTML for web languages
+  const getLivePreviewHTML = () => {
+    if (languageId === 'html') {
+      return editorCode
+    } else if (languageId === 'css') {
+      return `<!DOCTYPE html>
+<html><head><style>${editorCode}</style></head>
+<body>
+  <h1>CSS Preview</h1>
+  <p>This paragraph demonstrates your styles.</p>
+  <div class="container"><div class="box">Box 1</div><div class="box">Box 2</div></div>
+  <button>Button</button>
+  <a href="#">Link</a>
+</body></html>`
+    } else if (languageId === 'javascript') {
+      return `<!DOCTYPE html>
+<html><head>
+<style>body{font-family:sans-serif;padding:20px;background:#1a1a2e;color:#eee}
+#output{background:#16213e;border-radius:8px;padding:15px;margin-top:20px}
+.log{color:#00ff88;margin:5px 0;font-family:monospace}.error{color:#ff6b6b}</style>
+</head><body>
+<h3 style="color:#e94560">JavaScript Output</h3>
+<div id="output"></div>
+<script>
+const output=document.getElementById('output');
+const log=console.log;console.log=(...a)=>{
+const d=document.createElement('div');d.className='log';
+d.textContent='> '+a.map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' ');
+output.appendChild(d);log.apply(console,a)};
+console.error=(...a)=>{const d=document.createElement('div');d.className='log error';
+d.textContent='❌ '+a.join(' ');output.appendChild(d)};
+try{${editorCode}}catch(e){console.error(e.message)}
+</script></body></html>`
+    }
+    return ''
+  }
 
   // Load code example when section changes
   useEffect(() => {
@@ -107,11 +148,49 @@ export default function InteractiveTutorial({
     }
   }
 
-  const handleRunCode = () => {
-    // Simple output simulation
-    setOutput(
-      `✓ Simulation: Previewing your code below.\n\n// This is a mock run for learning purposes.\n// Real execution will be available soon for supported languages.\n\n--- Begin Preview ---\n${editorCode}\n--- End Preview ---`
-    )
+  const handleRunCode = async () => {
+    setIsRunning(true)
+    setOutput('Running code...')
+
+    try {
+      // For preview-only languages (HTML/CSS), show preview message
+      if (isPreviewOnly(languageId)) {
+        setOutput('✓ Preview updated! Check the live preview panel to see your rendered output.')
+        setIsRunning(false)
+        return
+      }
+
+      // Execute code via Piston API
+      const result = await executeCode(languageId, editorCode)
+
+      if (result.success) {
+        let outputText = `✓ ${language.name} - Execution Complete\n`
+        if (result.executionTime) {
+          outputText += `⏱ Time: ${result.executionTime}ms\n`
+        }
+        outputText += `\n${result.output}`
+
+        if (result.stderr && result.stderr.trim()) {
+          outputText += `\n\n⚠️ Warnings:\n${result.stderr}`
+        }
+
+        setOutput(outputText)
+      } else {
+        let errorText = `❌ ${language.name} - Error\n\n`
+        if (result.stderr) {
+          errorText += result.stderr
+        } else if (result.error) {
+          errorText += result.error
+        } else {
+          errorText += 'An unknown error occurred'
+        }
+        setOutput(errorText)
+      }
+    } catch (error) {
+      setOutput(`❌ Error executing code\n\n${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsRunning(false)
+    }
   }
 
   const saveProgress = async (newSection: number, completed: number[]) => {
@@ -407,33 +486,60 @@ export default function InteractiveTutorial({
           </motion.div>
         </div>
 
-        {/* Right: Code Editor */}
+        {/* Right: Code Editor & Preview */}
         <div className="bg-gray-900 flex flex-col">
           <div className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex items-center justify-between">
             <div className="flex items-center gap-2 text-white">
               <Code2 className="w-5 h-5" />
               <span className="font-semibold">Try it Yourself</span>
             </div>
-            <button
-              onClick={handleRunCode}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors font-semibold"
-            >
-              <Play className="w-4 h-4" />
-              Run
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Live Preview Toggle for web languages */}
+              {isWebLanguage && (
+                <button
+                  onClick={() => setShowLivePreview(!showLivePreview)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-sm"
+                  title={showLivePreview ? 'Hide preview' : 'Show preview'}
+                >
+                  {showLivePreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showLivePreview ? 'Code' : 'Preview'}
+                </button>
+              )}
+              <button
+                onClick={handleRunCode}
+                disabled={isRunning}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 disabled:bg-green-800 text-white rounded-lg transition-colors font-semibold"
+              >
+                <Play className="w-4 h-4" />
+                {isRunning ? 'Running...' : 'Run'}
+              </button>
+            </div>
           </div>
 
-          {/* Editor */}
-          <textarea
-            value={editorCode}
-            onChange={(e) => setEditorCode(e.target.value)}
-            className="flex-1 bg-gray-900 text-green-400 font-mono text-sm p-4 resize-none focus:outline-none"
-            placeholder="// Write your code here..."
-            spellCheck={false}
-          />
+          {/* Editor or Live Preview */}
+          {isWebLanguage && showLivePreview ? (
+            /* Live Preview for HTML/CSS/JS */
+            <div className="flex-1 bg-white">
+              <iframe
+                srcDoc={getLivePreviewHTML()}
+                className="w-full h-full border-0"
+                title="Live Preview"
+                sandbox="allow-scripts"
+              />
+            </div>
+          ) : (
+            /* Code Editor */
+            <textarea
+              value={editorCode}
+              onChange={(e) => setEditorCode(e.target.value)}
+              className="flex-1 bg-gray-900 text-green-400 font-mono text-sm p-4 resize-none focus:outline-none"
+              placeholder="// Write your code here..."
+              spellCheck={false}
+            />
+          )}
 
           {/* Output */}
-          {output && (
+          {output && !showLivePreview && (
             <div className="bg-gray-950 border-t border-gray-700 p-4 max-h-48 overflow-y-auto">
               <div className="text-gray-400 text-xs mb-2 font-semibold">OUTPUT:</div>
               <pre className="text-gray-300 text-sm font-mono whitespace-pre-wrap">{output}</pre>

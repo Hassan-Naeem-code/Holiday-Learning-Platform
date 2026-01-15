@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Home, Trophy, BookOpen, LogOut } from 'lucide-react'
+import { Home, Trophy, BookOpen, LogOut, Hammer } from 'lucide-react'
 import { useUserStore } from '@/stores/userStore'
 import { useEffect, useState } from 'react'
 import { clearSession, getSession } from '@/utils/sessionManager'
@@ -14,7 +14,7 @@ export default function Navbar() {
   const { user, loadFromStorage } = useUserStore()
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
-  // Check authentication on mount and keep polling for changes
+  // Check authentication on mount and listen for storage changes
   useEffect(() => {
     const checkAuth = () => {
       const session = getSession()
@@ -25,10 +25,21 @@ export default function Navbar() {
     loadFromStorage()
     checkAuth()
 
-    // Set up interval to check periodically (every 1 second)
-    const interval = setInterval(checkAuth, 1000)
+    // Listen for storage changes (instant update when session changes)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user_session' || e.key === null) {
+        checkAuth()
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
 
-    return () => clearInterval(interval)
+    // Also poll less frequently as a fallback (every 30 seconds instead of 1 second)
+    const interval = setInterval(checkAuth, 30000)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('storage', handleStorageChange)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadFromStorage])
 
@@ -41,6 +52,7 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/projects', label: 'Projects', icon: Hammer },
     { href: '/progress', label: 'Progress', icon: Trophy },
     { href: '/achievements', label: 'Achievements', icon: BookOpen },
   ]

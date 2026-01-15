@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Download, X, Award, Star, Edit2 } from 'lucide-react'
 import html2canvas from 'html2canvas'
 import { getSession } from '@/utils/sessionManager'
+import { toast } from '@/components/Common/Toast'
 
 interface CertificateProps {
   userName: string
@@ -111,7 +112,7 @@ export default function Certificate({
       link.click()
     } catch (error) {
       console.error('Error downloading certificate:', error)
-      alert('Failed to download certificate. Please try again.')
+      toast.error('Failed to download certificate. Please try again.')
     }
   }
 

@@ -1,4 +1,5 @@
 // localStorage utility functions for persisting user data
+import { toast } from '@/components/Common/Toast'
 
 const STORAGE_KEYS = {
   USER_PROGRESS: 'holiday_learning_user_progress',
@@ -49,7 +50,7 @@ export const storage = {
 
           // Last resort: Show user message
           if (typeof window !== 'undefined') {
-            alert('Storage is full. Some progress may not be saved. Please clear your browser data.')
+            toast.error('Storage is full. Some progress may not be saved. Please clear your browser data.', 6000)
           }
         }
       } else {

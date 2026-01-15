@@ -26,6 +26,26 @@ const AVAILABLE_BLOCKS: ProgramBlock[] = [
   { id: 'loop-1', type: 'loop', label: 'Repeat 3 times', icon: '🔄', value: 'repeat 3' },
 ]
 
+// Safe math evaluator - only supports simple arithmetic with variable x
+function safeMathEval(expression: string, xValue: number = 10): string {
+  // Replace x with the value
+  const expr = expression.replace(/x/g, xValue.toString())
+
+  // Only allow numbers, basic operators, spaces, and parentheses
+  if (!/^[\d\s+\-*/().]+$/.test(expr)) {
+    return 'Invalid expression'
+  }
+
+  try {
+    // Parse and evaluate safely using Function constructor (safer than eval)
+    // This creates a sandboxed function that can only access what we pass
+    const result = new Function(`return (${expr})`)()
+    return typeof result === 'number' ? result.toString() : 'Invalid result'
+  } catch {
+    return 'Error'
+  }
+}
+
 export default function CodeSimulator() {
   const [program, setProgram] = useState<ProgramBlock[]>([])
   const [output, setOutput] = useState<string[]>([])
@@ -102,7 +122,7 @@ export default function CodeSimulator() {
           break
         case 'math':
           if (block.value) {
-            newOutput.push(`🧮 Result: ${block.value} = ${eval(block.value.replace('x', '10'))}`)
+            newOutput.push(`🧮 Result: ${block.value} = ${safeMathEval(block.value)}`)
           }
           break
         case 'if':

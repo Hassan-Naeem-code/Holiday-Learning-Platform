@@ -2,17 +2,20 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Play, RotateCcw, Save, Download, Code2, Terminal, BookOpen, ChevronLeft, ChevronRight, Check, Lightbulb, Trophy } from 'lucide-react'
+import { ArrowLeft, Play, RotateCcw, Save, Download, Code2, Terminal, BookOpen, ChevronLeft, ChevronRight, Check, Trophy, Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Language } from '@/utils/techModules'
 import { useXP, XP_REWARDS } from '@/hooks/useXP'
 import { generateSandboxExercises } from '@/utils/sandboxExercises'
+import { executeCode, isPreviewOnly, generateHTMLPreview } from '@/utils/pistonService'
 import { getSession } from '@/utils/sessionManager'
 import { getLanguageProgress, updateSandboxProgress, initializeLanguageProgress, fillGlass, getUserProfile, getNextDifficulty } from '@/lib/firebaseService'
 import { triggerProfileRefresh } from '@/components/Progress/GlobalLearningTree'
 import confetti from 'canvas-confetti'
 import Certificate from '@/components/Common/Certificate'
+import { toast } from '@/components/Common/Toast'
 
+// SandboxExercise type is used implicitly through the exercises array
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { SandboxExercise } from '@/utils/sandboxExercises'
 
@@ -21,8 +24,6 @@ interface UniversalSandboxProps {
   moduleId: string
   languageId: string
 }
-
-const PASS_THRESHOLD = 0.75
 
 const STARTER_CODE: { [key: string]: string } = {
   html: `<!DOCTYPE html>
@@ -92,10 +93,6 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [completedExercises, setCompletedExercises] = useState<number[]>([])
   const [userSubmissions, setUserSubmissions] = useState<{ [key: number]: string }>({})
-  const [showHint, setShowHint] = useState(false)
-  const [showSolution, setShowSolution] = useState(false)
-  const [allowSolution, setAllowSolution] = useState(false)
-  const [hasAttempted, setHasAttempted] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
@@ -113,6 +110,98 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   )
   const [output, setOutput] = useState('')
   const [isRunning, setIsRunning] = useState(false)
+  const [showLivePreview, setShowLivePreview] = useState(true)
+
+  // Check if current language supports live preview (HTML/CSS/JS)
+  const isWebLanguage = ['html', 'css', 'javascript'].includes(languageId)
+
+  // Generate live preview HTML for W3Schools-style rendering
+  const getLivePreviewHTML = () => {
+    if (languageId === 'html') {
+      // For HTML, render the code directly
+      return code
+    } else if (languageId === 'css') {
+      // For CSS, show it with sample HTML
+      return `<!DOCTYPE html>
+<html>
+<head>
+  <style>${code}</style>
+</head>
+<body>
+  <h1>CSS Preview</h1>
+  <p>This is a paragraph to demonstrate your CSS styles.</p>
+  <div class="container">
+    <div class="box">Box 1</div>
+    <div class="box">Box 2</div>
+    <div class="box">Box 3</div>
+  </div>
+  <button>Click me</button>
+  <a href="#">Sample Link</a>
+  <ul>
+    <li>List item 1</li>
+    <li>List item 2</li>
+    <li>List item 3</li>
+  </ul>
+</body>
+</html>`
+    } else if (languageId === 'javascript') {
+      // For JavaScript, create an HTML wrapper with console output capture
+      return `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a2e; color: #eee; }
+    #output { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 15px; margin-top: 20px; }
+    .log { color: #00ff88; margin: 5px 0; font-family: monospace; }
+    .error { color: #ff6b6b; }
+    .warn { color: #feca57; }
+    h3 { color: #e94560; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h3>JavaScript Output</h3>
+  <div id="output"></div>
+  <script>
+    const output = document.getElementById('output');
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    console.log = (...args) => {
+      const div = document.createElement('div');
+      div.className = 'log';
+      div.textContent = '> ' + args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ');
+      output.appendChild(div);
+      originalLog.apply(console, args);
+    };
+
+    console.error = (...args) => {
+      const div = document.createElement('div');
+      div.className = 'log error';
+      div.textContent = '❌ ' + args.join(' ');
+      output.appendChild(div);
+      originalError.apply(console, args);
+    };
+
+    console.warn = (...args) => {
+      const div = document.createElement('div');
+      div.className = 'log warn';
+      div.textContent = '⚠️ ' + args.join(' ');
+      output.appendChild(div);
+      originalWarn.apply(console, args);
+    };
+
+    try {
+      ${code}
+    } catch (error) {
+      console.error(error.message);
+    }
+  </script>
+</body>
+</html>`
+    }
+    return ''
+  }
 
   const userCode = typeof window !== 'undefined' ? getSession() : null
   const { awardXP } = useXP(userCode)
@@ -175,10 +264,6 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
     if (exerciseMode && currentExercise) {
       setCode(currentExercise.starterCode)
       setOutput('')
-      setShowHint(false)
-      setShowSolution(false)
-      setAllowSolution(false)
-      setHasAttempted(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExerciseIndex, exerciseMode])
@@ -322,19 +407,46 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
     setIsRunning(true)
     setOutput('// Running code...\n')
 
-    // Simulate code execution
-    setTimeout(() => {
-      if (exerciseMode) {
-        // In exercise mode, just show a test run (not validation)
-        const simulatedOutput = `// Test Run:\n// Language: ${language.name}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is just a test run. Click "Next" to submit your answer.`
-        setOutput(simulatedOutput)
-      } else {
-        // Free sandbox mode
-        const simulatedOutput = `// Code executed successfully!\n// Language: ${language.name}\n// Lines of code: ${(code || '').split('\n').length}\n\n// Output:\n${getSimulatedOutput(languageId, code || '')}\n\n// This is a simulated execution environment.\n// In a production app, this would connect to a real code execution service.`
-        setOutput(simulatedOutput)
+    try {
+      // Check if this is a preview-only language (HTML/CSS)
+      if (isPreviewOnly(languageId)) {
+        const preview = generateHTMLPreview(code || '', languageId)
+        setOutput(preview)
+        setIsRunning(false)
+        return
       }
+
+      // Execute code via Piston API
+      const result = await executeCode(languageId, code || '')
+
+      if (result.success) {
+        let outputText = `// ${language.name} - Execution Result\n`
+        if (result.executionTime) {
+          outputText += `// Execution time: ${result.executionTime}ms\n`
+        }
+        outputText += `\n${result.output}`
+
+        if (result.stderr && result.stderr.trim()) {
+          outputText += `\n\n// Warnings:\n${result.stderr}`
+        }
+
+        setOutput(outputText)
+      } else {
+        let errorText = `// ${language.name} - Error\n\n`
+        if (result.stderr) {
+          errorText += result.stderr
+        } else if (result.error) {
+          errorText += result.error
+        } else {
+          errorText += 'An unknown error occurred'
+        }
+        setOutput(errorText)
+      }
+    } catch (error) {
+      setOutput(`// Error executing code\n\n${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
       setIsRunning(false)
-    }, 1000)
+    }
   }
 
   const handleNextExercise = async () => {
@@ -378,13 +490,11 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
       )
     }
     setOutput('')
-    setShowHint(false)
-    setShowSolution(false)
   }
 
   const handleSave = () => {
     localStorage.setItem(`sandbox-${moduleId}-${languageId}`, code)
-    alert('Code saved to browser storage!')
+    toast.success('Code saved to browser storage!')
   }
 
   const handleDownload = () => {
@@ -655,20 +765,61 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
             />
           </div>
 
-          {/* Output Panel */}
+          {/* Output Panel - With Live Preview for Web Languages */}
           <div className="bg-gray-900 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl">
             <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 border-b border-gray-700">
               <Terminal className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
-              <span className="text-white font-semibold text-xs sm:text-sm md:text-base">Output</span>
+              <span className="text-white font-semibold text-xs sm:text-sm md:text-base">
+                {isWebLanguage && showLivePreview ? 'Live Preview' : 'Output'}
+              </span>
+
+              {/* Toggle button for live preview (web languages only) */}
+              {isWebLanguage && (
+                <button
+                  onClick={() => setShowLivePreview(!showLivePreview)}
+                  className="ml-2 flex items-center gap-1 px-2 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-xs text-white/80 hover:text-white transition-all"
+                  title={showLivePreview ? 'Show text output' : 'Show live preview'}
+                >
+                  {showLivePreview ? (
+                    <>
+                      <EyeOff className="w-3 h-3" />
+                      <span className="hidden sm:inline">Text</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3 h-3" />
+                      <span className="hidden sm:inline">Preview</span>
+                    </>
+                  )}
+                </button>
+              )}
+
               {isRunning && (
                 <span className="ml-auto text-yellow-400 text-xs sm:text-sm animate-pulse">
                   Executing...
                 </span>
               )}
             </div>
-            <div className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-gray-900 text-gray-300 font-mono text-xs sm:text-sm p-3 sm:p-4 md:p-6 overflow-auto whitespace-pre-wrap">
-              {output || '// Click "Run Code" to see the output here...'}
-            </div>
+
+            {/* Live Preview iframe for web languages */}
+            {isWebLanguage && showLivePreview ? (
+              <div className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-white">
+                <iframe
+                  srcDoc={getLivePreviewHTML()}
+                  className="w-full h-full border-0"
+                  title="Live Preview"
+                  sandbox="allow-scripts"
+                />
+              </div>
+            ) : (
+              /* Text output for non-web languages or when preview is off */
+              <div className="w-full h-64 sm:h-96 md:h-[500px] lg:h-[600px] bg-gray-900 text-gray-300 font-mono text-xs sm:text-sm p-3 sm:p-4 md:p-6 overflow-auto whitespace-pre-wrap">
+                {output || (isWebLanguage
+                  ? '// Toggle to "Live Preview" to see your code rendered in real-time, or click "Test Run" to execute.'
+                  : '// Click "Test Run" to see the output here...'
+                )}
+              </div>
+            )}
           </div>
         </div>
         )}
@@ -706,231 +857,4 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   )
 }
 
-function getSimulatedOutput(languageId: string, code: string): string {
-  if (!code || code.trim().length === 0) {
-    return '// No code to execute'
-  }
-
-  try {
-    // HTML - render preview text
-    if (languageId === 'html') {
-      const hasH1 = /<h1[^>]*>(.*?)<\/h1>/gi.exec(code)
-      const hasP = /<p[^>]*>(.*?)<\/p>/gi.exec(code)
-      const hasDiv = /<div[^>]*>(.*?)<\/div>/gi.exec(code)
-      let output = '🌐 HTML Preview:\n\n'
-      if (hasH1) output += `Heading: ${hasH1[1]}\n`
-      if (hasP) output += `Paragraph: ${hasP[1]}\n`
-      if (hasDiv) output += `Div content: ${hasDiv[1]}\n`
-      return output || '🌐 HTML structure rendered'
-    }
-
-    // CSS - show styles applied
-    if (languageId === 'css') {
-      const rules = code.match(/[^{]+\{[^}]+\}/g) || []
-      return `🎨 CSS Styles Applied:\n\n${rules.length} style rules compiled successfully!\n\n` + 
-             rules.slice(0, 3).map(r => `✓ ${r.split('{')[0].trim()}`).join('\n')
-    }
-
-    // JavaScript - try to execute safely
-    if (languageId === 'javascript' || languageId === 'javascript-games') {
-      const logs: string[] = []
-      const mockConsole = {
-        log: (...args: unknown[]) => logs.push(args.map(String).join(' '))
-      }
-      
-      try {
-        // Create safe execution context
-        const safeCode = code.replace(/console\.log/g, 'mockConsole.log')
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval
-        const fn = new Function('mockConsole', safeCode)
-        fn(mockConsole)
-        return logs.length > 0 ? logs.join('\n') : '✓ Code executed successfully (no console output)'
-      } catch (err) {
-        return `Error: ${err instanceof Error ? err.message : String(err)}`
-      }
-    }
-
-    // Python - simulate execution
-    if (languageId === 'python' || languageId === 'python-ml' || languageId === 'python-backend') {
-      const prints = code.match(/print\((.*?)\)/g) || []
-      if (prints.length > 0) {
-        return prints.map(p => {
-          const content = p.match(/print\((.*?)\)/)?.[1] || ''
-          return content.replace(/['"]/g, '').replace(/f"/g, '')
-        }).join('\n')
-      }
-      return '✓ Python script executed successfully'
-    }
-
-    // React / React Native / Next.js - component output
-    if (languageId === 'react' || languageId === 'react-native' || languageId === 'nextjs') {
-      const hasComponent = /function\s+\w+|const\s+\w+\s*=.*?=>/.test(code)
-      const hasJSX = /<[A-Z]\w*|<div|<button|<h1/.test(code)
-      if (hasComponent && hasJSX) {
-        return '⚛️ React Component Rendered:\n\n✓ Component compiled successfully\n✓ JSX rendered to DOM'
-      }
-      return '⚛️ React code compiled'
-    }
-
-    // TypeScript
-    if (languageId === 'typescript') {
-      return '🔷 TypeScript Compiled:\n\n✓ Type checking passed\n✓ Transpiled to JavaScript successfully'
-    }
-
-    // Node.js
-    if (languageId === 'nodejs') {
-      const hasExpress = /express\(\)|app\.listen|app\.get/.test(code)
-      if (hasExpress) {
-        return '🚀 Node.js Server:\n\n✓ Express server configured\n✓ Server listening on port 3000'
-      }
-      return '✓ Node.js script executed'
-    }
-
-    // SQL
-    if (languageId === 'sql' || languageId === 'postgresql' || languageId === 'mongodb') {
-      const hasSelect = /SELECT/i.test(code)
-      const hasInsert = /INSERT/i.test(code)
-      const hasUpdate = /UPDATE/i.test(code)
-      const hasDelete = /DELETE/i.test(code)
-      let output = '🗄️ Database Query Executed:\n\n'
-      if (hasSelect) output += '✓ SELECT query returned 5 rows\n'
-      if (hasInsert) output += '✓ INSERT query: 1 row affected\n'
-      if (hasUpdate) output += '✓ UPDATE query: 3 rows affected\n'
-      if (hasDelete) output += '✓ DELETE query: 2 rows affected\n'
-      return output
-    }
-
-    // Java
-    if (languageId === 'java') {
-      const hasMain = /public\s+static\s+void\s+main/.test(code)
-      return hasMain ? 
-        '☕ Java Program:\n\n✓ Compiled successfully\n✓ Main method executed' :
-        '☕ Java code compiled'
-    }
-
-    // Kotlin
-    if (languageId === 'kotlin') {
-      return '🎯 Kotlin Program:\n\n✓ Compiled to JVM bytecode\n✓ Executed successfully'
-    }
-
-    // Swift
-    if (languageId === 'swift') {
-      const hasPrint = /print\(/.test(code)
-      return hasPrint ?
-        '🍎 Swift Output:\n\n' + (code.match(/print\((.*?)\)/)?.[1]?.replace(/["']/g, '') || 'Hello, Swift!') :
-        '🍎 Swift code compiled'
-    }
-
-    // Go
-    if (languageId === 'go') {
-      return '🐹 Go Program:\n\n✓ Build successful\n✓ Program executed'
-    }
-
-    // Rust
-    if (languageId === 'rust') {
-      return '🦀 Rust Program:\n\n✓ Compiled successfully (zero-cost abstractions)\n✓ Memory safety guaranteed'
-    }
-
-    // Flutter/Dart
-    if (languageId === 'flutter') {
-      return '🎨 Flutter App:\n\n✓ Widget tree built\n✓ Hot reload complete\n✓ App running on simulator'
-    }
-
-    // Unity C#
-    if (languageId === 'unity-csharp') {
-      return '🎮 Unity Script:\n\n✓ MonoBehaviour compiled\n✓ GameObject initialized\n✓ Scene loaded'
-    }
-
-    // Unreal Engine
-    if (languageId === 'unreal') {
-      return '🎮 Unreal Engine:\n\n✓ Blueprint compiled\n✓ Actor spawned\n✓ Level loaded'
-    }
-
-    // Godot
-    if (languageId === 'godot') {
-      return '🎮 Godot Script:\n\n✓ GDScript parsed\n✓ Node ready\n✓ Scene running'
-    }
-
-    // R
-    if (languageId === 'r') {
-      return '📊 R Output:\n\n✓ Data analysis complete\n✓ Statistical model fitted\n[1] Results calculated'
-    }
-
-    // TensorFlow
-    if (languageId === 'tensorflow') {
-      return '🧠 TensorFlow Model:\n\n✓ Model compiled\n✓ Training: Epoch 10/10 - accuracy: 0.95\n✓ Model saved'
-    }
-
-    // PyTorch
-    if (languageId === 'pytorch') {
-      return '🔥 PyTorch Model:\n\n✓ Neural network initialized\n✓ Training complete\n✓ Loss: 0.023'
-    }
-
-    // Pandas
-    if (languageId === 'pandas') {
-      return '🐼 Pandas DataFrame:\n\n✓ Data loaded\n✓ Transformation applied\n✓ Shape: (1000, 15)'
-    }
-
-    // Scikit-learn
-    if (languageId === 'scikit-learn') {
-      return '🤖 Scikit-learn Model:\n\n✓ Model trained\n✓ Accuracy: 92.5%\n✓ Predictions generated'
-    }
-
-    // Docker
-    if (languageId === 'docker') {
-      return '🐳 Docker:\n\n✓ Image built successfully\n✓ Container running\n✓ Port 8080 exposed'
-    }
-
-    // Kubernetes
-    if (languageId === 'kubernetes') {
-      return '☸️ Kubernetes:\n\n✓ Deployment created\n✓ Pods: 3/3 Running\n✓ Service exposed'
-    }
-
-    // AWS
-    if (languageId === 'aws') {
-      return '☁️ AWS Resources:\n\n✓ CloudFormation stack created\n✓ EC2 instances running\n✓ S3 bucket configured'
-    }
-
-    // Terraform
-    if (languageId === 'terraform') {
-      return '🏗️ Terraform:\n\n✓ Plan: 5 to add, 0 to change, 0 to destroy\n✓ Apply complete!\n✓ Resources: 5 added'
-    }
-
-    // GitHub Actions
-    if (languageId === 'github-actions') {
-      return '🔄 GitHub Actions:\n\n✓ Workflow triggered\n✓ All jobs passed\n✓ Deployment successful'
-    }
-
-    // Solidity
-    if (languageId === 'solidity') {
-      return '⛓️ Smart Contract:\n\n✓ Contract compiled\n✓ Deployed to network\n✓ Gas used: 245,789'
-    }
-
-    // Ethereum
-    if (languageId === 'ethereum') {
-      return '⛓️ Ethereum:\n\n✓ Transaction broadcasted\n✓ Block confirmed\n✓ Balance updated'
-    }
-
-    // Redis
-    if (languageId === 'redis') {
-      return '🔴 Redis:\n\n✓ Connected to server\n✓ Key set successfully\n✓ GET command: "value"'
-    }
-
-    // Security/Penetration Testing
-    if (languageId === 'penetration-testing' || languageId === 'network-security' || languageId === 'security-tools') {
-      return '🔒 Security Test:\n\n✓ Scan complete\n✓ Vulnerabilities found: 0\n✓ Network secure'
-    }
-
-    // Cryptography
-    if (languageId === 'cryptography') {
-      return '🔐 Cryptography:\n\n✓ Encryption successful\n✓ Hash generated: a7f3e...\n✓ Signature verified'
-    }
-
-    // Default for any other language
-    return `✓ ${languageId.toUpperCase()} code executed successfully\n\nOutput would appear here in a real execution environment.`
-
-  } catch (error) {
-    return `Error: ${error instanceof Error ? error.message : String(error)}`
-  }
-}
 

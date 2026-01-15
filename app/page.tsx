@@ -15,7 +15,8 @@ export default function Home() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome')
   const [userCode, setUserCode] = useState<string | null>(null)
   const [userName, setUserName] = useState<string>('')
-  const [userAge, setUserAge] = useState<number>(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_userAge, setUserAge] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {

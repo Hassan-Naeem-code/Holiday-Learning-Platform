@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Sparkles, TrendingUp, Flame, Trophy, Target, Zap } from 'lucide-react'
+import { Sparkles, Flame, Trophy, Target, Zap } from 'lucide-react'
 import { TECHNOLOGY_MODULES } from '@/utils/techModules'
 import ModuleCard from '@/components/Dashboard/ModuleCard'
 import { getUserProfile, updateUserStreak, addUserXP } from '@/lib/firebaseService'
@@ -47,7 +47,7 @@ export default function DashboardPage() {
                 achievements: updatedProfile.achievements,
               })
             }
-          } catch (streakError) {
+          } catch {
             setUserProfile(profile)
             syncFromFirebase({
               level: profile.level,

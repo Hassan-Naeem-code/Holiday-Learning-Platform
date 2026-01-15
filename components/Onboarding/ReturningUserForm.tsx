@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { KeyRound, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
+import { KeyRound, Loader2, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react'
 import { getUserProfile } from '@/lib/firebaseService'
 import { formatCode, validateCodeFormat } from '@/utils/userCodeGenerator'
 
@@ -15,10 +15,12 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isNetworkError, setIsNetworkError] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
     setError(null)
+    setIsNetworkError(false)
 
     const formattedCode = formatCode(code)
 
@@ -35,10 +37,21 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
       if (userProfile) {
         onSuccess(formattedCode)
       } else {
-        setError('Code not found. Please check and try again.')
+        setError('Code not found. Please double-check your code and try again.')
+        setIsNetworkError(false)
       }
     } catch (err) {
-      setError('Failed to verify code. Please try again.')
+      // Check if it's a network error
+      const errorMessage = err instanceof Error ? err.message : ''
+      const isNetwork = errorMessage.includes('network') ||
+                       errorMessage.includes('fetch') ||
+                       errorMessage.includes('offline') ||
+                       !navigator.onLine
+
+      setIsNetworkError(isNetwork)
+      setError(isNetwork
+        ? 'Network error. Please check your connection and try again.'
+        : 'Failed to verify code. Our servers might be busy. Please try again.')
       console.error(err)
     } finally {
       setLoading(false)
@@ -140,10 +153,29 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600"
+                  className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600"
                 >
-                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  <p className="text-sm">{error}</p>
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{error}</p>
+                      {isNetworkError && (
+                        <p className="text-xs text-red-500 mt-1">
+                          Tip: Check if you&apos;re connected to the internet.
+                        </p>
+                      )}
+                    </div>
+                    {(isNetworkError || error.includes('servers')) && !loading && (
+                      <button
+                        type="button"
+                        onClick={() => handleSubmit()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 hover:bg-red-200 rounded-lg text-xs font-medium transition-colors"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        Retry
+                      </button>
+                    )}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

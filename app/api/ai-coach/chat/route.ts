@@ -1,7 +1,27 @@
+import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/utils/rateLimit'
+
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
   try {
+    // Rate limiting
+    const clientId = getClientIdentifier(req)
+    const rateLimit = checkRateLimit(`ai-coach:${clientId}`, RATE_LIMITS.aiCoach)
+
+    if (!rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please wait a moment before trying again.' }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': rateLimit.resetTime.toString(),
+          }
+        }
+      )
+    }
+
     if (!process.env.GROQ_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'Missing GROQ_API_KEY on the server.' }),
@@ -94,7 +114,10 @@ Remember: Your goal is to help them LEARN, not just get answers. Guide them to d
       );
     }
 
-    // Call Groq API directly using OpenAI-compatible endpoint
+    // Call Groq API directly using OpenAI-compatible endpoint with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -114,7 +137,10 @@ Remember: Your goal is to help them LEARN, not just get answers. Guide them to d
         max_tokens: 500,
         temperature: 0.7,
       }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorData = await response.text();
@@ -131,16 +157,12 @@ Remember: Your goal is to help them LEARN, not just get answers. Guide them to d
       },
     });
   } catch (error) {
-    console.error('AI Coach Error:', error);
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown',
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    // Log error server-side only (no details exposed to client)
+    console.error('AI Coach Error:', error instanceof Error ? error.message : 'Unknown error');
 
     return new Response(
       JSON.stringify({
-        error: 'AI service temporarily unavailable. Please try again in a moment.',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: 'AI service temporarily unavailable. Please try again in a moment.'
       }),
       {
         status: 500,

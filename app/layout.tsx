@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import AchievementProvider from '@/components/Common/AchievementProvider'
-import ConsoleProtectionClient from '@/components/Common/ConsoleProtectionClient'
 import ServiceWorkerRegistration from '@/components/Common/ServiceWorkerRegistration'
 import InstallPrompt from '@/components/Common/InstallPrompt'
+import CookieConsent from '@/components/Common/CookieConsent'
 import ClientShell from '@/components/Layout/ClientShell'
 import QueryProvider from '@/components/Providers/QueryProvider'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -95,7 +95,7 @@ export default function RootLayout({
         />
         <ServiceWorkerRegistration />
         <InstallPrompt />
-        <ConsoleProtectionClient />
+        <CookieConsent />
         <QueryProvider>
           <AchievementProvider>
             <ClientShell>

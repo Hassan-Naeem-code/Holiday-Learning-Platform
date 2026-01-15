@@ -11,7 +11,6 @@ import { useUserStore } from '@/stores/userStore'
 import { useTutorialStore } from '@/stores/tutorialStore'
 import { achievementManager } from '@/utils/achievementManager'
 import { soundManager } from '@/utils/soundManager'
-import { rateLimiter } from '@/utils/security'
 import confetti from 'canvas-confetti'
 
 interface PipelineStep {
@@ -114,12 +113,6 @@ export default function DataPipelineGame() {
   }
 
   const checkSolution = () => {
-    if (!rateLimiter.check('game-submission', 10, 60000)) {
-      setFeedback('⏳ Too many attempts! Please wait a moment.')
-      setTimeout(() => setFeedback(''), 3000)
-      return
-    }
-
     const correct = LEVEL_SOLUTIONS[difficulty]
     const isCorrect = solution.length === correct.length &&
                      solution.every((step, idx) => step === correct[idx])
