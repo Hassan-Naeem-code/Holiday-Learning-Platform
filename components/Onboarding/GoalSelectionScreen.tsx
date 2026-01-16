@@ -119,6 +119,8 @@ export default function GoalSelectionScreen({ code, name, onComplete }: GoalSele
               whileTap={!loading ? { scale: 0.95 } : {}}
               onClick={() => handleGoalSelect(goal.id)}
               disabled={loading}
+              aria-label={`Select ${goal.title} as your learning goal: ${goal.description}`}
+              aria-busy={loading && selectedGoal === goal.id}
               className={`bg-gradient-to-br ${goal.gradient} p-6 md:p-8 rounded-3xl text-white glass-card transition-all ${
                 loading && selectedGoal === goal.id ? 'ring-4 ring-brand-gold animate-pulse' : ''
               } ${loading && selectedGoal !== goal.id ? 'opacity-50' : ''}`}

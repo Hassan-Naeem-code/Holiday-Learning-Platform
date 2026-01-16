@@ -30,6 +30,8 @@ export default function SoundToggle() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       title={enabled ? 'Mute sounds' : 'Enable sounds'}
+      aria-label={enabled ? 'Mute sounds' : 'Enable sounds'}
+      aria-pressed={enabled}
     >
       {enabled ? (
         <Volume2 className="w-5 h-5 text-white" />

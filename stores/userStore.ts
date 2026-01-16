@@ -54,6 +54,13 @@ export const useUserStore = create<UserStore>((set) => ({
         lastActive: new Date(),
       }
       storage.set(STORAGE_KEYS.USER_DATA, updatedUser)
+
+      // Trigger profile refresh for GlobalLearningTree and other listeners
+      // This uses the window event system to avoid circular dependencies
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('triggerProfileRefresh'))
+      }
+
       return { user: updatedUser }
     })
   },

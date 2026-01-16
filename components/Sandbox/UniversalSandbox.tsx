@@ -759,9 +759,14 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
             <textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full h-64 sm:h-80 md:h-[400px] lg:h-[500px] xl:h-[550px] 2xl:h-[650px] bg-gray-900 text-green-400 font-mono text-xs sm:text-sm md:text-base 2xl:text-lg p-3 sm:p-4 md:p-6 2xl:p-8 focus:outline-none resize-none"
+              className="w-full h-72 sm:h-80 md:h-[400px] lg:h-[500px] xl:h-[550px] 2xl:h-[650px] bg-gray-900 text-green-400 font-mono text-sm sm:text-sm md:text-base 2xl:text-lg p-3 sm:p-4 md:p-6 2xl:p-8 focus:outline-none focus:ring-2 focus:ring-green-500/50 resize-none leading-relaxed"
               spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
+              autoComplete="off"
+              data-gramm="false"
               placeholder={`Write your ${language.name} code here...`}
+              aria-label={`Code editor for ${language.name}`}
             />
           </div>
 
@@ -779,6 +784,8 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
                   onClick={() => setShowLivePreview(!showLivePreview)}
                   className="ml-2 flex items-center gap-1 px-2 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-xs text-white/80 hover:text-white transition-all"
                   title={showLivePreview ? 'Show text output' : 'Show live preview'}
+                  aria-label={showLivePreview ? 'Switch to text output view' : 'Switch to live preview'}
+                  aria-pressed={showLivePreview}
                 >
                   {showLivePreview ? (
                     <>

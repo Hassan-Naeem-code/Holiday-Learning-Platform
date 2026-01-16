@@ -38,6 +38,8 @@ export default function AICoachButton() {
         className="relative w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 via-pink-500 to-purple-700 shadow-2xl flex items-center justify-center overflow-hidden group"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
+        aria-label="Open AI Coach assistant"
+        title="AI Coach - Need help? Click me!"
         animate={{
           boxShadow: [
             '0 0 20px rgba(168, 85, 247, 0.4)',

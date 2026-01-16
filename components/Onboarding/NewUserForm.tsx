@@ -280,8 +280,10 @@ export default function NewUserForm({ onComplete, onBack }: NewUserFormProps) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
+                      role="alert"
+                      aria-live="polite"
                     >
-                      <AlertCircle className="w-4 h-4" />
+                      <AlertCircle className="w-4 h-4" aria-hidden="true" />
                       {error}
                     </motion.div>
                   )}

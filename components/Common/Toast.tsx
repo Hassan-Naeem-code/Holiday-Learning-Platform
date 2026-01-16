@@ -101,6 +101,8 @@ function ToastContainer({ toasts, hideToast }: { toasts: Toast[], hideToast: (id
             <button
               onClick={() => hideToast(toast.id)}
               className="flex-shrink-0 text-white/60 hover:text-white transition-colors"
+              aria-label="Close notification"
+              title="Dismiss"
             >
               <X className="w-4 h-4" />
             </button>

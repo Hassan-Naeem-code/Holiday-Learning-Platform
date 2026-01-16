@@ -252,6 +252,8 @@ export default function AICoachPopup() {
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
+                  aria-label="Close AI Coach"
+                  title="Close"
                 >
                   <X className="w-5 h-5" />
                 </motion.button>
@@ -283,6 +285,8 @@ export default function AICoachPopup() {
                       <button
                         onClick={handleRetry}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/30 hover:bg-red-500/50 text-red-200 rounded-lg text-xs font-medium transition-colors"
+                        aria-label="Retry sending failed message"
+                        title="Retry"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         Retry
@@ -447,6 +451,8 @@ export default function AICoachPopup() {
                   className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-full flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  aria-label={aiChatMutation.isPending ? 'Sending message...' : 'Send message'}
+                  title="Send"
                 >
                   {aiChatMutation.isPending ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

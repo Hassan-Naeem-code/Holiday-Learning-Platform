@@ -23,7 +23,11 @@ export default function ModuleCard({ module, index, onClick }: ModuleCardProps) 
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={onClick}
+      onKeyDown={(e) => e.key === 'Enter' && onClick()}
       className="cursor-pointer group"
+      role="button"
+      tabIndex={0}
+      aria-label={`Select ${module.name} module with ${module.languages.length} languages`}
     >
       <div className={`relative bg-gradient-to-br ${module.gradient} rounded-2xl sm:rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 2xl:p-10 shadow-xl hover:shadow-2xl transition-all overflow-hidden h-full`}>
         {/* Background Pattern */}

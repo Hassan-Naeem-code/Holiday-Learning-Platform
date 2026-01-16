@@ -41,7 +41,11 @@ export default function LearningTree({ goalType, treeProgress, onCelebrate }: Le
       <motion.div
         className={`relative ${isFull ? 'cursor-pointer' : ''}`}
         onClick={handleClick}
+        onKeyDown={(e) => e.key === 'Enter' && isFull && handleClick()}
         whileHover={isFull ? { scale: 1.05 } : {}}
+        role={isFull ? 'button' : 'img'}
+        tabIndex={isFull ? 0 : -1}
+        aria-label={isFull ? `Learning tree at ${Math.floor(treeProgress.overallGrowth)}% - Click to celebrate!` : `Learning tree progress: ${Math.floor(treeProgress.overallGrowth)}%, Stage: ${treeProgress.stage}`}
       >
         {/* Glow when full */}
         <AnimatePresence>

@@ -29,11 +29,13 @@ export default function SandboxContainer({
         <div className="glass-card p-6 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center space-x-4">
-              <Link href="/">
+              <Link href="/" aria-label="Go to home page">
                 <motion.button
                   className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  aria-label="Go to home page"
+                  title="Home"
                 >
                   <Home className="w-5 h-5 text-white" />
                 </motion.button>
@@ -53,6 +55,8 @@ export default function SandboxContainer({
                   className="btn btn-secondary flex items-center space-x-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  aria-label="Reset sandbox to default state"
+                  title="Reset"
                 >
                   <RotateCcw className="w-5 h-5" />
                   <span>Reset</span>
@@ -65,6 +69,9 @@ export default function SandboxContainer({
                   className="btn btn-primary flex items-center space-x-2"
                   whileHover={!isRunning ? { scale: 1.05 } : {}}
                   whileTap={!isRunning ? { scale: 0.95 } : {}}
+                  aria-label={isRunning ? 'Code is running' : 'Run code'}
+                  aria-busy={isRunning}
+                  title="Run"
                 >
                   <Play className="w-5 h-5" />
                   <span>{isRunning ? 'Running...' : 'Run'}</span>

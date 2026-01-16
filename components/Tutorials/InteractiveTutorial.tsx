@@ -14,6 +14,7 @@ import {
 } from '@/lib/firebaseService'
 import { getSession } from '@/utils/sessionManager'
 import { executeCode, isPreviewOnly } from '@/utils/pistonService'
+import { triggerProfileRefresh } from '@/components/Progress/GlobalLearningTree'
 
 interface InteractiveTutorialProps {
   tutorial: Tutorial
@@ -198,6 +199,8 @@ try{${editorCode}}catch(e){console.error(e.message)}
     try {
       const isCompleted = completed.length >= totalSections
       await updateTutorialProgress(userCode, languageKey, newSection, completed, isCompleted)
+      // Trigger profile refresh for real-time progress updates
+      triggerProfileRefresh()
     } catch (error) {
       console.error('Error saving tutorial progress:', error)
     }
@@ -244,6 +247,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
           <button
             onClick={() => router.push('/dashboard')}
             className="px-6 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 transition-all"
+            aria-label="Go back to dashboard"
           >
             Back to Dashboard
           </button>
@@ -265,6 +269,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
               <button
                 onClick={() => router.push(`/module/${moduleId}`)}
                 className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+                aria-label="Go back to module page"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="hidden sm:inline">Back</span>
@@ -460,6 +465,8 @@ try{${editorCode}}catch(e){console.error(e.message)}
               <button
                 onClick={handlePrevious}
                 disabled={isFirstSection}
+                aria-label={isFirstSection ? 'No previous section' : `Go to previous section`}
+                aria-disabled={isFirstSection}
                 className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 2xl:px-8 py-2 sm:py-2.5 md:py-3 2xl:py-4 rounded-lg sm:rounded-xl font-semibold transition-all text-xs sm:text-sm md:text-base 2xl:text-lg ${
                   isFirstSection
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -474,6 +481,8 @@ try{${editorCode}}catch(e){console.error(e.message)}
               <button
                 onClick={handleNext}
                 disabled={isLastSection}
+                aria-label={isLastSection ? 'No more sections' : `Go to next section`}
+                aria-disabled={isLastSection}
                 className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 2xl:px-8 py-2 sm:py-2.5 md:py-3 2xl:py-4 rounded-lg sm:rounded-xl font-semibold transition-all text-xs sm:text-sm md:text-base 2xl:text-lg ${
                   isLastSection
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -501,6 +510,8 @@ try{${editorCode}}catch(e){console.error(e.message)}
                   onClick={() => setShowLivePreview(!showLivePreview)}
                   className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors text-xs sm:text-sm 2xl:text-base"
                   title={showLivePreview ? 'Hide preview' : 'Show preview'}
+                  aria-label={showLivePreview ? 'Switch to code editor view' : 'Switch to live preview'}
+                  aria-pressed={showLivePreview}
                 >
                   {showLivePreview ? <EyeOff className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                   <span className="hidden xs:inline">{showLivePreview ? 'Code' : 'Preview'}</span>
@@ -510,6 +521,8 @@ try{${editorCode}}catch(e){console.error(e.message)}
                 onClick={handleRunCode}
                 disabled={isRunning}
                 className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-600 hover:bg-green-500 disabled:bg-green-800 text-white rounded-lg transition-colors font-semibold text-xs sm:text-sm 2xl:text-base"
+                aria-label={isRunning ? 'Code is running' : 'Run code'}
+                aria-busy={isRunning}
               >
                 <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 2xl:w-5 2xl:h-5" />
                 {isRunning ? 'Running...' : 'Run'}
@@ -533,9 +546,14 @@ try{${editorCode}}catch(e){console.error(e.message)}
             <textarea
               value={editorCode}
               onChange={(e) => setEditorCode(e.target.value)}
-              className="flex-1 bg-gray-900 text-green-400 font-mono text-xs sm:text-sm 2xl:text-base p-3 sm:p-4 2xl:p-6 resize-none focus:outline-none min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[400px] 2xl:min-h-[500px]"
+              className="flex-1 bg-gray-900 text-green-400 font-mono text-sm sm:text-sm 2xl:text-base p-3 sm:p-4 2xl:p-6 resize-none focus:outline-none focus:ring-2 focus:ring-green-500/50 min-h-[250px] sm:min-h-[280px] md:min-h-[320px] lg:min-h-[400px] 2xl:min-h-[500px] leading-relaxed"
               placeholder="// Write your code here..."
               spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
+              autoComplete="off"
+              data-gramm="false"
+              aria-label={`Code editor for ${language.name} tutorial`}
             />
           )}
 

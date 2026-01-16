@@ -89,6 +89,8 @@ export default function DifficultySelector({
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
                 disabled={isCompleted}
+                aria-label={`Select ${diff.title} difficulty${isCompleted ? ' (already completed)' : ''}`}
+                aria-disabled={isCompleted}
                 className={`${diff.bgColor} ${diff.borderColor} border-2 rounded-2xl p-6 text-left transition-all hover:shadow-2xl hover:border-opacity-100 group relative ${
                   isCompleted ? 'opacity-60 cursor-not-allowed' : ''
                 }`}

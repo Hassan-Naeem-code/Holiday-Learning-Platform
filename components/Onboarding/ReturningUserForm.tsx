@@ -126,12 +126,13 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Code Input */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="code-input" className="block text-sm font-semibold text-gray-700 mb-2">
                 Your Unique Code
               </label>
               <div className="relative">
-                <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
                 <input
+                  id="code-input"
                   type="text"
                   value={code}
                   onChange={handleCodeChange}
@@ -139,9 +140,11 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
                   className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-gray-800 text-center text-2xl font-mono tracking-wider"
                   disabled={loading}
                   maxLength={9}
+                  aria-describedby="code-hint code-error"
+                  aria-invalid={error ? 'true' : 'false'}
                 />
               </div>
-              <p className="mt-2 text-xs text-gray-500 text-center">
+              <p id="code-hint" className="mt-2 text-xs text-gray-500 text-center">
                 Format: XXXX-XXXX (e.g., A1B2-C3D4)
               </p>
             </div>
@@ -154,9 +157,12 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600"
+                  role="alert"
+                  id="code-error"
+                  aria-live="polite"
                 >
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" aria-hidden="true" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">{error}</p>
                       {isNetworkError && (
@@ -170,6 +176,7 @@ export default function ReturningUserForm({ onSuccess, onBack }: ReturningUserFo
                         type="button"
                         onClick={() => handleSubmit()}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 hover:bg-red-200 rounded-lg text-xs font-medium transition-colors"
+                        aria-label="Retry code verification"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         Retry

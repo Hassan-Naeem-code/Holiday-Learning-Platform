@@ -98,11 +98,13 @@ export default function SearchFilter({ modules, onFilteredModulesChange }: Searc
         <button
           onClick={() => setShowFilters(!showFilters)}
           className="sm:hidden flex items-center gap-2 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all"
+          aria-label={showFilters ? 'Hide filters menu' : 'Show filters menu'}
+          aria-expanded={showFilters}
         >
           <Filter className="w-5 h-5" />
           <span>Filters</span>
           {hasActiveFilters && (
-            <span className="w-2 h-2 bg-brand-gold rounded-full" />
+            <span className="w-2 h-2 bg-brand-gold rounded-full" aria-hidden="true" />
           )}
         </button>
 
