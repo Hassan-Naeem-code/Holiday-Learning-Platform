@@ -26,7 +26,7 @@ const AVAILABLE_BLOCKS: ProgramBlock[] = [
   { id: 'loop-1', type: 'loop', label: 'Repeat 3 times', icon: '🔄', value: 'repeat 3' },
 ]
 
-// Safe math evaluator - only supports simple arithmetic with variable x
+// Safe math evaluator: only supports simple arithmetic with variable x
 function safeMathEval(expression: string, xValue: number = 10): string {
   // Replace x with the value
   const expr = expression.replace(/x/g, xValue.toString())

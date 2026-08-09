@@ -914,7 +914,7 @@ button:hover {
     ]
   }
 
-  // Fallback - should never reach here
+  // Fallback: should never reach here
   return [
     {
       id: '1',

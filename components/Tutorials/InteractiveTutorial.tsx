@@ -256,7 +256,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
     )
   }
 
-  // Introduction Screen (W3Schools style - shown before lessons)
+  // Introduction Screen (W3Schools style: shown before lessons)
   if (showIntro && sections.length > 0) {
     const introSection = sections[0] // Get the first section which has the intro content
 
@@ -424,7 +424,7 @@ try{${editorCode}}catch(e){console.error(e.message)}
               </div>
             </div>
 
-            {/* Content - Rendered with Markdown */}
+            {/* Content: Rendered with Markdown */}
             <div className="prose prose-lg max-w-none prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-h2:text-xl prose-h2:font-bold prose-h2:mt-6 prose-h2:mb-3 prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-4 prose-h3:mb-2 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-strong:font-semibold prose-ul:my-4 prose-ol:my-4 prose-code:text-gray-900 dark:prose-code:text-gray-100">
               <ReactMarkdown>{(section.content && section.content.trim().length >= 200) ? section.content : `## What You'll Learn\n${section.title}\n\n## Lesson Overview\nThis section is being enriched. Explore the concepts of ${section.title} with clear guidance, examples, and practice tasks.\n\n### Example\n\n\`\`\`txt\n${section.title} example\n\`\`\`\n\n### Best Practices\n- Use small, focused examples\n- Practice iteratively\n- Keep code readable\n\n### Practice\n- Write a small demo using ${section.title}\n- Add one improvement (like validation or styling)`}</ReactMarkdown>
 

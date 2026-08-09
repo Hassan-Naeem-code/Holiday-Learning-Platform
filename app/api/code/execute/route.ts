@@ -51,7 +51,7 @@ const LANGUAGE_MAP: Record<string, { language: string; version: string }> = {
   // R
   'r': { language: 'r', version: '4.1.1' },
 
-  // SQL (simulated - Piston doesn't support SQL)
+  // SQL (simulated: Piston doesn't support SQL)
   'sql': { language: 'sqlite3', version: '3.36.0' },
   'postgresql': { language: 'sqlite3', version: '3.36.0' },
   'mongodb': { language: 'javascript', version: '18.15.0' },

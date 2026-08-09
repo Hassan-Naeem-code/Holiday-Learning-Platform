@@ -69,8 +69,8 @@ export interface ErrorHandlerOptions {
 
 /**
  * Wraps an async function with comprehensive error handling
- * @param asyncFn - The async function to execute
- * @param options - Error handling options
+ * @param asyncFn: The async function to execute
+ * @param options: Error handling options
  * @returns Promise with result or null on error
  *
  * @example

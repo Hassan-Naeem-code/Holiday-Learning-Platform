@@ -84,7 +84,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
   const router = useRouter()
   const [currentDifficulty, setCurrentDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy')
 
-  // Exercise system - memoize to prevent recreation on every render
+  // Exercise system: memoize to prevent recreation on every render
   const exercises = useMemo(() =>
     generateSandboxExercises(languageId, language.name, currentDifficulty).exercises,
     [languageId, language.name, currentDifficulty]
@@ -770,7 +770,7 @@ export default function UniversalSandbox({ language, moduleId, languageId }: Uni
             />
           </div>
 
-          {/* Output Panel - With Live Preview for Web Languages */}
+          {/* Output Panel: With Live Preview for Web Languages */}
           <div className="bg-gray-900 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl">
             <div className="bg-gray-800 px-3 sm:px-4 md:px-6 py-2 md:py-3 flex items-center gap-2 border-b border-gray-700">
               <Terminal className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />

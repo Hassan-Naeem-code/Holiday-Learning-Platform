@@ -109,7 +109,7 @@ export default function ClientShell({ children }: Props) {
           <GlobalLearningTree />
         </ErrorBoundary>
 
-        {/* AI Coach with isolated error boundary - Only show for authenticated users */}
+        {/* AI Coach with isolated error boundary: Only show for authenticated users */}
         {isAuthenticated && (
           <ErrorBoundary
             fallbackTitle="AI Coach Error"
@@ -121,7 +121,7 @@ export default function ClientShell({ children }: Props) {
           </ErrorBoundary>
         )}
 
-        {/* Session expiration warning - Only show for authenticated users */}
+        {/* Session expiration warning: Only show for authenticated users */}
         {isAuthenticated && <SessionExpirationWarning />}
 
         {/* Navigation with isolated error boundary */}

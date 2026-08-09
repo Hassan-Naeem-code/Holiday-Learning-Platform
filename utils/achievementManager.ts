@@ -1,4 +1,4 @@
-// Achievement Manager - Handles auto-unlocking achievements based on user actions
+// Achievement Manager: Handles auto-unlocking achievements based on user actions
 
 import { useUserStore } from '@/stores/userStore'
 import { useTutorialStore } from '@/stores/tutorialStore'
@@ -82,14 +82,14 @@ class AchievementManager {
     const { user } = useUserStore.getState()
 
     return [
-      // First Steps - Complete first tutorial
+      // First Steps: Complete first tutorial
       {
         id: 'first-steps',
         check: () => Object.values(tutorialProgress).some(t => t.completed),
         message: 'First Steps',
       },
 
-      // Game Master - Win any game on hard
+      // Game Master: Win any game on hard
       {
         id: 'game-master',
         check: () => {
@@ -100,7 +100,7 @@ class AchievementManager {
         message: 'Game Master',
       },
 
-      // Scholar - Complete all tutorials in one topic
+      // Scholar: Complete all tutorials in one topic
       {
         id: 'scholar',
         check: () => {
@@ -109,7 +109,7 @@ class AchievementManager {
         message: 'Scholar',
       },
 
-      // Speed Demon - Complete game in under 2 minutes (120 seconds)
+      // Speed Demon: Complete game in under 2 minutes (120 seconds)
       {
         id: 'speed-demon',
         check: () => {
@@ -122,7 +122,7 @@ class AchievementManager {
         message: 'Speed Demon',
       },
 
-      // Perfect Score - Win with 100% accuracy
+      // Perfect Score: Win with 100% accuracy
       {
         id: 'perfect-score',
         check: () => {
@@ -135,7 +135,7 @@ class AchievementManager {
         message: 'Perfect Score',
       },
 
-      // Completionist - Finish one entire topic all 3 ways
+      // Completionist: Finish one entire topic all 3 ways
       {
         id: 'completionist',
         check: () => {
@@ -146,7 +146,7 @@ class AchievementManager {
         message: 'Completionist',
       },
 
-      // Legend - Complete all 7 topics
+      // Legend: Complete all 7 topics
       {
         id: 'legend',
         check: () => {
@@ -158,7 +158,7 @@ class AchievementManager {
         message: 'Legend',
       },
 
-      // Speedrunner - Get time bonus in 5 games
+      // Speedrunner: Get time bonus in 5 games
       {
         id: 'speedrunner',
         check: () => {
@@ -175,7 +175,7 @@ class AchievementManager {
         message: 'Speedrunner',
       },
 
-      // Thinker - Score 100% on tutorial quiz
+      // Thinker: Score 100% on tutorial quiz
       {
         id: 'thinker',
         check: () => {
@@ -184,18 +184,18 @@ class AchievementManager {
         message: 'Thinker',
       },
 
-      // Streak Master - 7 day streak
+      // Streak Master: 7 day streak
       {
         id: 'streak-master',
         check: () => user.streak >= 7,
         message: 'Streak Master',
       },
 
-      // Triple Threat - Tutorial + Game + Sandbox in one day (tracked by localStorage timestamp)
+      // Triple Threat: Tutorial + Game + Sandbox in one day (tracked by localStorage timestamp)
       {
         id: 'triple-threat',
         check: () => {
-          // This would need day tracking - simplified check for now
+          // This would need day tracking: simplified check for now
           return Object.values(topicProgress).some(topic =>
             topic.tutorial > 0 && topic.game > 0 && topic.sandbox > 0
           )

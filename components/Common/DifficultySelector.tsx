@@ -21,7 +21,7 @@ export default function DifficultySelector({
   const difficulties = [
     {
       level: 'easy' as const,
-      title: 'Easy - Beginner',
+      title: 'Easy: Beginner',
       description: 'Perfect for absolute beginners. Start from scratch with basics, syntax, and simple concepts.',
       icon: BookOpen,
       color: 'from-green-500 to-emerald-600',
@@ -31,7 +31,7 @@ export default function DifficultySelector({
     },
     {
       level: 'medium' as const,
-      title: 'Medium - Intermediate',
+      title: 'Medium: Intermediate',
       description: 'For those with basic knowledge. Learn intermediate concepts, patterns, and practical applications.',
       icon: Zap,
       color: 'from-yellow-500 to-orange-600',
@@ -41,7 +41,7 @@ export default function DifficultySelector({
     },
     {
       level: 'hard' as const,
-      title: 'Hard - Advanced',
+      title: 'Hard: Advanced',
       description: 'For experienced learners. Master advanced topics, optimization, best practices, and complex scenarios.',
       icon: Flame,
       color: 'from-red-500 to-pink-600',

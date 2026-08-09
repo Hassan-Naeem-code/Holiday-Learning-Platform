@@ -85,7 +85,7 @@ export default function LearningTree({ goalType, treeProgress, onCelebrate }: Le
             style={{ transformOrigin: 'bottom' }}
           />
 
-          {/* Foliage - changes size based on stage */}
+          {/* Foliage: changes size based on stage */}
           {treeProgress.stage !== 'seedling' && (
             <>
               {/* Main canopy */}

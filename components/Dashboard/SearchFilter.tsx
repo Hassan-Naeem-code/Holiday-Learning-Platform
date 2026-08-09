@@ -24,7 +24,7 @@ export default function SearchFilter({ modules, onFilteredModulesChange }: Searc
   const filteredModules = useMemo(() => {
     let result = [...modules]
 
-    // Search filter - search in module name, description, and language names
+    // Search filter: search in module name, description, and language names
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim()
       result = result.filter(module => {
@@ -43,7 +43,7 @@ export default function SearchFilter({ modules, onFilteredModulesChange }: Searc
       })
     }
 
-    // Difficulty filter - filter modules that have at least one language with the selected difficulty
+    // Difficulty filter: filter modules that have at least one language with the selected difficulty
     if (difficultyFilter !== 'all') {
       result = result.filter(module =>
         module.languages.some(lang => lang.difficulty === difficultyFilter)
@@ -58,7 +58,7 @@ export default function SearchFilter({ modules, onFilteredModulesChange }: Searc
     setSearchQuery(e.target.value)
   }, [])
 
-  // Sync filtered results to parent - use useEffect for side effects, not useMemo
+  // Sync filtered results to parent: use useEffect for side effects, not useMemo
   useEffect(() => {
     onFilteredModulesChange(filteredModules)
   }, [filteredModules, onFilteredModulesChange])

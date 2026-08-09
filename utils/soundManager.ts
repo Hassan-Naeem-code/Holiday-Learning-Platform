@@ -1,4 +1,4 @@
-// Sound Manager - Generates and plays sound effects using Web Audio API
+// Sound Manager: Generates and plays sound effects using Web Audio API
 
 class SoundManager {
   private audioContext: AudioContext | null = null

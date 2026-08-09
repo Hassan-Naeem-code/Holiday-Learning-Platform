@@ -54,7 +54,7 @@ export type CelebrationType = 'small' | 'medium' | 'large' | 'epic'
 
 /**
  * Trigger a confetti celebration
- * @param type - Type of celebration (small, medium, large, epic)
+ * @param type: Type of celebration (small, medium, large, epic)
  */
 export function celebrate(type: CelebrationType = 'medium'): void {
   const config = CONFETTI_CONFIG[type.toUpperCase() as keyof typeof CONFETTI_CONFIG]
@@ -91,7 +91,7 @@ export function celebrateEpicWin(): void {
 
 /**
  * Celebrate a combo achievement with custom particle count
- * @param comboLevel - Current combo level (affects particle count)
+ * @param comboLevel: Current combo level (affects particle count)
  */
 export function celebrateCombo(comboLevel: number): void {
   const particleCount = Math.min(50 + (comboLevel * 10), 150)
@@ -143,7 +143,7 @@ export function celebrateStreak(streakDays: number): void {
 
 /**
  * Continuous confetti for epic celebrations
- * @param duration - Duration in milliseconds (default: 3000ms)
+ * @param duration: Duration in milliseconds (default: 3000ms)
  */
 export function celebrateContinuous(duration: number = 3000): void {
   const end = Date.now() + duration
@@ -176,7 +176,7 @@ export function celebrateContinuous(duration: number = 3000): void {
 
 /**
  * Custom confetti with specific configuration
- * @param config - Custom confetti configuration
+ * @param config: Custom confetti configuration
  */
 export function celebrateCustom(config: confetti.Options): void {
   confetti(config)

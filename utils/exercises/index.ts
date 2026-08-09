@@ -1,4 +1,4 @@
-// Exercise content module loader - enables lazy loading of exercise content
+// Exercise content module loader: enables lazy loading of exercise content
 // This reduces initial bundle size by only loading content when needed
 
 // Cache for loaded exercise module

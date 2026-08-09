@@ -144,7 +144,7 @@ export async function getUserProfile(code: string): Promise<UserProfile | null> 
     if (userDoc.exists()) {
       return userDoc.data() as UserProfile
     }
-    // User not found - this is not an error, return null
+    // User not found: this is not an error, return null
     return null
   } catch (error) {
     console.error('Error fetching user profile:', error)
@@ -308,17 +308,17 @@ export async function updateUserStreak(code: string): Promise<{ streak: number; 
     let isNew = false
 
     if (daysDiff === 0) {
-      // Same day - no change to streak
+      // Same day: no change to streak
       return { streak: newStreak, increased: false, isNew: false }
     } else if (daysDiff === 1) {
-      // Consecutive day - increment streak
+      // Consecutive day: increment streak
       newStreak += 1
       increased = true
       if (newStreak === 1) {
         isNew = true
       }
     } else if (daysDiff > 1) {
-      // Streak broken - reset to 1
+      // Streak broken: reset to 1
       newStreak = 1
       isNew = true
     }
@@ -346,7 +346,7 @@ export async function updateLastActive(code: string): Promise<void> {
     })
   } catch (error) {
     console.error('Error updating last active:', error)
-    // Don't throw - this is non-critical, allow silent fail
+    // Don't throw: this is non-critical, allow silent fail
   }
 }
 

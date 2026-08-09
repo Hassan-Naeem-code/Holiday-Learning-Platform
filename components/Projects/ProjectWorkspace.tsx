@@ -211,7 +211,7 @@ Your project is ready! Check the preview panel to see it in action.`)
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel - Steps */}
+        {/* Left Panel: Steps */}
         <div className="w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
           {/* Current Step */}
           <div className="p-6 border-b border-gray-700">
@@ -317,7 +317,7 @@ Your project is ready! Check the preview panel to see it in action.`)
           </div>
         </div>
 
-        {/* Center - Code Editor */}
+        {/* Center: Code Editor */}
         <div className="flex-1 flex flex-col">
           {/* File Tabs */}
           <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex gap-2">
@@ -357,7 +357,7 @@ Your project is ready! Check the preview panel to see it in action.`)
           )}
         </div>
 
-        {/* Right Panel - Preview (for web projects) */}
+        {/* Right Panel: Preview (for web projects) */}
         {project.languages.includes('html') && (
           <div className="w-96 bg-gray-800 border-l border-gray-700 flex flex-col">
             <div className="p-4 border-b border-gray-700 flex items-center justify-between">

@@ -205,7 +205,7 @@ export default function LanguageCard({ language, moduleId, index }: LanguageCard
           </div>
         </div>
 
-        {/* Progress Indicators - Only show if user has progress */}
+        {/* Progress Indicators: Only show if user has progress */}
         {hasProgress && (
           <div className="px-6 pt-4 pb-2 bg-gray-50 border-b border-gray-200">
             <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">

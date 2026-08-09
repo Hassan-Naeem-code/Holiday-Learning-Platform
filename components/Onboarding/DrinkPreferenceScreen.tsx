@@ -105,7 +105,7 @@ export default function DrinkPreferenceScreen({
 
           <AnimatePresence mode="wait">
             {isAdult && isAlcoholic === null ? (
-              /* Adult User - Ask if Alcoholic */
+              /* Adult User: Ask if Alcoholic */
               <motion.div
                 key="alcoholic-choice"
                 initial={{ opacity: 0, y: 20 }}
@@ -147,7 +147,7 @@ export default function DrinkPreferenceScreen({
                 </div>
               </motion.div>
             ) : (!isAdult || isAlcoholic === false) && !selectedDrink ? (
-              /* Non-Adult or Non-Alcoholic - Choose Drink */
+              /* Non-Adult or Non-Alcoholic: Choose Drink */
               <motion.div
                 key="drink-choice"
                 initial={{ opacity: 0, y: 20 }}
@@ -233,7 +233,7 @@ export default function DrinkPreferenceScreen({
                 )}
               </motion.div>
             ) : selectedDrink === 'beer' ? (
-              /* Alcoholic - Show Beer Selection */
+              /* Alcoholic: Show Beer Selection */
               <motion.div
                 key="beer-selected"
                 initial={{ opacity: 0, scale: 0.9 }}

@@ -51,7 +51,7 @@ export default function TopicCard({ topic, index }: TopicCardProps) {
             Choose Your Path:
           </h4>
 
-          {/* Read It - Tutorial */}
+          {/* Read It: Tutorial */}
           <Link href={`/tutorial/${topic.tutorialId}`}>
             <motion.div
               className="flex items-center space-x-3 bg-white/10 hover:bg-white/20 rounded-lg p-3 transition-all cursor-pointer group"
@@ -69,7 +69,7 @@ export default function TopicCard({ topic, index }: TopicCardProps) {
             </motion.div>
           </Link>
 
-          {/* Play It - Game */}
+          {/* Play It: Game */}
           <Link href={`/game/${topic.gameId}`}>
             <motion.div
               className="flex items-center space-x-3 bg-white/10 hover:bg-white/20 rounded-lg p-3 transition-all cursor-pointer group"
@@ -87,7 +87,7 @@ export default function TopicCard({ topic, index }: TopicCardProps) {
             </motion.div>
           </Link>
 
-          {/* Try It - Sandbox */}
+          {/* Try It: Sandbox */}
           <Link href={`/sandbox/${topic.sandboxId}`}>
             <motion.div
               className="flex items-center space-x-3 bg-white/10 hover:bg-white/20 rounded-lg p-3 transition-all cursor-pointer group"

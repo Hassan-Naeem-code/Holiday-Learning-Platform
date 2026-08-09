@@ -143,7 +143,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Switch Account Button - Only show when authenticated */}
+          {/* Switch Account Button: Only show when authenticated */}
           {isAuthenticated && (
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -173,7 +173,7 @@ export default function Navbar() {
           </Link>
         ))}
 
-        {/* Switch Account Button (Mobile) - Only show when authenticated */}
+        {/* Switch Account Button (Mobile): Only show when authenticated */}
         {isAuthenticated && (
           <button
             onClick={handleSwitchAccount}

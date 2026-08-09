@@ -1,4 +1,4 @@
-// Tutorial content module loader - enables lazy loading of tutorial content
+// Tutorial content module loader: enables lazy loading of tutorial content
 // This reduces initial bundle size by only loading content when needed
 
 export type TutorialCategory =

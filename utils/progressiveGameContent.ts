@@ -465,7 +465,7 @@ function generateUniqueQuestion(
           question: 'How do you create a new page in Next.js?',
           options: ['Create file in pages/ or app/ folder', 'Use createPage()', 'Define in config', 'Use <Page> component'],
           correctAnswer: 0,
-          explanation: 'Next.js uses file-based routing - files become routes automatically'
+          explanation: 'Next.js uses file-based routing: files become routes automatically'
         }
       }
     } else if (difficulty === 'medium') {
@@ -474,7 +474,7 @@ function generateUniqueQuestion(
           question: 'What does getServerSideProps do?',
           options: ['Fetches data on each request', 'Fetches at build time', 'Runs on client', 'Caches forever'],
           correctAnswer: 0,
-          explanation: 'getServerSideProps runs on server for each request - for dynamic data'
+          explanation: 'getServerSideProps runs on server for each request: for dynamic data'
         }
       }
     }
@@ -502,7 +502,7 @@ function generateUniqueQuestion(
           question: 'Everything in Flutter is a:',
           options: ['Widget', 'Component', 'Element', 'View'],
           correctAnswer: 0,
-          explanation: 'In Flutter, everything is a Widget - UI, styling, layout, etc.'
+          explanation: 'In Flutter, everything is a Widget: UI, styling, layout, etc.'
         }
       }
     }
@@ -1103,7 +1103,7 @@ function generateOptions(
   }
 }
 
-// SPECIFIC LANGUAGE QUIZ GENERATORS (optional - for more detailed questions)
+// SPECIFIC LANGUAGE QUIZ GENERATORS (optional: for more detailed questions)
 
 export function generateHTMLQuiz(difficulty: 'easy' | 'medium' | 'hard'): LanguageQuiz {
   // Can add super detailed HTML questions here

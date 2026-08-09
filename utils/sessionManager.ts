@@ -105,7 +105,7 @@ export function getSession(): string | null {
     // Verify checksum (integrity check)
     const expectedChecksum = generateChecksum(session.userCode, session.createdAt)
     if (session.checksum !== expectedChecksum) {
-      console.warn('Session integrity check failed - possible tampering')
+      console.warn('Session integrity check failed: possible tampering')
       clearSession()
       return null
     }
@@ -227,7 +227,7 @@ export function getSessionRemainingTime(): number {
 
 /**
  * Check if session is about to expire (within warning threshold)
- * @param warningThresholdMs - Time before expiration to start warning (default: 5 minutes)
+ * @param warningThresholdMs: Time before expiration to start warning (default: 5 minutes)
  */
 export function isSessionExpiringSoon(warningThresholdMs: number = 5 * 60 * 1000): boolean {
   const remaining = getSessionRemainingTime()

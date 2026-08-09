@@ -1,4 +1,4 @@
-// Error hints utility - provides contextual help for common programming errors
+// Error hints utility: provides contextual help for common programming errors
 
 export interface ErrorHint {
   pattern: RegExp
@@ -16,7 +16,7 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
     },
     {
       pattern: /SyntaxError: Unexpected token/i,
-      hint: 'There\'s a syntax error in your code - possibly a missing or extra bracket, parenthesis, or quote.',
+      hint: 'There\'s a syntax error in your code: possibly a missing or extra bracket, parenthesis, or quote.',
       suggestion: 'Check for matching brackets {}, parentheses (), and quotes "" or \'\'.'
     },
     {
@@ -36,7 +36,7 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
     },
     {
       pattern: /SyntaxError: Unexpected end of input/i,
-      hint: 'Your code is incomplete - possibly missing a closing bracket or parenthesis.',
+      hint: 'Your code is incomplete: possibly missing a closing bracket or parenthesis.',
       suggestion: 'Check that all opening brackets {, (, [ have matching closing brackets }, ), ].'
     },
     {
@@ -54,7 +54,7 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
   typescript: [
     {
       pattern: /error TS\d+: Cannot find name '(\w+)'/i,
-      hint: 'TypeScript cannot find "$1" - it may not be imported or declared.',
+      hint: 'TypeScript cannot find "$1": it may not be imported or declared.',
       suggestion: 'Import the missing module or declare the variable/type.'
     },
     {
@@ -141,11 +141,11 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
     {
       pattern: /ArrayIndexOutOfBoundsException/i,
       hint: 'Array index is out of bounds.',
-      suggestion: 'Make sure your index is between 0 and array.length - 1.'
+      suggestion: 'Make sure your index is between 0 and array.length: 1.'
     },
     {
       pattern: /error: incompatible types/i,
-      hint: 'Type mismatch - you\'re assigning a value of the wrong type.',
+      hint: 'Type mismatch: you\'re assigning a value of the wrong type.',
       suggestion: 'Check that variable types match or add explicit type casting.'
     }
   ],
@@ -153,7 +153,7 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
   go: [
     {
       pattern: /undefined: (\w+)/i,
-      hint: '"$1" is undefined - it hasn\'t been declared.',
+      hint: '"$1" is undefined: it hasn\'t been declared.',
       suggestion: 'Declare the variable or function before using it.'
     },
     {
@@ -245,7 +245,7 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
     },
     {
       pattern: /Segmentation fault/i,
-      hint: 'Memory access error - you\'re accessing invalid memory.',
+      hint: 'Memory access error: you\'re accessing invalid memory.',
       suggestion: 'Check for null pointers, array bounds, and uninitialized pointers.'
     }
   ],
@@ -263,7 +263,7 @@ export const ERROR_HINTS: Record<string, ErrorHint[]> = {
     },
     {
       pattern: /Segmentation fault/i,
-      hint: 'Memory access error - accessing invalid memory.',
+      hint: 'Memory access error: accessing invalid memory.',
       suggestion: 'Check for null pointers, array bounds, and proper memory allocation.'
     }
   ]
@@ -283,7 +283,7 @@ export const GENERIC_HINTS: ErrorHint[] = [
   },
   {
     pattern: /permission denied/i,
-    hint: 'Permission denied - the operation is not allowed.',
+    hint: 'Permission denied: the operation is not allowed.',
     suggestion: 'Some system operations are restricted for security reasons.'
   }
 ]

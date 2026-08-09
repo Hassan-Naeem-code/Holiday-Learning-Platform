@@ -54,7 +54,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   const quiz = generateProgressiveQuiz(languageId, language.name, difficulty)
   const totalLevels = quiz.questions.length
 
-  // Bounds-safe question access - clamp currentLevel to valid range
+  // Bounds-safe question access: clamp currentLevel to valid range
   const safeLevel = Math.min(Math.max(currentLevel, 0), totalLevels - 1)
   const question = quiz.questions[safeLevel]
 
@@ -220,7 +220,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
       await saveProgress(currentLevel, completedLevels, false, newLives, hints, score)
 
       if (newLives === 0) {
-        // Game over - restart level
+        // Game over: restart level
         setTimeout(() => {
           const resetLives = 3
           const resetHints = 2
@@ -286,11 +286,11 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
   const getDifficultyLabel = () => {
     switch (difficulty) {
       case 'easy':
-        return 'Easy - Beginner'
+        return 'Easy: Beginner'
       case 'medium':
-        return 'Medium - Intermediate'
+        return 'Medium: Intermediate'
       case 'hard':
-        return 'Hard - Advanced'
+        return 'Hard: Advanced'
     }
   }
 
@@ -390,7 +390,7 @@ export default function UniversalGame({ language, moduleId, languageId, difficul
           </motion.button>
 
           <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4 flex-wrap w-full justify-center md:justify-start">
-            {/* Lives - Accessible with text and visual indicators */}
+            {/* Lives: Accessible with text and visual indicators */}
             <div
               className="flex items-center gap-1 sm:gap-2 bg-red-500/20 backdrop-blur-lg rounded-xl px-2 sm:px-3 md:px-4 py-1.5 md:py-2"
               role="status"

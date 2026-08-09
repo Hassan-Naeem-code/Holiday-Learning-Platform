@@ -33,7 +33,7 @@ export default function SessionExpirationWarning({
       setRemainingTime(remaining)
 
       if (remaining === 0) {
-        // Session expired - force reload to show login
+        // Session expired: force reload to show login
         window.location.href = '/'
       } else if (!dismissed) {
         setShowWarning(true)

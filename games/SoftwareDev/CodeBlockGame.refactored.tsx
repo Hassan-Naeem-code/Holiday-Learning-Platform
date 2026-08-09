@@ -54,7 +54,7 @@ export default function CodeBlockGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const [started, setStarted] = useState(false)
 
-  // Game state - simplified
+  // Game state: simplified
   const [solution, setSolution] = useState<string[]>([])
   const [availableBlocks, setAvailableBlocks] = useState<CodeBlock[]>(CODE_BLOCKS)
   const [activeId, setActiveId] = useState<string | null>(null)

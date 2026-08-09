@@ -139,6 +139,6 @@ if (allTestsPassed) {
   console.log('✅ W3Schools-style formatting confirmed');
   console.log('✅ Content includes: What is it, Why learn, What to build, Features, etc.');
 } else {
-  console.log('⚠️  Some tests failed - review output above');
+  console.log('⚠️  Some tests failed: review output above');
 }
 console.log('='.repeat(80));

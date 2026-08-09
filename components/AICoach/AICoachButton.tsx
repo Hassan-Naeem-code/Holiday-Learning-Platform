@@ -39,7 +39,7 @@ export default function AICoachButton() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Open AI Coach assistant"
-        title="AI Coach - Need help? Click me!"
+        title="AI Coach: Need help? Click me!"
         animate={{
           boxShadow: [
             '0 0 20px rgba(168, 85, 247, 0.4)',

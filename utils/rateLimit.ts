@@ -33,8 +33,8 @@ export interface RateLimitResult {
 
 /**
  * Check if a request should be rate limited
- * @param identifier - Unique identifier for the client (IP, user ID, etc.)
- * @param config - Rate limit configuration
+ * @param identifier: Unique identifier for the client (IP, user ID, etc.)
+ * @param config: Rate limit configuration
  * @returns Rate limit result
  */
 export function checkRateLimit(
@@ -44,7 +44,7 @@ export function checkRateLimit(
   const now = Date.now()
   const entry = rateLimitStore.get(identifier)
 
-  // No existing entry or window expired - create new entry
+  // No existing entry or window expired: create new entry
   if (!entry || entry.resetTime < now) {
     const newEntry: RateLimitEntry = {
       count: 1,

@@ -252,7 +252,7 @@ function stylingSpecs(languageName: string): SectionSpec[] {
   ]
 }
 
-// HTML - Comprehensive 40+ lesson curriculum
+// HTML: Comprehensive 40+ lesson curriculum
 function htmlSpecs(): SectionSpec[] {
   return [
     {
@@ -326,7 +326,7 @@ function htmlSpecs(): SectionSpec[] {
       code: '<!-- Basic table -->\n<table>\n  <thead>\n    <tr>\n      <th scope="col">Name</th>\n      <th scope="col">Age</th>\n      <th scope="col">City</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>John Doe</td>\n      <td>28</td>\n      <td>New York</td>\n    </tr>\n    <tr>\n      <td>Jane Smith</td>\n      <td>34</td>\n      <td>London</td>\n    </tr>\n  </tbody>\n</table>\n\n<!-- Table with caption and footer -->\n<table>\n  <caption>Q4 Sales Report</caption>\n  <thead>\n    <tr>\n      <th scope="col">Product</th>\n      <th scope="col">Units Sold</th>\n      <th scope="col">Revenue</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Widget A</td>\n      <td>1,200</td>\n      <td>$24,000</td>\n    </tr>\n    <tr>\n      <td>Widget B</td>\n      <td>800</td>\n      <td>$16,000</td>\n    </tr>\n  </tbody>\n  <tfoot>\n    <tr>\n      <th scope="row">Total</th>\n      <td>2,000</td>\n      <td>$40,000</td>\n    </tr>\n  </tfoot>\n</table>\n\n<!-- Colspan and rowspan -->\n<table>\n  <tr>\n    <th colspan="2">Header spanning 2 columns</th>\n  </tr>\n  <tr>\n    <td rowspan="2">Cell spanning 2 rows</td>\n    <td>Cell 1</td>\n  </tr>\n  <tr>\n    <td>Cell 2</td>\n  </tr>\n</table>'
     },
     {
-      title: 'Forms - Basics',
+      title: 'Forms: Basics',
       description: 'Forms collect user input. The <form> element contains inputs, labels, and buttons. Always associate labels with inputs using for attribute or nesting for accessibility.',
       syntax: '<form>, <input>, <label>, <button>',
       usage: 'Create input forms',
@@ -340,7 +340,7 @@ function htmlSpecs(): SectionSpec[] {
       code: '<!-- Text inputs -->\n<input type="text" placeholder="Enter text">\n<input type="email" placeholder="email@example.com">\n<input type="password" placeholder="Password">\n<input type="search" placeholder="Search...">\n<input type="url" placeholder="https://example.com">\n<input type="tel" placeholder="+1 (555) 123-4567">\n\n<!-- Number and range -->\n<input type="number" min="0" max="100" step="5" value="50">\n<input type="range" min="0" max="100" value="50">\n\n<!-- Date and time -->\n<input type="date">\n<input type="time">\n<input type="datetime-local">\n<input type="month">\n<input type="week">\n\n<!-- Color picker -->\n<input type="color" value="#3b82f6">\n\n<!-- File upload -->\n<input type="file" accept="image/*">\n<input type="file" multiple accept=".pdf,.doc,.docx">\n\n<!-- Checkboxes -->\n<label>\n  <input type="checkbox" name="subscribe" value="newsletter">\n  Subscribe to newsletter\n</label>\n\n<!-- Radio buttons -->\n<fieldset>\n  <legend>Choose size:</legend>\n  <label><input type="radio" name="size" value="small"> Small</label>\n  <label><input type="radio" name="size" value="medium" checked> Medium</label>\n  <label><input type="radio" name="size" value="large"> Large</label>\n</fieldset>\n\n<!-- Hidden input -->\n<input type="hidden" name="user_id" value="12345">'
     },
     {
-      title: 'Form Elements - Textarea, Select, Button',
+      title: 'Form Elements: Textarea, Select, Button',
       description: 'Use textarea for multi-line text, select for dropdowns, and button for actions. Buttons can be submit, reset, or button type for custom JavaScript handlers.',
       syntax: '<textarea>, <select>, <button>',
       usage: 'Create advanced form controls',
@@ -375,35 +375,35 @@ function htmlSpecs(): SectionSpec[] {
       code: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <!-- Character encoding -->\n  <meta charset="UTF-8">\n  \n  <!-- Viewport for responsive design -->\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  \n  <!-- Title (appears in search results) -->\n  <title>Your Page Title | Brand Name</title>\n  \n  <!-- Description (appears in search results) -->\n  <meta name="description" content="Comprehensive description of your page content. 150-160 characters optimal.">\n  \n  <!-- Keywords (less important now) -->\n  <meta name="keywords" content="html, seo, meta tags, tutorial">\n  \n  <!-- Author -->\n  <meta name="author" content="Your Name">\n  \n  <!-- Robots -->\n  <meta name="robots" content="index, follow">\n  \n  <!-- Canonical URL (prevent duplicate content) -->\n  <link rel="canonical" href="https://example.com/page">\n  \n  <!-- Open Graph for Facebook/LinkedIn -->\n  <meta property="og:title" content="Your Page Title">\n  <meta property="og:description" content="Page description">\n  <meta property="og:image" content="https://example.com/image.jpg">\n  <meta property="og:url" content="https://example.com/page">\n  <meta property="og:type" content="website">\n  \n  <!-- Twitter Card -->\n  <meta name="twitter:card" content="summary_large_image">\n  <meta name="twitter:title" content="Your Page Title">\n  <meta name="twitter:description" content="Page description">\n  <meta name="twitter:image" content="https://example.com/image.jpg">\n  \n  <!-- Favicon -->\n  <link rel="icon" type="image/png" href="/favicon.png">\n</head>\n<body>\n  <!-- Content -->\n</body>\n</html>'
     },
     {
-      title: 'Accessibility - ARIA Attributes',
+      title: 'Accessibility: ARIA Attributes',
       description: 'ARIA (Accessible Rich Internet Applications) attributes improve accessibility for screen readers. Use aria-label, aria-labelledby, aria-describedby, role, and aria-hidden appropriately.',
       syntax: 'aria-label, role, aria-describedby',
       usage: 'Make pages accessible',
       code: '<!-- aria-label for elements without visible text -->\n<button aria-label="Close dialog">\n  <svg><!-- X icon --></svg>\n</button>\n\n<!-- aria-labelledby references another element -->\n<div role="dialog" aria-labelledby="dialog-title">\n  <h2 id="dialog-title">Confirm Action</h2>\n  <p>Are you sure?</p>\n</div>\n\n<!-- aria-describedby for additional description -->\n<input \n  type="password" \n  id="password" \n  aria-describedby="password-hint"\n>\n<span id="password-hint">Must be at least 8 characters</span>\n\n<!-- Landmark roles -->\n<header role="banner">\n<nav role="navigation">\n<main role="main">\n<aside role="complementary">\n<footer role="contentinfo">\n\n<!-- aria-hidden to hide decorative elements -->\n<span aria-hidden="true">★</span>\n\n<!-- aria-expanded for collapsible content -->\n<button aria-expanded="false" aria-controls="menu">\n  Menu\n</button>\n<ul id="menu" hidden>\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>\n\n<!-- aria-live for dynamic content -->\n<div aria-live="polite" aria-atomic="true">\n  <!-- Screen reader announces changes here -->\n  <p>Loading complete!</p>\n</div>\n\n<!-- aria-current for current page in navigation -->\n<nav>\n  <a href="/" aria-current="page">Home</a>\n  <a href="/about">About</a>\n</nav>'
     },
     {
-      title: 'Accessibility - Focus and Tab Navigation',
+      title: 'Accessibility: Focus and Tab Navigation',
       description: 'Ensure keyboard users can navigate your site. Use tabindex, skip links, and focus indicators. All interactive elements should be keyboard accessible.',
       syntax: 'tabindex, accesskey',
       usage: 'Enable keyboard navigation',
       code: '<!-- Skip to main content link -->\n<a href="#main-content" class="skip-link">Skip to main content</a>\n\n<header>\n  <!-- Navigation -->\n</header>\n\n<main id="main-content" tabindex="-1">\n  <!-- Main content -->\n</main>\n\n<!-- Natural tab order (no tabindex needed) -->\n<form>\n  <input type="text"> <!-- Tab order: 1 -->\n  <input type="email"> <!-- Tab order: 2 -->\n  <button>Submit</button> <!-- Tab order: 3 -->\n</form>\n\n<!-- Custom tab order (avoid if possible) -->\n<button tabindex="3">Third</button>\n<button tabindex="1">First</button>\n<button tabindex="2">Second</button>\n\n<!-- Make non-interactive elements focusable -->\n<div tabindex="0" role="button" onclick="handleClick()" onkeypress="handleKeyPress(event)">\n  Custom button\n</div>\n\n<!-- Remove from tab order -->\n<button tabindex="-1">Not keyboard accessible</button>\n\n<!-- Access keys (use sparingly) -->\n<button accesskey="s">Submit (Alt+S)</button>\n\n<!-- Focus styles in CSS -->\n<style>\n  /* Visible focus indicator */\n  :focus-visible {\n    outline: 2px solid #2563eb;\n    outline-offset: 2px;\n  }\n  \n  /* Skip link visible on focus */\n  .skip-link {\n    position: absolute;\n    top: -40px;\n  }\n  .skip-link:focus {\n    top: 0;\n  }\n</style>'
     },
     {
-      title: 'Embedding Content - iFrames',
+      title: 'Embedding Content: iFrames',
       description: 'iFrames embed external content like videos, maps, or other websites. Use sandbox attribute for security. Set proper width/height or make responsive.',
       syntax: '<iframe src="url"></iframe>',
       usage: 'Embed external content',
       code: '<!-- Basic iframe -->\n<iframe src="https://example.com" width="800" height="600"></iframe>\n\n<!-- Responsive iframe (16:9 aspect ratio) -->\n<div style="position: relative; padding-bottom: 56.25%; height: 0;">\n  <iframe \n    src="https://example.com"\n    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"\n    frameborder="0"\n  ></iframe>\n</div>\n\n<!-- YouTube embed -->\n<iframe \n  width="560" \n  height="315" \n  src="https://www.youtube.com/embed/VIDEO_ID" \n  frameborder="0" \n  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" \n  allowfullscreen\n></iframe>\n\n<!-- Google Maps embed -->\n<iframe \n  src="https://www.google.com/maps/embed?pb=..." \n  width="600" \n  height="450" \n  style="border:0;" \n  allowfullscreen="" \n  loading="lazy"\n></iframe>\n\n<!-- Sandbox for security (restricts iframe capabilities) -->\n<iframe \n  src="https://untrusted.com" \n  sandbox="allow-scripts allow-same-origin"\n></iframe>\n\n<!-- Lazy loading -->\n<iframe src="https://example.com" loading="lazy"></iframe>'
     },
     {
-      title: 'SVG - Scalable Vector Graphics',
+      title: 'SVG: Scalable Vector Graphics',
       description: 'SVG creates scalable graphics with code. Perfect for icons, logos, charts. Can be inline or linked. Fully styleable with CSS.',
       syntax: '<svg>, <circle>, <rect>, <path>',
       usage: 'Create vector graphics',
       code: '<!-- Inline SVG circle -->\n<svg width="100" height="100">\n  <circle cx="50" cy="50" r="40" fill="#3b82f6" />\n</svg>\n\n<!-- Rectangle -->\n<svg width="200" height="100">\n  <rect width="200" height="100" fill="#ef4444" rx="10" />\n</svg>\n\n<!-- Path for complex shapes -->\n<svg width="100" height="100" viewBox="0 0 100 100">\n  <path d="M 10 10 L 90 10 L 50 90 Z" fill="#10b981" />\n</svg>\n\n<!-- Icon example -->\n<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">\n  <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n</svg>\n\n<!-- Text in SVG -->\n<svg width="200" height="100">\n  <text x="10" y="40" font-family="Arial" font-size="30" fill="black">SVG Text</text>\n</svg>\n\n<!-- Group elements -->\n<svg width="200" height="200">\n  <g fill="none" stroke="black" stroke-width="2">\n    <circle cx="100" cy="100" r="50" />\n    <circle cx="100" cy="100" r="30" />\n  </g>\n</svg>\n\n<!-- External SVG file -->\n<img src="logo.svg" alt="Logo" width="100">\n\n<!-- Use SVG as background in CSS -->\n<div style="background-image: url(\'icon.svg\'); width: 50px; height: 50px;"></div>'
     },
     {
-      title: 'Canvas - Drawing Graphics',
+      title: 'Canvas: Drawing Graphics',
       description: 'Canvas element provides a drawing surface for graphics using JavaScript. Use for charts, games, image manipulation, and dynamic graphics.',
       syntax: '<canvas id="myCanvas"></canvas>',
       usage: 'Draw graphics with JavaScript',
@@ -466,7 +466,7 @@ function htmlSpecs(): SectionSpec[] {
       code: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  \n  <!-- Viewport for responsive design (REQUIRED!) -->\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  \n  <title>Responsive Page</title>\n  \n  <style>\n    /* Mobile-first CSS */\n    .container {\n      width: 100%;\n      padding: 20px;\n    }\n    \n    /* Tablet */\n    @media (min-width: 768px) {\n      .container {\n        max-width: 720px;\n        margin: 0 auto;\n      }\n    }\n    \n    /* Desktop */\n    @media (min-width: 1024px) {\n      .container {\n        max-width: 960px;\n      }\n    }\n  </style>\n</head>\n<body>\n  <!-- Responsive images with srcset -->\n  <img \n    src="medium.jpg" \n    srcset="small.jpg 500w, medium.jpg 1000w, large.jpg 2000w"\n    sizes="(max-width: 600px) 500px, (max-width: 1200px) 1000px, 2000px"\n    alt="Responsive image"\n  >\n  \n  <!-- Picture element for art direction -->\n  <picture>\n    <!-- Mobile: portrait crop -->\n    <source media="(max-width: 767px)" srcset="mobile.jpg">\n    <!-- Tablet: square crop -->\n    <source media="(max-width: 1023px)" srcset="tablet.jpg">\n    <!-- Desktop: landscape crop -->\n    <source media="(min-width: 1024px)" srcset="desktop.jpg">\n    <!-- Fallback -->\n    <img src="desktop.jpg" alt="Responsive with art direction">\n  </picture>\n  \n  <!-- Responsive video -->\n  <video controls style="max-width: 100%; height: auto;">\n    <source src="video.mp4" type="video/mp4">\n  </video>\n  \n  <!-- Responsive iframe -->\n  <div style="position: relative; padding-bottom: 56.25%; height: 0;">\n    <iframe \n      src="https://www.youtube.com/embed/VIDEO_ID"\n      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"\n      frameborder="0"\n      allowfullscreen\n    ></iframe>\n  </div>\n</body>\n</html>'
     },
     {
-      title: 'Real-World Project - Portfolio Website',
+      title: 'Real-World Project: Portfolio Website',
       description: 'Build a complete portfolio website using semantic HTML, forms, media, and all learned concepts. Include home, about, projects, and contact sections.',
       syntax: 'All HTML elements combined',
       usage: 'Apply all HTML skills',
@@ -483,7 +483,7 @@ function htmlSpecs(): SectionSpec[] {
 }
 
 // Generic Framework (React-like)
-// React - Comprehensive 50+ lesson curriculum
+// React: Comprehensive 50+ lesson curriculum
 function reactSpecs(languageName: string): SectionSpec[] {
   return [
     {
@@ -648,63 +648,63 @@ function reactSpecs(languageName: string): SectionSpec[] {
       code: 'import { createPortal } from "react-dom";\nimport { useState } from "react";\n\nfunction Modal({ children, isOpen, onClose }) {\n  if (!isOpen) return null;\n  \n  return createPortal(\n    <div className="modal-overlay" onClick={onClose}>\n      <div className="modal-content" onClick={(e) => e.stopPropagation()}>\n        <button onClick={onClose}>×</button>\n        {children}\n      </div>\n    </div>,\n    document.getElementById("modal-root")\n  );\n}\n\nfunction App() {\n  const [showModal, setShowModal] = useState(false);\n  \n  return (\n    <div>\n      <button onClick={() => setShowModal(true)}>Open Modal</button>\n      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>\n        <h2>Modal Content</h2>\n        <p>This is rendered in a portal!</p>\n      </Modal>\n    </div>\n  );\n}'
     },
     {
-      title: 'React Router - Setup',
+      title: 'React Router: Setup',
       description: 'React Router enables client-side routing in React apps. Install react-router-dom and wrap your app in BrowserRouter to enable routing.',
       syntax: 'npm install react-router-dom',
       usage: 'Add routing to React apps',
       code: 'import { BrowserRouter, Routes, Route, Link } from "react-router-dom";\n\nfunction App() {\n  return (\n    <BrowserRouter>\n      <nav>\n        <Link to="/">Home</Link>\n        <Link to="/about">About</Link>\n        <Link to="/contact">Contact</Link>\n      </nav>\n      \n      <Routes>\n        <Route path="/" element={<Home />} />\n        <Route path="/about" element={<About />} />\n        <Route path="/contact" element={<Contact />} />\n      </Routes>\n    </BrowserRouter>\n  );\n}\n\nfunction Home() {\n  return <h1>Home Page</h1>;\n}\n\nfunction About() {\n  return <h1>About Page</h1>;\n}\n\nfunction Contact() {\n  return <h1>Contact Page</h1>;\n}'
     },
     {
-      title: 'React Router - Dynamic Routes & Params',
+      title: 'React Router: Dynamic Routes & Params',
       description: 'Create dynamic routes with URL parameters. Use useParams hook to access route parameters, useNavigate for programmatic navigation, and useLocation for current location.',
       syntax: '<Route path="/users/:id" element={<User />} />\nconst { id } = useParams()',
       usage: 'Build dynamic, parameterized routes',
       code: 'import { Routes, Route, useParams, useNavigate, Link } from "react-router-dom";\n\nfunction UserProfile() {\n  const { userId } = useParams();\n  const navigate = useNavigate();\n  \n  return (\n    <div>\n      <h1>User Profile {userId}</h1>\n      <button onClick={() => navigate("/")}>Go Home</button>\n      <button onClick={() => navigate(-1)}>Go Back</button>\n    </div>\n  );\n}\n\nfunction PostDetail() {\n  const { postId } = useParams();\n  return <h1>Post {postId}</h1>;\n}\n\nfunction App() {\n  return (\n    <Routes>\n      <Route path="/" element={<Home />} />\n      <Route path="/users/:userId" element={<UserProfile />} />\n      <Route path="/posts/:postId" element={<PostDetail />} />\n      <Route path="*" element={<NotFound />} />\n    </Routes>\n  );\n}'
     },
     {
-      title: 'Styling - CSS Modules',
+      title: 'Styling: CSS Modules',
       description: 'CSS Modules scope CSS to individual components, preventing class name conflicts. Import styles as objects and apply to className.',
       syntax: 'import styles from "./Component.module.css"\n<div className={styles.container}>',
       usage: 'Write scoped component styles',
       code: '// Button.module.css\n.button {\n  background: blue;\n  color: white;\n  padding: 10px 20px;\n  border: none;\n  border-radius: 4px;\n}\n\n.button:hover {\n  background: darkblue;\n}\n\n.primary {\n  background: green;\n}\n\n// Button.jsx\nimport styles from "./Button.module.css";\n\nfunction Button({ primary, children }) {\n  const className = primary \n    ? `${styles.button} ${styles.primary}` \n    : styles.button;\n  \n  return <button className={className}>{children}</button>;\n}'
     },
     {
-      title: 'Styling - Styled Components',
+      title: 'Styling: Styled Components',
       description: 'Styled-components uses tagged template literals to write CSS in JavaScript. It creates React components with styles attached.',
       syntax: 'const StyledDiv = styled.div`css here`',
       usage: 'Write CSS-in-JS with component scope',
       code: 'import styled from "styled-components";\n\nconst Button = styled.button`\n  background: ${props => props.primary ? "blue" : "gray"};\n  color: white;\n  padding: 10px 20px;\n  border: none;\n  border-radius: 4px;\n  \n  &:hover {\n    opacity: 0.8;\n  }\n`;\n\nconst Card = styled.div`\n  background: white;\n  border-radius: 8px;\n  padding: 20px;\n  box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n`;\n\nfunction App() {\n  return (\n    <Card>\n      <h2>Welcome</h2>\n      <Button primary>Primary</Button>\n      <Button>Secondary</Button>\n    </Card>\n  );\n}'
     },
     {
-      title: 'Styling - Tailwind CSS',
+      title: 'Styling: Tailwind CSS',
       description: 'Tailwind is a utility-first CSS framework. Apply pre-defined utility classes directly to elements for rapid UI development.',
       syntax: 'className="flex items-center justify-between p-4"',
       usage: 'Build UIs with utility classes',
       code: '// Install: npm install -D tailwindcss postcss autoprefixer\n// npx tailwindcss init -p\n\nfunction Card() {\n  return (\n    <div className="bg-white rounded-lg shadow-md p-6 max-w-sm">\n      <h2 className="text-2xl font-bold mb-4 text-gray-800">Card Title</h2>\n      <p className="text-gray-600 mb-4">Card description goes here.</p>\n      <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition">\n        Learn More\n      </button>\n    </div>\n  );\n}\n\nfunction Layout() {\n  return (\n    <div className="min-h-screen bg-gray-100">\n      <nav className="bg-white shadow-sm p-4 flex items-center justify-between">\n        <h1 className="text-xl font-bold">Logo</h1>\n        <div className="flex gap-4">\n          <a href="#" className="hover:text-blue-500">Home</a>\n          <a href="#" className="hover:text-blue-500">About</a>\n        </div>\n      </nav>\n      <main className="container mx-auto p-4">\n        <Card />\n      </main>\n    </div>\n  );\n}'
     },
     {
-      title: 'Form Libraries - React Hook Form',
+      title: 'Form Libraries: React Hook Form',
       description: 'React Hook Form provides performant, flexible forms with easy validation. It minimizes re-renders and provides built-in validation.',
       syntax: 'const { register, handleSubmit } = useForm()',
       usage: 'Build forms with minimal re-renders',
       code: 'import { useForm } from "react-hook-form";\n\nfunction RegistrationForm() {\n  const { register, handleSubmit, formState: { errors } } = useForm();\n  \n  const onSubmit = (data) => {\n    console.log(data);\n  };\n  \n  return (\n    <form onSubmit={handleSubmit(onSubmit)}>\n      <input\n        {...register("email", {\n          required: "Email is required",\n          pattern: {\n            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$/i,\n            message: "Invalid email"\n          }\n        })}\n        placeholder="Email"\n      />\n      {errors.email && <span>{errors.email.message}</span>}\n      \n      <input\n        {...register("password", {\n          required: "Password is required",\n          minLength: {\n            value: 8,\n            message: "Password must be at least 8 characters"\n          }\n        })}\n        type="password"\n        placeholder="Password"\n      />\n      {errors.password && <span>{errors.password.message}</span>}\n      \n      <button type="submit">Register</button>\n    </form>\n  );\n}'
     },
     {
-      title: 'State Management - Redux Toolkit',
+      title: 'State Management: Redux Toolkit',
       description: 'Redux Toolkit is the official, recommended way to write Redux logic. It includes utilities to simplify store setup, reducers, and async logic.',
       syntax: 'createSlice, configureStore, useSelector, useDispatch',
       usage: 'Manage complex app-wide state',
       code: 'import { configureStore, createSlice } from "@reduxjs/toolkit";\nimport { useSelector, useDispatch, Provider } from "react-redux";\n\n// Slice\nconst counterSlice = createSlice({\n  name: "counter",\n  initialState: { value: 0 },\n  reducers: {\n    increment: state => { state.value += 1; },\n    decrement: state => { state.value -= 1; },\n    incrementByAmount: (state, action) => { state.value += action.payload; }\n  }\n});\n\n// Store\nconst store = configureStore({\n  reducer: {\n    counter: counterSlice.reducer\n  }\n});\n\n// Component\nfunction Counter() {\n  const count = useSelector(state => state.counter.value);\n  const dispatch = useDispatch();\n  \n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => dispatch(counterSlice.actions.increment())}>+</button>\n      <button onClick={() => dispatch(counterSlice.actions.decrement())}>-</button>\n    </div>\n  );\n}\n\n// App\nfunction App() {\n  return (\n    <Provider store={store}>\n      <Counter />\n    </Provider>\n  );\n}'
     },
     {
-      title: 'State Management - Zustand',
+      title: 'State Management: Zustand',
       description: 'Zustand is a small, fast state management solution with a simple API. No providers needed, minimal boilerplate, and great TypeScript support.',
       syntax: 'const useStore = create((set) => ({}))',
       usage: 'Lightweight global state',
       code: 'import create from "zustand";\n\n// Create store\nconst useStore = create((set) => ({\n  count: 0,\n  user: null,\n  increment: () => set((state) => ({ count: state.count + 1 })),\n  decrement: () => set((state) => ({ count: state.count - 1 })),\n  setUser: (user) => set({ user })\n}));\n\n// Use in components\nfunction Counter() {\n  const count = useStore(state => state.count);\n  const increment = useStore(state => state.increment);\n  const decrement = useStore(state => state.decrement);\n  \n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={increment}>+</button>\n      <button onClick={decrement}>-</button>\n    </div>\n  );\n}\n\nfunction UserDisplay() {\n  const user = useStore(state => state.user);\n  return user ? <p>Welcome {user.name}</p> : <p>Not logged in</p>;\n}'
     },
     {
-      title: 'Data Fetching - React Query',
+      title: 'Data Fetching: React Query',
       description: 'React Query (TanStack Query) manages server state: fetching, caching, synchronizing, and updating data. It handles loading, error states, and automatic refetching.',
       syntax: 'const { data, isLoading, error } = useQuery("key", fetchFn)',
       usage: 'Manage server state efficiently',
@@ -725,7 +725,7 @@ function reactSpecs(languageName: string): SectionSpec[] {
       code: 'import { memo, useMemo, useCallback, useState } from "react";\nimport { FixedSizeList } from "react-window";\n\n// Memoized component\nconst ExpensiveItem = memo(({ item }) => {\n  console.log("Rendering item:", item.id);\n  return <div>{item.name}</div>;\n});\n\n// Virtualized list for 10,000+ items\nfunction VirtualList({ items }) {\n  const Row = ({ index, style }) => (\n    <div style={style}>{items[index].name}</div>\n  );\n  \n  return (\n    <FixedSizeList\n      height={400}\n      itemCount={items.length}\n      itemSize={35}\n      width="100%"\n    >\n      {Row}\n    </FixedSizeList>\n  );\n}\n\n// Optimized filtering\nfunction SearchableList({ items }) {\n  const [query, setQuery] = useState("");\n  \n  const filtered = useMemo(() => {\n    return items.filter(item => \n      item.name.toLowerCase().includes(query.toLowerCase())\n    );\n  }, [items, query]);\n  \n  return (\n    <div>\n      <input value={query} onChange={e => setQuery(e.target.value)} />\n      {filtered.map(item => <ExpensiveItem key={item.id} item={item} />)}\n    </div>\n  );\n}'
     },
     {
-      title: 'Testing - Jest & React Testing Library',
+      title: 'Testing: Jest & React Testing Library',
       description: 'Test React components using Jest (test runner) and React Testing Library (testing utilities). Write tests that resemble how users interact with your app.',
       syntax: 'render, screen, fireEvent, waitFor',
       usage: 'Ensure components work correctly',
@@ -795,7 +795,7 @@ function reactSpecs(languageName: string): SectionSpec[] {
       code: 'import { motion, AnimatePresence } from "framer-motion";\nimport { useState } from "react";\n\n// Basic animation\nfunction FadeIn() {\n  return (\n    <motion.div\n      initial={{ opacity: 0, y: 20 }}\n      animate={{ opacity: 1, y: 0 }}\n      transition={{ duration: 0.5 }}\n    >\n      Hello World\n    </motion.div>\n  );\n}\n\n// Hover and tap\nfunction Button() {\n  return (\n    <motion.button\n      whileHover={{ scale: 1.1 }}\n      whileTap={{ scale: 0.95 }}\n      transition={{ type: "spring", stiffness: 400 }}\n    >\n      Click me\n    </motion.button>\n  );\n}\n\n// Animate presence\nfunction Modal() {\n  const [isOpen, setIsOpen] = useState(false);\n  \n  return (\n    <div>\n      <button onClick={() => setIsOpen(!isOpen)}>Toggle</button>\n      <AnimatePresence>\n        {isOpen && (\n          <motion.div\n            initial={{ opacity: 0, scale: 0.8 }}\n            animate={{ opacity: 1, scale: 1 }}\n            exit={{ opacity: 0, scale: 0.8 }}\n            className="modal"\n          >\n            Modal Content\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  );\n}\n\n// Stagger children\nfunction List() {\n  const items = ["Item 1", "Item 2", "Item 3"];\n  \n  return (\n    <motion.ul\n      initial="hidden"\n      animate="visible"\n      variants={{\n        visible: { transition: { staggerChildren: 0.1 } }\n      }}\n    >\n      {items.map((item, i) => (\n        <motion.li\n          key={i}\n          variants={{\n            hidden: { opacity: 0, x: -20 },\n            visible: { opacity: 1, x: 0 }\n          }}\n        >\n          {item}\n        </motion.li>\n      ))}\n    </motion.ul>\n  );\n}'
     },
     {
-      title: 'Real-World Project - Dashboard',
+      title: 'Real-World Project: Dashboard',
       description: 'Build a complete admin dashboard with authentication, data tables, charts, forms, and API integration. Apply all React concepts learned in a production-ready application.',
       syntax: 'Full React application',
       usage: 'Practice building complete apps',
@@ -931,7 +931,7 @@ function vueSpecs(languageName: string): SectionSpec[] {
   return topics
 }
 
-// Angular - Comprehensive 40+ lesson curriculum
+// Angular: Comprehensive 40+ lesson curriculum
 function angularSpecs(languageName: string): SectionSpec[] {
   const lessons: SectionSpec[] = [
     // INTRODUCTION (5 lessons)
@@ -989,7 +989,7 @@ function angularSpecs(languageName: string): SectionSpec[] {
   return lessons
 }
 
-// Scripting (JavaScript/TypeScript) - COMPREHENSIVE W3Schools-style (116 lessons)
+// Scripting (JavaScript/TypeScript): COMPREHENSIVE W3Schools-style (116 lessons)
 function scriptingSpecs(languageName: string): SectionSpec[] {
   const isJS = languageName.toLowerCase().includes('javascript')
   const isTS = languageName.toLowerCase().includes('typescript')
@@ -1099,7 +1099,7 @@ function scriptingSpecs(languageName: string): SectionSpec[] {
   return lessons
 }
 
-// Python - Comprehensive 50+ lesson curriculum
+// Python: Comprehensive 50+ lesson curriculum
 function pythonSpecs(languageName: string): SectionSpec[] {
   const lessons: SectionSpec[] = [
     // INTRODUCTION (5 lessons)
@@ -1675,7 +1675,7 @@ function rustBackendSpecs(languageName: string): SectionSpec[] {
     },
     {
       title: 'Generics',
-      description: 'Generics enable code reuse by allowing types to be parameters. Use <T> syntax for generic type parameters. Combine with trait bounds to constrain what types are acceptable. Zero runtime cost - monomorphization at compile time.',
+      description: 'Generics enable code reuse by allowing types to be parameters. Use <T> syntax for generic type parameters. Combine with trait bounds to constrain what types are acceptable. Zero runtime cost: monomorphization at compile time.',
       syntax: 'fn name<T>(param: T) { }\nstruct Name<T> { field: T }',
       usage: 'Write flexible, reusable code',
       code: 'fn largest<T: PartialOrd>(list: &[T]) -> &T {\n    let mut largest = &list[0];\n    for item in list {\n        if item > largest {\n            largest = item;\n        }\n    }\n    largest\n}\n\nstruct Point<T> {\n    x: T,\n    y: T,\n}\n\nimpl<T> Point<T> {\n    fn new(x: T, y: T) -> Self {\n        Point { x, y }\n    }\n}\n\nfn main() {\n    let numbers = vec![34, 50, 25, 100, 65];\n    println!("Largest: {}", largest(&numbers));\n    \n    let p = Point::new(5, 10);\n}'
@@ -1921,7 +1921,7 @@ function phpBackendSpecs(languageName: string): SectionSpec[] {
       code: '<?php\n$user = [\n  "name" => "Alice",\n  "email" => "alice@example.com",\n  "age" => 25\n];\n\necho $user["name"]; // "Alice"\n$user["city"] = "Paris";\nforeach ($user as $key => $value) {\n  echo "$key: $value\\n";\n}\n?>'
     },
     {
-      title: 'Control Flow - If/Else/Switch',
+      title: 'Control Flow: If/Else/Switch',
       description: 'Use if, elseif, else for conditional logic. Switch statements for multiple conditions.',
       syntax: 'if, elseif, else, switch',
       usage: 'Conditional logic',
@@ -1970,7 +1970,7 @@ function phpBackendSpecs(languageName: string): SectionSpec[] {
       code: '<?php\n// header.php\ninclude "header.php";\n\n// Will error if not found\nrequire "config.php";\n\n// Include once (prevent duplicates)\nrequire_once "database.php";\ninclude_once "functions.php";\n?>'
     },
     {
-      title: 'Object-Oriented PHP - Classes',
+      title: 'Object-Oriented PHP: Classes',
       description: 'Define classes with properties and methods. Create objects with new keyword.',
       syntax: 'class Name { properties, methods }',
       usage: 'Object-oriented programming',
@@ -2621,7 +2621,7 @@ function gameSpecs(languageName: string): SectionSpec[] {
 }
 
 // React Native (13 lessons)
-// React Native - Comprehensive 40+ lesson curriculum
+// React Native: Comprehensive 40+ lesson curriculum
 function reactNativeSpecs(languageName: string): SectionSpec[] {
   return [
     {
@@ -2639,49 +2639,49 @@ function reactNativeSpecs(languageName: string): SectionSpec[] {
       code: '// Why React Native?\n// 1. Truly native apps (not webviews)\n// 2. Share code between iOS and Android (60-95%)\n// 3. Fast development with hot reload\n// 4. Large community and ecosystem\n// 5. Use same React skills for web and mobile\n// 6. Access to native modules and APIs\n// 7. Performance close to native\n\n// React Native renders:\n// <View> → UIView (iOS) / android.view.View (Android)\n// <Text> → UITextView / TextView\n// <Image> → UIImageView / ImageView\n// <ScrollView> → UIScrollView / ScrollView'
     },
     {
-      title: 'Setup & Installation - Expo',
+      title: 'Setup & Installation: Expo',
       description: 'Expo is the easiest way to start with React Native. It provides a complete workflow without native code configuration. Perfect for beginners and rapid prototyping.',
       syntax: 'npx create-expo-app, expo start',
       usage: 'Quick start with Expo',
       code: '// Install Expo CLI\nnpm install -g expo-cli\n\n// Create new project\nnpx create-expo-app MyApp\ncd MyApp\n\n// Start development server\nnpx expo start\n// OR\nnpm start\n\n// This opens Expo DevTools in browser\n// Scan QR code with Expo Go app (iOS/Android)\n// Or press "i" for iOS simulator, "a" for Android emulator\n\n// Project structure:\n// App.js - Main entry point\n// app.json - App configuration\n// assets/ - Images, fonts, etc.\n// node_modules/ - Dependencies\n\n// Advantages of Expo:\n// - No Xcode or Android Studio required\n// - Easy access to device features (camera, location, etc.)\n// - Over-the-air updates\n// - Easy sharing via QR code'
     },
     {
-      title: 'Setup & Installation - React Native CLI',
+      title: 'Setup & Installation: React Native CLI',
       description: 'React Native CLI gives you full control and access to native code. Required for apps that need custom native modules or specific native configurations.',
       syntax: 'npx react-native init',
       usage: 'Full native control setup',
       code: '// Prerequisites:\n// 1. Node.js (v14+)\n// 2. Watchman (Mac): brew install watchman\n// 3. Xcode (Mac) for iOS\n// 4. Android Studio for Android\n\n// Create new project\nnpx react-native init MyApp\ncd MyApp\n\n// Run on iOS (Mac only)\nnpx react-native run-ios\n// OR specific simulator\nnpx react-native run-ios --simulator="iPhone 14 Pro"\n\n// Run on Android\nnpx react-native run-android\n\n// Project structure:\n// android/ - Android native code\n// ios/ - iOS native code\n// App.tsx - Main component\n// index.js - Entry point\n// metro.config.js - Bundler config\n\n// When to use CLI over Expo:\n// - Need custom native modules\n// - App size concerns (Expo adds extra)\n// - Need specific native configurations\n// - Enterprise requirements'
     },
     {
-      title: 'Core Components - View',
+      title: 'Core Components: View',
       description: 'View is the fundamental building block for UI. It maps to UIView (iOS) and android.view.View (Android). Use for layout containers, flex layouts, and component grouping.',
       syntax: '<View style={{ }}></View>',
       usage: 'Create containers and layouts',
       code: 'import { View, Text } from "react-native";\n\nfunction ViewExamples() {\n  return (\n    <View style={{ flex: 1, padding: 20 }}>\n      {/* Simple container */}\n      <View style={{ backgroundColor: "#f0f0f0", padding: 10 }}>\n        <Text>Container</Text>\n      </View>\n\n      {/* Flex layout */}\n      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>\n        <View style={{ width: 50, height: 50, backgroundColor: "red" }} />\n        <View style={{ width: 50, height: 50, backgroundColor: "blue" }} />\n      </View>\n\n      {/* Nested views */}\n      <View style={{ marginTop: 20 }}>\n        <View style={{ backgroundColor: "#e0e0e0", padding: 10 }}>\n          <View style={{ backgroundColor: "white", padding: 10 }}>\n            <Text>Nested View</Text>\n          </View>\n        </View>\n      </View>\n    </View>\n  );\n}'
     },
     {
-      title: 'Core Components - Text',
+      title: 'Core Components: Text',
       description: 'Text component displays text content. All text must be wrapped in Text tags. Supports styling, nesting, press events, and accessibility features.',
       syntax: '<Text style={{ }}>content</Text>',
       usage: 'Display and style text',
       code: 'import { Text, View, StyleSheet } from "react-native";\n\nfunction TextExamples() {\n  return (\n    <View style={styles.container}>\n      {/* Basic text */}\n      <Text>Simple text</Text>\n\n      {/* Styled text */}\n      <Text style={styles.title}>Styled Title</Text>\n      <Text style={styles.subtitle}>Subtitle text</Text>\n\n      {/* Nested text (inherits parent styles) */}\n      <Text style={{ fontSize: 16 }}>\n        Regular text with <Text style={{ fontWeight: "bold" }}>bold</Text> and\n        <Text style={{ fontStyle: "italic" }}> italic</Text> parts\n      </Text>\n\n      {/* Pressable text */}\n      <Text \n        onPress={() => alert("Pressed!")}\n        style={{ color: "blue", textDecorationLine: "underline" }}\n      >\n        Click me\n      </Text>\n\n      {/* Number of lines */}\n      <Text numberOfLines={2}>\n        This is a very long text that will be truncated after two lines...\n      </Text>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { padding: 20 },\n  title: { fontSize: 24, fontWeight: "bold", marginBottom: 8 },\n  subtitle: { fontSize: 16, color: "#666" }\n});'
     },
     {
-      title: 'Core Components - Image',
+      title: 'Core Components: Image',
       description: 'Display images from various sources: local files, network URLs, or base64. Supports resizing, tinting, and loading events. Use FastImage for better performance.',
       syntax: '<Image source={{ }} style={{ }} />',
       usage: 'Display images in your app',
       code: 'import { View, Image, StyleSheet } from "react-native";\n\nfunction ImageExamples() {\n  return (\n    <View style={styles.container}>\n      {/* Local image */}\n      <Image \n        source={require("./assets/logo.png")}\n        style={styles.logo}\n      />\n\n      {/* Network image */}\n      <Image\n        source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}\n        style={styles.networkImage}\n      />\n\n      {/* Image with events */}\n      <Image\n        source={{ uri: "https://placekitten.com/200/200" }}\n        style={styles.image}\n        onLoadStart={() => console.log("Loading...")}\n        onLoad={() => console.log("Loaded!")}\n        onError={(e) => console.log("Error:", e.nativeEvent.error)}\n      />\n\n      {/* Resize modes */}\n      <Image\n        source={{ uri: "https://placekitten.com/400/300" }}\n        style={styles.resizeImage}\n        resizeMode="cover" // or "contain", "stretch", "center"\n      />\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { padding: 20 },\n  logo: { width: 100, height: 100 },\n  networkImage: { width: 50, height: 50, marginVertical: 10 },\n  image: { width: 200, height: 200, borderRadius: 10 },\n  resizeImage: { width: "100%", height: 200, marginTop: 10 }\n});'
     },
     {
-      title: 'Core Components - ScrollView',
+      title: 'Core Components: ScrollView',
       description: 'ScrollView creates a scrollable container for content that exceeds screen height. Use for small lists. For large datasets, use FlatList instead for better performance.',
       syntax: '<ScrollView horizontal={bool}></ScrollView>',
       usage: 'Create scrollable content',
       code: 'import { ScrollView, View, Text, Image, StyleSheet } from "react-native";\n\nfunction ScrollViewExample() {\n  return (\n    <View style={{ flex: 1 }}>\n      {/* Vertical scrolling */}\n      <ScrollView \n        style={styles.scroll}\n        showsVerticalScrollIndicator={false}\n        bounces={true}\n      >\n        {[...Array(20)].map((_, i) => (\n          <View key={i} style={styles.item}>\n            <Text>Item {i + 1}</Text>\n          </View>\n        ))}\n      </ScrollView>\n\n      {/* Horizontal scrolling */}\n      <ScrollView \n        horizontal\n        showsHorizontalScrollIndicator={false}\n        style={{ marginTop: 20 }}\n      >\n        {[...Array(10)].map((_, i) => (\n          <View key={i} style={styles.horizontalItem}>\n            <Text>{i + 1}</Text>\n          </View>\n        ))}\n      </ScrollView>\n\n      {/* Refresh control */}\n      <ScrollView\n        refreshControl={\n          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />\n        }\n      >\n        <Text>Pull to refresh</Text>\n      </ScrollView>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  scroll: { flex: 1 },\n  item: { padding: 20, borderBottomWidth: 1, borderColor: "#ddd" },\n  horizontalItem: { width: 100, height: 100, backgroundColor: "#3b82f6", margin: 5, justifyContent: "center", alignItems: "center" }\n});'
     },
     {
-      title: 'Core Components - TextInput',
+      title: 'Core Components: TextInput',
       description: 'TextInput allows users to enter text. Support various keyboard types, auto-correction, secure entry, and validation. Essential for forms and user input.',
       syntax: '<TextInput value={state} onChangeText={setState} />',
       usage: 'Collect user input',
@@ -2709,14 +2709,14 @@ function reactNativeSpecs(languageName: string): SectionSpec[] {
       code: 'import { View, Text, TouchableOpacity, Pressable, StyleSheet } from "react-native";\n\nfunction TouchableExamples() {\n  return (\n    <View style={styles.container}>\n      {/* TouchableOpacity - fades on press */}\n      <TouchableOpacity\n        style={styles.button}\n        onPress={() => console.log("Pressed")}\n        activeOpacity={0.7}\n      >\n        <Text style={styles.buttonText}>TouchableOpacity</Text>\n      </TouchableOpacity>\n\n      {/* Pressable - modern, flexible */}\n      <Pressable\n        style={({ pressed }) => [\n          styles.button,\n          pressed && styles.pressed\n        ]}\n        onPress={() => console.log("Pressed")}\n        onLongPress={() => console.log("Long pressed")}\n        onPressIn={() => console.log("Press started")}\n        onPressOut={() => console.log("Press ended")}\n      >\n        {({ pressed }) => (\n          <Text style={styles.buttonText}>\n            {pressed ? "Pressed!" : "Pressable"}\n          </Text>\n        )}\n      </Pressable>\n\n      {/* Disabled state */}\n      <Pressable\n        style={[styles.button, styles.disabled]}\n        disabled\n      >\n        <Text style={styles.buttonText}>Disabled</Text>\n      </Pressable>\n\n      {/* Hit slop - expand touch area */}\n      <Pressable\n        onPress={() => console.log("Hit!")}\n        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}\n      >\n        <Text>Small target with big hit area</Text>\n      </Pressable>\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { padding: 20 },\n  button: { backgroundColor: "#3b82f6", padding: 16, borderRadius: 8, marginBottom: 10, alignItems: "center" },\n  buttonText: { color: "white", fontSize: 16, fontWeight: "600" },\n  pressed: { backgroundColor: "#2563eb", transform: [{ scale: 0.98 }] },\n  disabled: { backgroundColor: "#d1d5db" }\n});'
     },
     {
-      title: 'FlatList - Efficient Lists',
+      title: 'FlatList: Efficient Lists',
       description: 'FlatList renders large lists efficiently using virtualization (only renders visible items). Much better performance than ScrollView for long lists. Essential for production apps.',
       syntax: '<FlatList data={array} renderItem={({ item }) => {}} keyExtractor={} />',
       usage: 'Display large scrollable lists efficiently',
       code: 'import React, { useState } from "react";\nimport { FlatList, View, Text, StyleSheet, RefreshControl } from "react-native";\n\nconst DATA = [\n  { id: "1", title: "First Item", description: "Description 1" },\n  { id: "2", title: "Second Item", description: "Description 2" },\n  { id: "3", title: "Third Item", description: "Description 3" },\n  // ... many more items\n];\n\nfunction FlatListExample() {\n  const [refreshing, setRefreshing] = useState(false);\n\n  const renderItem = ({ item, index }) => (\n    <View style={styles.item}>\n      <Text style={styles.title}>{item.title}</Text>\n      <Text style={styles.description}>{item.description}</Text>\n    </View>\n  );\n\n  const onRefresh = () => {\n    setRefreshing(true);\n    // Fetch new data\n    setTimeout(() => setRefreshing(false), 2000);\n  };\n\n  return (\n    <FlatList\n      data={DATA}\n      renderItem={renderItem}\n      keyExtractor={item => item.id}\n      // Performance optimizations\n      initialNumToRender={10}\n      maxToRenderPerBatch={10}\n      windowSize={5}\n      // Pull to refresh\n      refreshControl={\n        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />\n      }\n      // Separators\n      ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#ddd" }} />}\n      // Empty state\n      ListEmptyComponent={<Text style={{ padding: 20, textAlign: "center" }}>No items</Text>}\n      // Header/Footer\n      ListHeaderComponent={<Text style={styles.header}>My List</Text>}\n      ListFooterComponent={<Text style={{ padding: 20 }}>End of list</Text>}\n    />\n  );\n}\n\nconst styles = StyleSheet.create({\n  item: { padding: 16, backgroundColor: "white" },\n  title: { fontSize: 18, fontWeight: "600" },\n  description: { fontSize: 14, color: "#666", marginTop: 4 },\n  header: { fontSize: 24, fontWeight: "bold", padding: 16, backgroundColor: "#f0f0f0" }\n});'
     },
     {
-      title: 'SectionList - Grouped Lists',
+      title: 'SectionList: Grouped Lists',
       description: 'SectionList displays data in sections with headers (like iOS Settings). Perfect for grouped content like contacts, settings, or categorized items.',
       syntax: '<SectionList sections={[]} renderItem={} renderSectionHeader={} />',
       usage: 'Display grouped/sectioned lists',
@@ -2730,21 +2730,21 @@ function reactNativeSpecs(languageName: string): SectionSpec[] {
       code: 'import React, { useState, useEffect } from "react";\nimport { View, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";\n\nfunction NetworkingExample() {\n  const [data, setData] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState(null);\n\n  useEffect(() => {\n    fetchData();\n  }, []);\n\n  const fetchData = async () => {\n    try {\n      setLoading(true);\n      const response = await fetch("https://jsonplaceholder.typicode.com/posts");\n      \n      if (!response.ok) {\n        throw new Error(`HTTP error! status: ${response.status}`);\n      }\n      \n      const json = await response.json();\n      setData(json.slice(0, 10)); // First 10 items\n    } catch (err) {\n      setError(err.message);\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  // POST request example\n  const createPost = async () => {\n    try {\n      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {\n        method: "POST",\n        headers: {\n          "Content-Type": "application/json"\n        },\n        body: JSON.stringify({\n          title: "New Post",\n          body: "Post content",\n          userId: 1\n        })\n      });\n      const json = await response.json();\n      console.log("Created:", json);\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  if (loading) return <ActivityIndicator size="large" style={{ flex: 1 }} />;\n  if (error) return <Text style={styles.error}>Error: {error}</Text>;\n\n  return (\n    <FlatList\n      data={data}\n      keyExtractor={item => item.id.toString()}\n      renderItem={({ item }) => (\n        <View style={styles.item}>\n          <Text style={styles.title}>{item.title}</Text>\n          <Text style={styles.body}>{item.body}</Text>\n        </View>\n      )}\n    />\n  );\n}\n\nconst styles = StyleSheet.create({\n  item: { padding: 16, borderBottomWidth: 1, borderColor: "#ddd" },\n  title: { fontSize: 16, fontWeight: "600", marginBottom: 4 },\n  body: { fontSize: 14, color: "#666" },\n  error: { padding: 20, color: "red", textAlign: "center" }\n});'
     },
     {
-      title: 'Navigation - Stack Navigator',
+      title: 'Navigation: Stack Navigator',
       description: 'React Navigation provides stack-based navigation (push/pop screens). The most common navigation pattern. Install @react-navigation/native and @react-navigation/native-stack.',
       syntax: 'createNativeStackNavigator(), navigation.navigate()',
       usage: 'Navigate between screens',
       code: '// Install: npm install @react-navigation/native @react-navigation/native-stack\n// Expo: expo install react-native-screens react-native-safe-area-context\n\nimport { NavigationContainer } from "@react-navigation/native";\nimport { createNativeStackNavigator } from "@react-navigation/native-stack";\nimport { View, Text, Button, StyleSheet } from "react-native";\n\nconst Stack = createNativeStackNavigator();\n\nfunction HomeScreen({ navigation }) {\n  return (\n    <View style={styles.screen}>\n      <Text style={styles.title}>Home Screen</Text>\n      <Button\n        title="Go to Details"\n        onPress={() => navigation.navigate("Details", { itemId: 42, name: "Item" })}\n      />\n    </View>\n  );\n}\n\nfunction DetailsScreen({ route, navigation }) {\n  const { itemId, name } = route.params;\n\n  return (\n    <View style={styles.screen}>\n      <Text style={styles.title}>Details Screen</Text>\n      <Text>Item ID: {itemId}</Text>\n      <Text>Name: {name}</Text>\n      <Button title="Go Back" onPress={() => navigation.goBack()} />\n      <Button title="Go to Details Again" onPress={() => navigation.push("Details", { itemId: Math.random() })} />\n    </View>\n  );\n}\n\nexport default function App() {\n  return (\n    <NavigationContainer>\n      <Stack.Navigator\n        screenOptions={{\n          headerStyle: { backgroundColor: "#3b82f6" },\n          headerTintColor: "#fff",\n          headerTitleStyle: { fontWeight: "bold" }\n        }}\n      >\n        <Stack.Screen name="Home" component={HomeScreen} options={{ title: "My Home" }} />\n        <Stack.Screen name="Details" component={DetailsScreen} />\n      </Stack.Navigator>\n    </NavigationContainer>\n  );\n}\n\nconst styles = StyleSheet.create({\n  screen: { flex: 1, alignItems: "center", justifyContent: "center", padding: 20 },\n  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 }\n});'
     },
     {
-      title: 'Navigation - Tab Navigator',
+      title: 'Navigation: Tab Navigator',
       description: 'Bottom tab navigation is the most common mobile navigation pattern. Shows multiple screens with tabs at the bottom. Perfect for main app sections.',
       syntax: 'createBottomTabNavigator(), Tab.Screen',
       usage: 'Create bottom tab navigation',
       code: '// Install: npm install @react-navigation/bottom-tabs\nimport { NavigationContainer } from "@react-navigation/native";\nimport { createBottomTabNavigator } from "@react-navigation/bottom-tabs";\nimport { View, Text, StyleSheet } from "react-native";\nimport { Ionicons } from "@expo/vector-icons"; // or react-native-vector-icons\n\nconst Tab = createBottomTabNavigator();\n\nfunction HomeScreen() {\n  return (\n    <View style={styles.screen}>\n      <Text style={styles.title}>Home</Text>\n    </View>\n  );\n}\n\nfunction ProfileScreen() {\n  return (\n    <View style={styles.screen}>\n      <Text style={styles.title}>Profile</Text>\n    </View>\n  );\n}\n\nfunction SettingsScreen() {\n  return (\n    <View style={styles.screen}>\n      <Text style={styles.title}>Settings</Text>\n    </View>\n  );\n}\n\nexport default function App() {\n  return (\n    <NavigationContainer>\n      <Tab.Navigator\n        screenOptions={({ route }) => ({\n          tabBarIcon: ({ focused, color, size }) => {\n            let iconName;\n            if (route.name === "Home") iconName = focused ? "home" : "home-outline";\n            else if (route.name === "Profile") iconName = focused ? "person" : "person-outline";\n            else if (route.name === "Settings") iconName = focused ? "settings" : "settings-outline";\n            return <Ionicons name={iconName} size={size} color={color} />;\n          },\n          tabBarActiveTintColor: "#3b82f6",\n          tabBarInactiveTintColor: "gray",\n          headerStyle: { backgroundColor: "#3b82f6" },\n          headerTintColor: "#fff"\n        })}\n      >\n        <Tab.Screen name="Home" component={HomeScreen} />\n        <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarBadge: 3 }} />\n        <Tab.Screen name="Settings" component={SettingsScreen} />\n      </Tab.Navigator>\n    </NavigationContainer>\n  );\n}\n\nconst styles = StyleSheet.create({\n  screen: { flex: 1, justifyContent: "center", alignItems: "center" },\n  title: { fontSize: 24, fontWeight: "bold" }\n});'
     },
     {
-      title: 'AsyncStorage - Local Persistence',
+      title: 'AsyncStorage: Local Persistence',
       description: 'AsyncStorage is an async, persistent, key-value storage system for React Native. Use for saving user preferences, auth tokens, cached data, and app state.',
       syntax: 'AsyncStorage.setItem(), getItem(), removeItem()',
       usage: 'Store data locally on device',
@@ -2765,14 +2765,14 @@ function reactNativeSpecs(languageName: string): SectionSpec[] {
       code: 'import React, { useState, useEffect } from "react";\nimport { View, Text, TextInput, Button, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView, StyleSheet } from "react-native";\n\nfunction KeyboardExample() {\n  const [keyboardVisible, setKeyboardVisible] = useState(false);\n\n  useEffect(() => {\n    // Listen to keyboard events\n    const keyboardDidShowListener = Keyboard.addListener(\n      "keyboardDidShow",\n      () => setKeyboardVisible(true)\n    );\n    const keyboardDidHideListener = Keyboard.addListener(\n      "keyboardDidHide",\n      () => setKeyboardVisible(false)\n    );\n\n    return () => {\n      keyboardDidShowListener.remove();\n      keyboardDidHideListener.remove();\n    };\n  }, []);\n\n  return (\n    // Dismiss keyboard when tapping outside\n    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>\n      <KeyboardAvoidingView\n        behavior={Platform.OS === "ios" ? "padding" : "height"}\n        style={styles.container}\n        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}\n      >\n        <ScrollView contentContainerStyle={styles.content}>\n          <Text style={styles.title}>Login Form</Text>\n          \n          <TextInput\n            style={styles.input}\n            placeholder="Email"\n            keyboardType="email-address"\n            autoCapitalize="none"\n            returnKeyType="next"\n          />\n          \n          <TextInput\n            style={styles.input}\n            placeholder="Password"\n            secureTextEntry\n            returnKeyType="done"\n            onSubmitEditing={Keyboard.dismiss}\n          />\n          \n          <Button title="Login" onPress={() => {}} />\n          \n          {keyboardVisible && (\n            <Text style={styles.hint}>Keyboard is visible</Text>\n          )}\n        </ScrollView>\n      </KeyboardAvoidingView>\n    </TouchableWithoutFeedback>\n  );\n}\n\n// Alternative: Use react-native-keyboard-aware-scroll-view\n// npm install react-native-keyboard-aware-scroll-view\nimport { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";\n\nfunction BetterKeyboardHandling() {\n  return (\n    <KeyboardAwareScrollView\n      style={styles.container}\n      resetScrollToCoords={{ x: 0, y: 0 }}\n      contentContainerStyle={{ flexGrow: 1 }}\n      scrollEnabled={true}\n      enableOnAndroid={true}\n      extraScrollHeight={20}\n    >\n      {/* Your form here */}\n    </KeyboardAwareScrollView>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { flex: 1, backgroundColor: "#fff" },\n  content: { padding: 20, justifyContent: "center", flexGrow: 1 },\n  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },\n  input: { borderWidth: 1, borderColor: "#ddd", padding: 12, marginBottom: 12, borderRadius: 8 },\n  hint: { marginTop: 10, color: "gray", fontSize: 12, textAlign: "center" }\n});'
     },
     {
-      title: 'Animations - Animated API',
+      title: 'Animations: Animated API',
       description: 'React Native\'s Animated API provides smooth, performant animations. Use Animated.Value, timing, spring, and interpolate for complex animations running on the native thread.',
       syntax: 'Animated.Value, Animated.timing(), Animated.spring()',
       usage: 'Create smooth animations',
       code: 'import React, { useRef, useEffect } from "react";\nimport { Animated, View, Button, StyleSheet, Easing } from "react-native";\n\nfunction AnimationExample() {\n  // Create animated value\n  const fadeAnim = useRef(new Animated.Value(0)).current;\n  const slideAnim = useRef(new Animated.Value(-100)).current;\n  const scaleAnim = useRef(new Animated.Value(1)).current;\n\n  // Fade in on mount\n  useEffect(() => {\n    Animated.timing(fadeAnim, {\n      toValue: 1,\n      duration: 1000,\n      useNativeDriver: true // Better performance\n    }).start();\n  }, []);\n\n  const slideIn = () => {\n    Animated.spring(slideAnim, {\n      toValue: 0,\n      friction: 5,\n      tension: 40,\n      useNativeDriver: true\n    }).start();\n  };\n\n  const pulse = () => {\n    Animated.sequence([\n      Animated.timing(scaleAnim, {\n        toValue: 1.2,\n        duration: 200,\n        easing: Easing.ease,\n        useNativeDriver: true\n      }),\n      Animated.timing(scaleAnim, {\n        toValue: 1,\n        duration: 200,\n        useNativeDriver: true\n      })\n    ]).start();\n  };\n\n  // Interpolation\n  const rotation = fadeAnim.interpolate({\n    inputRange: [0, 1],\n    outputRange: ["0deg", "360deg"]\n  });\n\n  // Parallel animations\n  const animateAll = () => {\n    Animated.parallel([\n      Animated.timing(fadeAnim, { toValue: 0, duration: 500, useNativeDriver: true }),\n      Animated.timing(slideAnim, { toValue: -100, duration: 500, useNativeDriver: true })\n    ]).start(() => {\n      // Callback after animation\n      console.log("Animations complete");\n    });\n  };\n\n  // Loop animation\n  const spin = useRef(new Animated.Value(0)).current;\n  useEffect(() => {\n    Animated.loop(\n      Animated.timing(spin, {\n        toValue: 1,\n        duration: 2000,\n        easing: Easing.linear,\n        useNativeDriver: true\n      })\n    ).start();\n  }, []);\n\n  const spinRotation = spin.interpolate({\n    inputRange: [0, 1],\n    outputRange: ["0deg", "360deg"]\n  });\n\n  return (\n    <View style={styles.container}>\n      <Animated.View\n        style={[styles.box, {\n          opacity: fadeAnim,\n          transform: [\n            { translateY: slideAnim },\n            { scale: scaleAnim },\n            { rotate: rotation }\n          ]\n        }]}\n      />\n\n      <Animated.View\n        style={[styles.spinner, {\n          transform: [{ rotate: spinRotation }]\n        }]}\n      />\n\n      <Button title="Slide In" onPress={slideIn} />\n      <Button title="Pulse" onPress={pulse} />\n      <Button title="Reset" onPress={animateAll} />\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },\n  box: { width: 100, height: 100, backgroundColor: "#3b82f6", marginBottom: 20 },\n  spinner: { width: 50, height: 50, backgroundColor: "#ef4444", marginVertical: 20 }\n});'
     },
     {
-      title: 'Gestures - PanResponder',
+      title: 'Gestures: PanResponder',
       description: 'PanResponder handles complex touch gestures like drag, swipe, pinch. Use for draggable components, swipeable cards, custom controls. For advanced gestures, use react-native-gesture-handler.',
       syntax: 'PanResponder.create({ onStartShouldSetPanResponder, onPanResponderMove })',
       usage: 'Handle touch gestures and dragging',
@@ -2863,7 +2863,7 @@ function reactNativeSpecs(languageName: string): SectionSpec[] {
       code: '// 1. SECURE STORAGE - Never store sensitive data in AsyncStorage\n\nimport * as SecureStore from "expo-secure-store"; // Expo\n// OR\nimport RNSecureStorage from "react-native-secure-storage"; // CLI\n\n// Store sensitive data\nawait SecureStore.setItemAsync("authToken", token);\nawait SecureStore.setItemAsync("apiKey", apiKey);\n\n// Retrieve\nconst token = await SecureStore.getItemAsync("authToken");\n\n// Delete\nawait SecureStore.deleteItemAsync("authToken");\n\n// 2. PROTECT API KEYS - Never hardcode\n\n// BAD ❌\nconst API_KEY = "sk_live_123456789";\nfetch(`https://api.example.com?key=${API_KEY}`);\n\n// GOOD ✅\nimport Config from "react-native-config";\nconst API_KEY = Config.API_KEY; // From .env file\n\n// Even better: Use backend proxy\n// Client → Your Backend → Third-party API\n// API key stays on server, never exposed\n\n// 3. INPUT VALIDATION\n\nfunction validateEmail(email: string): boolean {\n  const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n  return emailRegex.test(email);\n}\n\nfunction sanitizeInput(input: string): string {\n  // Remove dangerous characters\n  return input.replace(/[<>\"\'&]/g, "");\n}\n\nfunction handleLogin(email: string, password: string) {\n  if (!validateEmail(email)) {\n    Alert.alert("Invalid email");\n    return;\n  }\n  if (password.length < 8) {\n    Alert.alert("Password must be at least 8 characters");\n    return;\n  }\n  // Proceed with login\n}\n\n// 4. HTTPS ONLY\n\nconst API_URL = "https://api.example.com"; // ✅\nconst API_URL = "http://api.example.com";  // ❌ Never use HTTP\n\n// 5. SSL PINNING - Prevent man-in-the-middle attacks\n\n// Expo: Not supported directly, use expo-dev-client with native modules\n// CLI: Use react-native-ssl-pinning\n\nimport { fetch } from "react-native-ssl-pinning";\n\nfetch("https://api.example.com/data", {\n  method: "GET",\n  sslPinning: {\n    certs: ["cert1"] // Certificate in android/app/src/main/assets/cert1.cer\n  }\n});\n\n// 6. AUTHENTICATION BEST PRACTICES\n\n// Use JWT tokens with expiration\ninterface AuthResponse {\n  accessToken: string;\n  refreshToken: string;\n  expiresIn: number;\n}\n\nasync function login(email: string, password: string) {\n  const response = await fetch("https://api.example.com/login", {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify({ email, password })\n  });\n  \n  const data: AuthResponse = await response.json();\n  \n  // Store tokens securely\n  await SecureStore.setItemAsync("accessToken", data.accessToken);\n  await SecureStore.setItemAsync("refreshToken", data.refreshToken);\n  \n  return data;\n}\n\n// Include token in requests\nasync function fetchUserData() {\n  const token = await SecureStore.getItemAsync("accessToken");\n  \n  const response = await fetch("https://api.example.com/user", {\n    headers: {\n      "Authorization": `Bearer ${token}`\n    }\n  });\n  \n  return response.json();\n}\n\n// 7. CODE OBFUSCATION (Release builds)\n\n// android/app/build.gradle\nandroid {\n  buildTypes {\n    release {\n      minifyEnabled true\n      shrinkResources true\n      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"\n    }\n  }\n}\n\n// 8. PREVENT SCREENSHOTS (Sensitive screens)\n\nimport { Platform } from "react-native";\nimport { activateKeepAwake, deactivateKeepAwake } from "expo-keep-awake";\n\n// Android: Add to MainActivity.java\n// getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);\n\n// iOS: Limited options, consider blurring on background\n\n// 9. RATE LIMITING\n\nlet requestCount = 0;\nlet lastRequestTime = Date.now();\n\nasync function rateLimitedFetch(url: string) {\n  const now = Date.now();\n  if (now - lastRequestTime < 1000) {\n    requestCount++;\n    if (requestCount > 5) {\n      throw new Error("Too many requests");\n    }\n  } else {\n    requestCount = 0;\n    lastRequestTime = now;\n  }\n  \n  return fetch(url);\n}\n\n// 10. SECURITY CHECKLIST\n\n/*\n✅ Use HTTPS for all network requests\n✅ Store sensitive data in SecureStore\n✅ Never commit .env files with secrets\n✅ Validate and sanitize all user input\n✅ Implement SSL pinning for critical APIs\n✅ Use authentication tokens with expiration\n✅ Enable code obfuscation for release builds\n✅ Keep dependencies updated\n✅ Use TypeScript for type safety\n✅ Implement proper error handling\n✅ Add rate limiting for API calls\n✅ Follow OWASP Mobile Top 10\n*/'
     },
     {
-      title: 'Real-World Project - Social Media App',
+      title: 'Real-World Project: Social Media App',
       description: 'Build a complete social media app with authentication, posts feed, comments, likes, image upload, push notifications, and real-time updates.',
       syntax: 'Full-stack React Native app',
       usage: 'Apply all React Native skills',
@@ -3007,8 +3007,8 @@ function kotlinSpecs(languageName: string): SectionSpec[] {
     { title: 'Numbers and Operators', description: 'Numeric types (Int, Long, Double, Float) and arithmetic operators.', syntax: '+, -, *, /, %', usage: 'Math operations', code: 'val x = 10\nval y = 3\nprintln(x + y) // 13\nprintln(x / y) // 3\nprintln(x % y) // 1' },
     { title: 'Booleans and Logic', description: 'Boolean type and logical operators for conditions.', syntax: '&&, ||, !, ==, !=', usage: 'Logic operations', code: 'val isAdult = age >= 18\nval hasPermission = true\nif (isAdult && hasPermission) {\n  println("Allowed")\n}' },
     { title: 'Null Safety', description: 'Nullable vs non-nullable types. Use safe calls (?.) and Elvis operator (?:) to handle nulls.', syntax: '?, ?., ?:, !!', usage: 'Avoid NullPointerException', code: 'var name: String? = null\nval length = name?.length ?: 0\nprintln(length) // 0' },
-    { title: 'Control Flow - If and When', description: 'Use if expressions and when for branching logic.', syntax: 'if, when', usage: 'Conditional logic', code: 'val score = 85\nval grade = when {\n  score >= 90 -> "A"\n  score >= 80 -> "B"\n  else -> "C"\n}' },
-    { title: 'Loops - For and While', description: 'Iterate with for loops (ranges, collections) and while loops.', syntax: 'for, while, do-while', usage: 'Iteration', code: 'for (i in 1..5) {\n  println(i)\n}\n\nvar x = 0\nwhile (x < 3) {\n  println(x++)\n}' },
+    { title: 'Control Flow: If and When', description: 'Use if expressions and when for branching logic.', syntax: 'if, when', usage: 'Conditional logic', code: 'val score = 85\nval grade = when {\n  score >= 90 -> "A"\n  score >= 80 -> "B"\n  else -> "C"\n}' },
+    { title: 'Loops: For and While', description: 'Iterate with for loops (ranges, collections) and while loops.', syntax: 'for, while, do-while', usage: 'Iteration', code: 'for (i in 1..5) {\n  println(i)\n}\n\nvar x = 0\nwhile (x < 3) {\n  println(x++)\n}' },
     { title: 'Ranges', description: 'Create ranges with .. and use them in loops and conditions.', syntax: '1..10, 1 until 10, downTo', usage: 'Range expressions', code: 'val range = 1..5\nfor (i in 1..10 step 2) {\n  println(i)\n}\nif (5 in range) println("In range")' },
     { title: 'Functions', description: 'Define functions with fun keyword. Use return types and parameters.', syntax: 'fun name(params): ReturnType', usage: 'Reusable logic', code: 'fun add(a: Int, b: Int): Int {\n  return a + b\n}\n\nfun greet(name: String) = "Hello, $name"' },
     { title: 'Function Parameters', description: 'Default parameters, named arguments, and varargs.', syntax: 'default params, vararg', usage: 'Flexible functions', code: 'fun greet(name: String = "World", prefix: String = "Hello") {\n  println("$prefix, $name")\n}\n\ngreet()\ngreet(name = "Ada")' },

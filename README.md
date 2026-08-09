@@ -1,4 +1,4 @@
-# 💻 **CodeLikeBasics** - Interactive Learning Platform
+# 💻 **CodeLikeBasics**: Interactive Learning Platform
 
 > An interactive, gamified learning platform where beginners master programming and technology through engaging tutorials, quiz games, and hands-on coding sandboxes. Build your knowledge tree, earn XP, unlock achievements, and receive certificates as you learn 43+ programming languages.
 
@@ -58,11 +58,11 @@
 ### 🌳 **Learning Tree Progress System**
 
 Watch your knowledge tree grow as you learn! The tree evolves through 5 stages:
-- 🌱 **Seedling** (0-25%) - Just starting your journey
-- 🌿 **Sapling** (25-50%) - Building foundation
-- 🌳 **Growing** (50-75%) - Expanding knowledge
-- 🌲 **Mature** (75-100%) - Near mastery
-- ✨ **Flourishing** (100%) - Full bloom with celebration!
+- 🌱 **Seedling** (0-25%): Just starting your journey
+- 🌿 **Sapling** (25-50%): Building foundation
+- 🌳 **Growing** (50-75%): Expanding knowledge
+- 🌲 **Mature** (75-100%): Near mastery
+- ✨ **Flourishing** (100%): Full bloom with celebration!
 
 **Tree Aesthetics by Goal:**
 - 💼 Career → Professional Oak (Green/Brown)
@@ -130,26 +130,26 @@ Complete learning ecosystem covering all major tech domains:
 - Level 11+: 300 XP per level
 
 **11 Achievements:**
-- 🎯 First Steps - Complete your first lesson
-- 🔥 Streak Master - Maintain a 7-day streak
-- ⚡ Speed Demon - Complete a quiz in under 60 seconds
-- 🎓 Scholar - Complete all tutorials in a module
-- 🏆 Completionist - 100% completion in any language
-- 👑 Legend - Reach level 10
-- 🎮 Game Master - Score 100% on any game
-- 🧪 Experimenter - Run 50 code snippets
-- 💪 Hard Mode Hero - Complete hard difficulty
-- 💰 XP Hunter - Earn 10,000 total XP
-- 🌍 Multi-Linguist - Learn 5+ languages
+- 🎯 First Steps: Complete your first lesson
+- 🔥 Streak Master: Maintain a 7-day streak
+- ⚡ Speed Demon: Complete a quiz in under 60 seconds
+- 🎓 Scholar: Complete all tutorials in a module
+- 🏆 Completionist: 100% completion in any language
+- 👑 Legend: Reach level 10
+- 🎮 Game Master: Score 100% on any game
+- 🧪 Experimenter: Run 50 code snippets
+- 💪 Hard Mode Hero: Complete hard difficulty
+- 💰 XP Hunter: Earn 10,000 total XP
+- 🌍 Multi-Linguist: Learn 5+ languages
 
 ### 📱 **Fully Responsive Design**
 
 Optimized for all screen sizes:
-- 📺 **TV (1920px+)** - Large text, spacious layout
-- 🖥️ **Desktop (1280px+)** - Full-featured experience
-- 💻 **Laptop (1024px)** - Optimized grid layouts
-- 📱 **Tablet (768px)** - Touch-friendly navigation
-- 📱 **Phone (375px)** - Mobile-first design, bottom navigation
+- 📺 **TV (1920px+)**: Large text, spacious layout
+- 🖥️ **Desktop (1280px+)**: Full-featured experience
+- 💻 **Laptop (1024px)**: Optimized grid layouts
+- 📱 **Tablet (768px)**: Touch-friendly navigation
+- 📱 **Phone (375px)**: Mobile-first design, bottom navigation
 
 ### ♿ **Accessibility Features**
 
@@ -254,14 +254,13 @@ npm run type-check   # TypeScript type checking (tsc --noEmit)
 | **Animations** | Framer Motion 11.0, canvas-confetti 1.9 |
 | **State Management** | Zustand 4.5 (global state), @tanstack/react-query 5.x (server state) |
 | **Database** | Firebase 12.6 (Firestore) |
-| **AI Integration** | Groq API (Llama 3.1 - AI Coach) |
+| **AI Integration** | Groq API (Llama 3.1: AI Coach) |
 | **Code Execution** | Piston API (20+ languages) |
 | **Drag & Drop** | @dnd-kit/core 6.1, @dnd-kit/sortable 8.0 |
 | **UI Components** | Lucide React 0.445 (icons) |
 | **Security** | isomorphic-dompurify 2.34, rate limiting, CSP headers |
 | **Markdown** | react-markdown 10.1 |
 | **Screenshots** | html2canvas 1.4 (certificates) |
-| **Analytics** | @vercel/speed-insights 1.3 |
 | **Deployment** | Vercel |
 
 ### Key Technical Features
@@ -441,17 +440,17 @@ MIT License © 2025-2026 CodeLikeBasics
 ## 🙏 Acknowledgments
 
 Built with:
-- [Next.js](https://nextjs.org/) - React framework
-- [Firebase](https://firebase.google.com/) - Backend infrastructure
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
-- [Framer Motion](https://www.framer.com/motion/) - Animations
-- [Zustand](https://zustand-demo.pmnd.rs/) - State management
-- [React Query](https://tanstack.com/query) - Server state management
-- [dnd-kit](https://dndkit.com/) - Drag and drop interactions
-- [Piston API](https://piston.readthedocs.io/) - Code execution
-- [Groq](https://groq.com/) - AI integration (Llama 3.1)
-- [DOMPurify](https://github.com/cure53/DOMPurify) - Input sanitization
-- [Vercel](https://vercel.com/) - Hosting and analytics
+- [Next.js](https://nextjs.org/): React framework
+- [Firebase](https://firebase.google.com/): Backend infrastructure
+- [Tailwind CSS](https://tailwindcss.com/): Styling
+- [Framer Motion](https://www.framer.com/motion/): Animations
+- [Zustand](https://zustand-demo.pmnd.rs/): State management
+- [React Query](https://tanstack.com/query): Server state management
+- [dnd-kit](https://dndkit.com/): Drag and drop interactions
+- [Piston API](https://piston.readthedocs.io/): Code execution
+- [Groq](https://groq.com/): AI integration (Llama 3.1)
+- [DOMPurify](https://github.com/cure53/DOMPurify): Input sanitization
+- [Vercel](https://vercel.com/): Hosting and analytics
 
 ---
 

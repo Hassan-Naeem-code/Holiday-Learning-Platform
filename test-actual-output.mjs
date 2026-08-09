@@ -1,9 +1,9 @@
-// Direct test - compile and run the actual TypeScript function
+// Direct test: compile and run the actual TypeScript function
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
 console.log('='.repeat(80));
-console.log('ACTUAL OUTPUT TEST - What users will see');
+console.log('ACTUAL OUTPUT TEST: What users will see');
 console.log('='.repeat(80));
 console.log();
 
@@ -11,7 +11,7 @@ console.log();
 const content = readFileSync('./utils/comprehensiveTutorialContent.ts', 'utf-8');
 
 // Test 1: Show actual CSS HOME content
-console.log('TEST 1: CSS HOME - First 600 characters of what users see:');
+console.log('TEST 1: CSS HOME: First 600 characters of what users see:');
 console.log('-'.repeat(80));
 const cssMatch = content.match(/title: 'CSS HOME',\s*content:\s*`([^`]+)`/);
 if (cssMatch) {
@@ -35,7 +35,7 @@ if (htmlMatch) {
 console.log();
 
 // Test 3: Show general language template (used for JS, Python, etc.)
-console.log('TEST 3: General Language HOME (JavaScript, Python, etc.) - First 600 chars:');
+console.log('TEST 3: General Language HOME (JavaScript, Python, etc.): First 600 chars:');
 console.log('-'.repeat(80));
 const genMatch = content.match(/id: '1',\s*title:\s*`\$\{lang\} HOME`,\s*content:\s*`([^`]+?)`,\s*syntax:/s);
 if (genMatch) {

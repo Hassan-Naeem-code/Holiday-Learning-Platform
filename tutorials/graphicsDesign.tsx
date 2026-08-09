@@ -17,7 +17,7 @@ export const graphicsDesignTutorial = {
       content: (
         <div className="space-y-6">
           <p className="text-lg">
-            Great design isn't just about making things look pretty - it's about communication!
+            Great design isn't just about making things look pretty: it's about communication!
             Good design principles help your message stand out and be understood easily.
           </p>
 

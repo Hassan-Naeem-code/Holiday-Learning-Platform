@@ -157,7 +157,7 @@ export default function ProgressGlass({
 }
 
 type BeerGlassColors = { liquid: string; foam: string; foamBubbles?: string }
-// Beer Glass Component - Traditional Pint Glass
+// Beer Glass Component: Traditional Pint Glass
 function BeerGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: number; colors: BeerGlassColors; showBubbles: boolean }) {
   return (
     <div className="relative w-44 h-60">
@@ -201,7 +201,7 @@ function BeerGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
             }}
           />
 
-          {/* Beer Foam - appears when beer is filling */}
+          {/* Beer Foam: appears when beer is filling */}
           {fillPercentage > 5 && (
             <>
               {/* Main foam layer */}
@@ -259,7 +259,7 @@ function BeerGlass({ fillPercentage, colors, showBubbles }: { fillPercentage: nu
           )}
         </g>
 
-        {/* Glass Body - Pint Shape (wider at top, narrower at bottom) */}
+        {/* Glass Body: Pint Shape (wider at top, narrower at bottom) */}
         <path
           d="M 45 30 L 40 180 L 100 180 L 95 30 Z"
           fill="url(#beerGlassShine)"
@@ -444,7 +444,7 @@ function CoffeeMug({ fillPercentage, colors }: { fillPercentage: number; colors:
           strokeWidth="2"
         />
 
-        {/* Steam Animation - appears when coffee is hot */}
+        {/* Steam Animation: appears when coffee is hot */}
         {fillPercentage > 15 && (
           <>
             {[...Array(4)].map((_, i) => (
